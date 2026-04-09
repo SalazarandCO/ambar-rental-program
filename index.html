@@ -178,10 +178,12 @@ footer{background:#000000;color:rgba(255,255,255,0.4);text-align:center;padding:
 footer a{color:var(--amber);text-decoration:none}
 
 /* BONVOY DISCOUNT */
-.discount-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:8px;cursor:pointer;font-size:11px;color:var(--amber);font-weight:500;letter-spacing:0.5px;text-transform:uppercase;user-select:none;transition:color 0.2s}
-.discount-toggle:hover{color:var(--orange)}
-.discount-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;transition:transform 0.3s}
+.discount-toggle{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;cursor:pointer;width:28px;height:28px;border-radius:50%;background:var(--g100);user-select:none;transition:background 0.2s}
+.discount-toggle:hover{background:var(--g200)}
+.discount-toggle svg{width:16px;height:16px;stroke:var(--g400);fill:none;stroke-width:2;transition:transform 0.3s}
 .discount-toggle.open svg{transform:rotate(180deg)}
+.discount-toggle.open{background:rgba(255,168,74,0.15)}
+.discount-toggle.open svg{stroke:var(--amber)}
 .discount-panel{max-height:0;overflow:hidden;transition:max-height 0.3s ease;margin-top:0}
 .discount-panel.open{max-height:80px;margin-top:10px}
 .discount-inner{display:flex;align-items:center;gap:8px;background:rgba(255,168,74,0.08);border:1px solid rgba(255,168,74,0.2);border-radius:10px;padding:10px 16px}
@@ -285,11 +287,10 @@ footer a{color:var(--amber);text-decoration:none}
       </div>
       <div class="discount-toggle" id="discountToggle" onclick="toggleDiscount()">
         <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        <span data-i18n="bonvoyDiscount">Bonvoy Discount</span>
       </div>
       <div class="discount-panel" id="discountPanel">
         <div class="discount-inner">
-          <label data-i18n="discountLabel">Discount</label>
+          <label data-i18n="bonvoyDiscount">Bonvoy Discount</label>
           <input type="number" id="discountPct" value="0" min="0" max="50" step="0.5" onchange="applyDiscount()" oninput="applyDiscount()">
           <span style="font-size:14px;font-weight:600;color:var(--g400)">%</span>
           <div class="discount-result" id="discountResult"></div>
@@ -801,28 +802,40 @@ if(sessionStorage.getItem('ambar_auth')==='1'){
 
 // ===== SHARE LINK =====
 function downloadPDF(){
-  const btn = document.getElementById('shareFab');
-  btn.style.display='none';
-  const loginOverlay = document.getElementById('loginOverlay');
-  loginOverlay.style.display='none';
-  showToast(t('pdfGenerating'));
-  const element = document.body;
-  const opt = {
-    margin: 0,
-    filename: 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10) + '.pdf',
-    image: {type:'jpeg', quality:0.95},
-    html2canvas: {scale:2, useCORS:true, scrollY:0, windowWidth:960},
-    jsPDF: {unit:'mm', format:'a4', orientation:'portrait'},
-    pagebreak: {mode:['avoid-all','css','legacy']}
-  };
-  html2pdf().set(opt).from(element).save().then(()=>{
-    btn.style.display='flex';
-    showToast(t('pdfReady'));
-  }).catch(()=>{
-    btn.style.display='flex';
-    showToast(t('pdfFail'));
-  });
-}
+      const btn = document.getElementById('shareFab');
+      const toast = document.getElementById('shareToast');
+      const loginOverlay = document.getElementById('loginOverlay');
+      const discountToggle = document.getElementById('discountToggle');
+      const discountPanel = document.getElementById('discountPanel');
+      btn.style.display='none';
+      toast.style.display='none';
+      loginOverlay.style.display='none';
+      discountToggle.style.display='none';
+      discountPanel.style.display='none';
+      window.scrollTo(0,0);
+      const element = document.body;
+      const opt = {
+        margin: [5, 0, 5, 0],
+        filename: 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10) + '.pdf',
+        image: {type:'jpeg', quality:0.98},
+        html2canvas: {scale:2, useCORS:true, scrollX:0, scrollY:0, width:document.documentElement.scrollWidth, windowWidth:document.documentElement.scrollWidth},
+        jsPDF: {unit:'mm', format:'a4', orientation:'portrait'},
+        pagebreak: {mode:['avoid-all','css','legacy']}
+      };
+      html2pdf().set(opt).from(element).save().then(()=>{
+        btn.style.display='flex';
+        toast.style.display='';
+        discountToggle.style.display='';
+        discountPanel.style.display='';
+        showToast(t('pdfReady'));
+      }).catch(()=>{
+        btn.style.display='flex';
+        toast.style.display='';
+        discountToggle.style.display='';
+        discountPanel.style.display='';
+        showToast(t('pdfFail'));
+      });
+    }
 
 // ===== BONVOY DISCOUNT =====
 function toggleDiscount(){
