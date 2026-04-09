@@ -91,8 +91,10 @@ header{background:var(--header-bg);padding:16px 0 16px}
 .unit-card:hover{border-color:var(--amber);box-shadow:0 4px 16px rgba(179,125,80,0.12)}
 .unit-card.selected{border-color:var(--amber);background:linear-gradient(135deg,#1a1a1a,#000000);color:white}
 .unit-card.selected .uc-type{color:var(--amber-light)}
+.unit-card.selected .uc-sqft{color:rgba(255,255,255,0.5)}
 .unit-card.selected .uc-check{display:flex}
 .uc-type{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--g500);font-weight:600;text-align:center}
+.uc-sqft{font-size:11px;color:var(--g400);text-align:center;margin-top:4px;font-weight:400;letter-spacing:0.5px}
 .uc-check{display:none;position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--amber);align-items:center;justify-content:center}
 .uc-check svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 
@@ -394,51 +396,33 @@ footer a{color:var(--amber);text-decoration:none}
     </div>
   </div>
   <div class="section-body">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
-      <div>
-        <div class="slider-label" data-i18n="aveRentalRate">Average Rental Rate per Day</div>
-        <div style="font-size:11px;color:var(--g400);margin:2px 0 6px" data-i18n="aveRateSub">Average daily rental rate at the resort</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:13px;color:var(--g400)">$</span>
-          <input class="num-input" type="number" id="adrInput" value="302" min="100" max="800" step="1" onchange="recalc()" style="width:80px">
-        </div>
-      </div>
-      <div>
-        <div class="slider-label" data-i18n="occRate">Occupancy Rate</div>
-        <div style="font-size:11px;color:var(--g400);margin:2px 0 6px" data-i18n="occSub">Annual average — Orlando year-round demand</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <input type="range" id="occSlider" min="50" max="95" value="79" step="1" oninput="recalc()" style="flex:1">
-          <input class="num-input" type="number" id="occInput" value="79" min="50" max="95" step="1" onchange="document.getElementById('occSlider').value=this.value;recalc()" style="width:56px">
-          <span style="font-size:13px;color:var(--g400)">%</span>
-        </div>
-      </div>
-    </div>
+    <!-- Hidden inputs to preserve values for recalc -->
+    <input type="hidden" id="adrInput" value="302">
+    <input type="hidden" id="occInput" value="79">
+    <input type="hidden" id="occSlider" value="79">
 
     <!-- Scenario Cards -->
     <div class="scenario-grid">
       <div class="scenario-card" id="scCard1" onclick="applyScenario(1)">
         <div class="sc-tag" data-i18n="conservative">Conservative</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>Rate</label><input type="number" id="sc1Rate" value="260" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
-          <div class="sc-field"><label>Occ%</label><input type="number" id="sc1Occ" value="72" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label>RevPAR</label><input type="number" id="sc1Rate" value="260" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$5,693</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$7,904</strong></div>
       </div>
       <div class="scenario-card active" id="scCard2" onclick="applyScenario(2)">
         <div class="sc-tag" data-i18n="base">Base</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>Rate</label><input type="number" id="sc2Rate" value="302" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
-          <div class="sc-field"><label>Occ%</label><input type="number" id="sc2Occ" value="79" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label>RevPAR</label><input type="number" id="sc2Rate" value="302" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$7,256</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$9,181</strong></div>
       </div>
       <div class="scenario-card" id="scCard3" onclick="applyScenario(3)">
         <div class="sc-tag" data-i18n="optimistic">Optimistic</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>Rate</label><input type="number" id="sc3Rate" value="345" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
-          <div class="sc-field"><label>Occ%</label><input type="number" id="sc3Occ" value="88" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label>RevPAR</label><input type="number" id="sc3Rate" value="345" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc3Rev">$9,234</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc3Rev">$10,488</strong></div>
       </div>
     </div>
 
@@ -595,9 +579,10 @@ function renderUnits(){
   UNITS.forEach(u=>{
     const c=document.createElement('div');
     c.className='unit-card'+(u.id===sel.id?' selected':'');
-    c.onclick=()=>{sel=u;renderUnits();syncInputs();recalc()};
+    c.onclick=()=>{sel=u;renderUnits();syncInputs();recalcScenarios();recalc()};
     c.innerHTML=`<div class="uc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <div class="uc-type">${u.type[lang]}</div>`;
+      <div class="uc-type">${u.type[lang]}</div>
+      <div class="uc-sqft">${u.sqft} ft²</div>`;
     g.appendChild(c);
   });
 }
@@ -605,34 +590,23 @@ function renderUnits(){
 function syncInputs(){
   document.getElementById('priceInput').value=Math.round(sel.basePrice);
   document.getElementById('adrInput').value=Math.round(sel.adr);
-  document.getElementById('occInput').value=Math.round(sel.occ*100);
-  document.getElementById('occSlider').value=Math.round(sel.occ*100);
-  // Update scenario defaults
+  // Update scenario defaults (RevPAR-based)
   document.getElementById('sc1Rate').value=Math.round(sel.adr*0.86);
-  document.getElementById('sc1Occ').value=Math.max(65,Math.round(sel.occ*100)-8);
   document.getElementById('sc2Rate').value=Math.round(sel.adr);
-  document.getElementById('sc2Occ').value=Math.round(sel.occ*100);
   document.getElementById('sc3Rate').value=Math.round(sel.adr*1.14);
-  document.getElementById('sc3Occ').value=Math.min(95,Math.round(sel.occ*100)+8);
 }
 
 function recalcScenarios(){
   [1,2,3].forEach(i=>{
     const r=+document.getElementById('sc'+i+'Rate').value;
-    const o=+document.getElementById('sc'+i+'Occ').value/100;
-    document.getElementById('sc'+i+'Rev').textContent=fmt(r*o*DPM);
+    document.getElementById('sc'+i+'Rev').textContent=fmt(r*DPM);
   });
 }
 
 function applyScenario(n){
-  // Highlight the clicked card
   [1,2,3].forEach(i=>document.getElementById('scCard'+i).classList.toggle('active',i===n));
-  // Apply the scenario's rate & occupancy to the main inputs
-  const rate=+document.getElementById('sc'+n+'Rate').value;
-  const occ=+document.getElementById('sc'+n+'Occ').value;
-  document.getElementById('adrInput').value=rate;
-  document.getElementById('occInput').value=occ;
-  document.getElementById('occSlider').value=occ;
+  const revpar=+document.getElementById('sc'+n+'Rate').value;
+  document.getElementById('adrInput').value=revpar;
   recalc();
 }
 
@@ -798,11 +772,8 @@ function shareLink(){
   params.set('lang', lang);
   // Scenario card values
   params.set('s1r', document.getElementById('sc1Rate').value);
-  params.set('s1o', document.getElementById('sc1Occ').value);
   params.set('s2r', document.getElementById('sc2Rate').value);
-  params.set('s2o', document.getElementById('sc2Occ').value);
   params.set('s3r', document.getElementById('sc3Rate').value);
-  params.set('s3o', document.getElementById('sc3Occ').value);
 
   const url = window.location.origin + window.location.pathname + '?' + params.toString();
   navigator.clipboard.writeText(url).then(()=>{
@@ -845,17 +816,14 @@ function loadFromURL(){
   if(p.has('ci')) document.getElementById('costInflation').value = p.get('ci');
   // Scenario cards
   if(p.has('s1r')) document.getElementById('sc1Rate').value = p.get('s1r');
-  if(p.has('s1o')) document.getElementById('sc1Occ').value = p.get('s1o');
   if(p.has('s2r')) document.getElementById('sc2Rate').value = p.get('s2r');
-  if(p.has('s2o')) document.getElementById('sc2Occ').value = p.get('s2o');
   if(p.has('s3r')) document.getElementById('sc3Rate').value = p.get('s3r');
-  if(p.has('s3o')) document.getElementById('sc3Occ').value = p.get('s3o');
   renderUnits();
   recalc();
 }
 
 // INIT
-renderUnits();syncInputs();recalc();loadFromURL();
+renderUnits();syncInputs();recalcScenarios();applyScenario(2);loadFromURL();
 </script>
 </body>
 </html>
