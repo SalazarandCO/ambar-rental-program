@@ -94,9 +94,9 @@ header{background:var(--header-bg);padding:16px 0 16px}
 .unit-card.selected .uc-type{color:var(--amber-light)}
 .unit-card.selected .uc-sqft{color:rgba(255,255,255,0.5)}
 .unit-card.selected .uc-check{display:flex}
-.uc-id{font-size:18px;font-weight:700;color:var(--black);text-align:center;letter-spacing:1px;margin-bottom:2px}
-.unit-card.selected .uc-id{color:var(--amber)}
-.uc-type{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500;text-align:center}
+.uc-type{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--g500);font-weight:600;text-align:center}
+.uc-id{font-size:11px;font-weight:500;color:var(--g400);text-align:center;letter-spacing:1px;margin-top:2px}
+.unit-card.selected .uc-id{color:rgba(255,255,255,0.5)}
 .uc-sqft{font-size:11px;color:var(--g400);text-align:center;margin-top:4px;font-weight:400;letter-spacing:0.5px}
 .uc-check{display:none;position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--amber);align-items:center;justify-content:center}
 .uc-check svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
@@ -622,8 +622,8 @@ function renderUnits(){
     c.className='unit-card'+(u.id===sel.id?' selected':'');
     c.onclick=()=>{sel=u;renderUnits();syncInputs();recalcScenarios();recalc()};
     c.innerHTML=`<div class="uc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <div class="uc-id">${u.id}</div>
       <div class="uc-type">${u.type[lang]}</div>
+      <div class="uc-id">${u.id}</div>
       <div class="uc-sqft">${u.sqft} ft²</div>`;
     g.appendChild(c);
   });
@@ -805,43 +805,44 @@ if(sessionStorage.getItem('ambar_auth')==='1'){
 
 // ===== SHARE LINK =====
 function downloadPDF(){
-  const btn = document.getElementById('shareFab');
-  const toast = document.getElementById('shareToast');
-  btn.style.display='none';
-  toast.style.display='none';
-  window.scrollTo(0,0);
-  const opt = {
-    margin: [5, 5, 5, 5],
-    filename: 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10) + '.pdf',
-    image: {type:'jpeg', quality:0.92},
-    html2canvas: {
-      scale:2, useCORS:true, scrollX:0, scrollY:0,
-      width:960, windowWidth:960,
-      onclone: function(clonedDoc){
-        clonedDoc.documentElement.style.width='960px';
-        clonedDoc.body.style.width='960px';
-        clonedDoc.body.style.maxWidth='960px';
-        clonedDoc.body.style.margin='0';
-        clonedDoc.body.style.overflow='hidden';
-        var fab=clonedDoc.getElementById('shareFab'); if(fab) fab.style.display='none';
-        var tst=clonedDoc.getElementById('shareToast'); if(tst) tst.style.display='none';
-        var lo=clonedDoc.getElementById('loginOverlay'); if(lo) lo.style.display='none';
-        var dt=clonedDoc.getElementById('discountToggle'); if(dt) dt.style.display='none';
-        var dp=clonedDoc.getElementById('discountPanel'); if(dp) dp.style.display='none';
-      }
-    },
-    jsPDF: {unit:'mm', format:'a4', orientation:'portrait'},
-    pagebreak: {mode:['avoid-all','css','legacy']}
+  showToast(t('pdfGenerating'));
+  var hide=['shareFab','shareToast','loginOverlay','discountToggle','discountPanel'];
+  hide.forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none'});
+  var iframe=document.createElement('iframe');
+  iframe.style.cssText='position:fixed;left:-9999px;top:0;width:960px;height:100vh;border:none;visibility:hidden';
+  document.body.appendChild(iframe);
+  var idoc=iframe.contentDocument;
+  idoc.open();
+  idoc.write('<!DOCTYPE html>'+document.documentElement.outerHTML);
+  idoc.close();
+  iframe.onload=function(){
+    hide.forEach(function(id){var e=idoc.getElementById(id);if(e)e.style.display='none'});
+    idoc.documentElement.style.width='960px';
+    idoc.body.style.width='960px';
+    idoc.body.style.margin='0';
+    setTimeout(function(){
+      var opt={
+        margin:[5,5,5,5],
+        filename:'AMBAR-Investment-'+sel.id+'-'+new Date().toISOString().slice(0,10)+'.pdf',
+        image:{type:'jpeg',quality:0.92},
+        html2canvas:{scale:2,useCORS:true,scrollX:0,scrollY:0,width:960,windowWidth:960},
+        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+        pagebreak:{mode:['avoid-all','css','legacy']}
+      };
+      html2pdf().set(opt).from(idoc.body).save().then(function(){
+        document.body.removeChild(iframe);
+        hide.forEach(function(id){var e=document.getElementById(id);if(e)e.style.display=''});
+        document.getElementById('shareFab').style.display='flex';
+        showToast(t('pdfReady'));
+      }).catch(function(){
+        document.body.removeChild(iframe);
+        hide.forEach(function(id){var e=document.getElementById(id);if(e)e.style.display=''});
+        document.getElementById('shareFab').style.display='flex';
+        showToast(t('pdfFail'));
+      });
+    },500);
   };
-  html2pdf().set(opt).from(document.body).save().then(()=>{
-    btn.style.display='flex';
-    toast.style.display='';
-    showToast(t('pdfReady'));
-  }).catch(()=>{
-    btn.style.display='flex';
-    toast.style.display='';
-    showToast(t('pdfFail'));
-  });
+  if(idoc.readyState==='complete'){iframe.onload();}
 }
 
 // ===== BONVOY DISCOUNT =====
