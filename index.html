@@ -94,7 +94,9 @@ header{background:var(--header-bg);padding:16px 0 16px}
 .unit-card.selected .uc-type{color:var(--amber-light)}
 .unit-card.selected .uc-sqft{color:rgba(255,255,255,0.5)}
 .unit-card.selected .uc-check{display:flex}
-.uc-type{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--g500);font-weight:600;text-align:center}
+.uc-id{font-size:18px;font-weight:700;color:var(--black);text-align:center;letter-spacing:1px;margin-bottom:2px}
+.unit-card.selected .uc-id{color:var(--amber)}
+.uc-type{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500;text-align:center}
 .uc-sqft{font-size:11px;color:var(--g400);text-align:center;margin-top:4px;font-weight:400;letter-spacing:0.5px}
 .uc-check{display:none;position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--amber);align-items:center;justify-content:center}
 .uc-check svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
@@ -620,6 +622,7 @@ function renderUnits(){
     c.className='unit-card'+(u.id===sel.id?' selected':'');
     c.onclick=()=>{sel=u;renderUnits();syncInputs();recalcScenarios();recalc()};
     c.innerHTML=`<div class="uc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="uc-id">${u.id}</div>
       <div class="uc-type">${u.type[lang]}</div>
       <div class="uc-sqft">${u.sqft} ft²</div>`;
     g.appendChild(c);
@@ -812,23 +815,35 @@ function downloadPDF(){
       loginOverlay.style.display='none';
       discountToggle.style.display='none';
       discountPanel.style.display='none';
+      const origW = document.body.style.width;
+      const origMW = document.body.style.maxWidth;
+      const origOF = document.body.style.overflow;
+      document.body.style.width='960px';
+      document.body.style.maxWidth='960px';
+      document.body.style.overflow='hidden';
       window.scrollTo(0,0);
       const element = document.body;
       const opt = {
-        margin: [5, 0, 5, 0],
+        margin: [5, 5, 5, 5],
         filename: 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10) + '.pdf',
         image: {type:'jpeg', quality:0.98},
-        html2canvas: {scale:2, useCORS:true, scrollX:0, scrollY:0, width:document.documentElement.scrollWidth, windowWidth:document.documentElement.scrollWidth},
+        html2canvas: {scale:2, useCORS:true, scrollX:0, scrollY:0, width:960, windowWidth:960},
         jsPDF: {unit:'mm', format:'a4', orientation:'portrait'},
         pagebreak: {mode:['avoid-all','css','legacy']}
       };
       html2pdf().set(opt).from(element).save().then(()=>{
+        document.body.style.width=origW;
+        document.body.style.maxWidth=origMW;
+        document.body.style.overflow=origOF;
         btn.style.display='flex';
         toast.style.display='';
         discountToggle.style.display='';
         discountPanel.style.display='';
         showToast(t('pdfReady'));
       }).catch(()=>{
+        document.body.style.width=origW;
+        document.body.style.maxWidth=origMW;
+        document.body.style.overflow=origOF;
         btn.style.display='flex';
         toast.style.display='';
         discountToggle.style.display='';
