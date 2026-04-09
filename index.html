@@ -809,9 +809,12 @@ function downloadPDF(){
   var hideIds=['shareFab','shareToast','loginOverlay','discountToggle','discountPanel'];
   hideIds.forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none'});
   var centered=document.querySelectorAll('.main,.header-inner,.sub-header-inner');
-  centered.forEach(function(el){el.style.margin='0';el.style.maxWidth='none'});
+  centered.forEach(function(el){el.style.margin='0'});
+  document.body.style.width='960px';
+  document.body.style.maxWidth='960px';
+  document.body.style.overflow='hidden';
   window.scrollTo(0,0);
-  var w=document.body.scrollWidth;
+  var w=960;
   var opt={
     margin:[5,5,5,5],
     filename:'AMBAR-Investment-'+sel.id+'-'+new Date().toISOString().slice(0,10)+'.pdf',
@@ -820,15 +823,19 @@ function downloadPDF(){
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
     pagebreak:{mode:['avoid-all','css','legacy']}
   };
-  html2pdf().set(opt).from(document.body).save().then(function(){
-    centered.forEach(function(el){el.style.margin='';el.style.maxWidth=''});
+  function restoreLayout(){
+    centered.forEach(function(el){el.style.margin=''});
+    document.body.style.width='';
+    document.body.style.maxWidth='';
+    document.body.style.overflow='';
     hideIds.forEach(function(id){var e=document.getElementById(id);if(e)e.style.display=''});
     document.getElementById('shareFab').style.display='flex';
+  }
+  html2pdf().set(opt).from(document.body).save().then(function(){
+    restoreLayout();
     showToast(t('pdfReady'));
   }).catch(function(){
-    centered.forEach(function(el){el.style.margin='';el.style.maxWidth=''});
-    hideIds.forEach(function(id){var e=document.getElementById(id);if(e)e.style.display=''});
-    document.getElementById('shareFab').style.display='flex';
+    restoreLayout();
     showToast(t('pdfFail'));
   });
 }
