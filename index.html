@@ -805,52 +805,44 @@ if(sessionStorage.getItem('ambar_auth')==='1'){
 
 // ===== SHARE LINK =====
 function downloadPDF(){
-      const btn = document.getElementById('shareFab');
-      const toast = document.getElementById('shareToast');
-      const loginOverlay = document.getElementById('loginOverlay');
-      const discountToggle = document.getElementById('discountToggle');
-      const discountPanel = document.getElementById('discountPanel');
-      btn.style.display='none';
-      toast.style.display='none';
-      loginOverlay.style.display='none';
-      discountToggle.style.display='none';
-      discountPanel.style.display='none';
-      const origW = document.body.style.width;
-      const origMW = document.body.style.maxWidth;
-      const origOF = document.body.style.overflow;
-      document.body.style.width='960px';
-      document.body.style.maxWidth='960px';
-      document.body.style.overflow='hidden';
-      window.scrollTo(0,0);
-      const element = document.body;
-      const opt = {
-        margin: [5, 5, 5, 5],
-        filename: 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10) + '.pdf',
-        image: {type:'jpeg', quality:0.98},
-        html2canvas: {scale:2, useCORS:true, scrollX:0, scrollY:0, width:960, windowWidth:960},
-        jsPDF: {unit:'mm', format:'a4', orientation:'portrait'},
-        pagebreak: {mode:['avoid-all','css','legacy']}
-      };
-      html2pdf().set(opt).from(element).save().then(()=>{
-        document.body.style.width=origW;
-        document.body.style.maxWidth=origMW;
-        document.body.style.overflow=origOF;
-        btn.style.display='flex';
-        toast.style.display='';
-        discountToggle.style.display='';
-        discountPanel.style.display='';
-        showToast(t('pdfReady'));
-      }).catch(()=>{
-        document.body.style.width=origW;
-        document.body.style.maxWidth=origMW;
-        document.body.style.overflow=origOF;
-        btn.style.display='flex';
-        toast.style.display='';
-        discountToggle.style.display='';
-        discountPanel.style.display='';
-        showToast(t('pdfFail'));
-      });
-    }
+  const btn = document.getElementById('shareFab');
+  const toast = document.getElementById('shareToast');
+  btn.style.display='none';
+  toast.style.display='none';
+  window.scrollTo(0,0);
+  const opt = {
+    margin: [5, 5, 5, 5],
+    filename: 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10) + '.pdf',
+    image: {type:'jpeg', quality:0.92},
+    html2canvas: {
+      scale:2, useCORS:true, scrollX:0, scrollY:0,
+      width:960, windowWidth:960,
+      onclone: function(clonedDoc){
+        clonedDoc.documentElement.style.width='960px';
+        clonedDoc.body.style.width='960px';
+        clonedDoc.body.style.maxWidth='960px';
+        clonedDoc.body.style.margin='0';
+        clonedDoc.body.style.overflow='hidden';
+        var fab=clonedDoc.getElementById('shareFab'); if(fab) fab.style.display='none';
+        var tst=clonedDoc.getElementById('shareToast'); if(tst) tst.style.display='none';
+        var lo=clonedDoc.getElementById('loginOverlay'); if(lo) lo.style.display='none';
+        var dt=clonedDoc.getElementById('discountToggle'); if(dt) dt.style.display='none';
+        var dp=clonedDoc.getElementById('discountPanel'); if(dp) dp.style.display='none';
+      }
+    },
+    jsPDF: {unit:'mm', format:'a4', orientation:'portrait'},
+    pagebreak: {mode:['avoid-all','css','legacy']}
+  };
+  html2pdf().set(opt).from(document.body).save().then(()=>{
+    btn.style.display='flex';
+    toast.style.display='';
+    showToast(t('pdfReady'));
+  }).catch(()=>{
+    btn.style.display='flex';
+    toast.style.display='';
+    showToast(t('pdfFail'));
+  });
+}
 
 // ===== BONVOY DISCOUNT =====
 function toggleDiscount(){
