@@ -52,7 +52,7 @@ header{background:var(--header-bg);padding:16px 0 16px}
 /* LOGIN OVERLAY */
 .login-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .login-box{text-align:center;max-width:380px;padding:40px}
-.login-box img{height:60px;margin-bottom:32px}
+.login-box img{height:60px;margin-bottom:32px;position:relative;right:12px}
 .login-box h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;font-style:italic;color:rgba(255,255,255,0.7);margin-bottom:8px}
 .login-box p{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:28px}
 .login-input{width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.15);border-radius:10px;background:rgba(255,255,255,0.05);color:white;font-family:'Inter',sans-serif;font-size:15px;text-align:center;letter-spacing:2px;outline:none;transition:border-color 0.3s}
@@ -176,6 +176,10 @@ input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;b
 footer{background:#000000;color:rgba(255,255,255,0.4);text-align:center;padding:28px;font-size:11px;letter-spacing:0.5px}
 footer a{color:var(--amber);text-decoration:none}
 
+/* PROJECTION GRIDS */
+.proj-inputs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.proj-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   .unit-grid{grid-template-columns:repeat(2,1fr)}
@@ -185,10 +189,16 @@ footer a{color:var(--amber);text-decoration:none}
   .section-summary{text-align:left}
   .form-row{flex-wrap:wrap;gap:8px}
   .badges{flex-wrap:wrap}
+  .proj-inputs-grid{grid-template-columns:repeat(2,1fr)}
+  .proj-summary-grid{grid-template-columns:repeat(2,1fr)}
+  .ptable{font-size:11px}
+  .ptable th,.ptable td{padding:8px 6px}
 }
 @media(max-width:480px){
   .unit-grid{grid-template-columns:1fr}
   .header-inner{flex-direction:column;gap:12px}
+  .proj-inputs-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .proj-summary-grid{grid-template-columns:repeat(2,1fr);gap:8px}
 }
 </style>
 </head>
@@ -462,7 +472,7 @@ footer a{color:var(--amber);text-decoration:none}
     </div>
   </div>
   <div class="section-body">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px">
+    <div class="proj-inputs-grid">
       <div>
         <div class="slider-label" data-i18n="horizon">Horizon</div>
         <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
@@ -495,7 +505,7 @@ footer a{color:var(--amber);text-decoration:none}
 
     <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--g100)">
       <div style="font-size:11px;color:var(--g400);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:4px" id="projResultLabel">Projection Result — 5 years</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px" id="projSummaryCards"></div>
+      <div class="proj-summary-grid" id="projSummaryCards"></div>
     </div>
 
     <div style="margin-top:20px;overflow-x:auto">
