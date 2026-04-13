@@ -592,6 +592,14 @@ footer a{color:var(--amber);text-decoration:none}
   </div>
 </div>
 
+<div style="display:flex;justify-content:center;margin:20px 0">
+  <button class="toggle-btn" id="toggleTaxBtn" onclick="toggleTaxSection()" style="padding:10px 28px;font-size:14px;border-radius:8px;border:1px solid var(--g200);background:var(--cream);color:var(--black);cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;font-weight:500;transition:all 0.3s ease">
+    <span data-i18n="s8Title">Tax Benefits</span>
+    <span id="toggleTaxArrow" style="transition:transform 0.3s ease">▼</span>
+  </button>
+</div>
+
+<div id="taxSection" style="max-height:0;overflow:hidden;opacity:0;transition:max-height 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease">
 <!-- ========== 8. TAX BENEFITS ========== -->
 <div class="section">
   <div class="section-header">
@@ -623,6 +631,8 @@ footer a{color:var(--amber);text-decoration:none}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px" id="taxReturnCards"></div>
     <div class="disclaimer" style="margin-top:20px" data-i18n="taxDisclaimer">Tax estimates based on 80/20 building-to-land ratio and current IRS rules including 100% bonus depreciation (OBBBA, July 2025). Cost segregation range reflects 20–40% of basis reclassified per IRS engineering standards. Florida has no state income tax. This is not tax advice — consult a qualified CPA before making investment decisions.</div>
   </div>
+</div>
+
 </div>
 
 <!-- DISCLAIMER -->
@@ -691,6 +701,26 @@ function setFinMode(m){
   document.getElementById('btnFinance').classList.toggle('active',m==='finance');
   document.getElementById('finInputs').style.display=m==='finance'?'block':'none';
   recalc();
+}
+function toggleTaxSection(){
+  const sec=document.getElementById('taxSection');
+  const arrow=document.getElementById('toggleTaxArrow');
+  const btn=document.getElementById('toggleTaxBtn');
+  if(sec.style.maxHeight==='0px'||sec.style.maxHeight===''){
+    sec.style.maxHeight=sec.scrollHeight+'px';
+    sec.style.opacity='1';
+    arrow.style.transform='rotate(180deg)';
+    btn.style.background='var(--black)';
+    btn.style.color='white';
+    btn.style.borderColor='var(--black)';
+  } else {
+    sec.style.maxHeight='0px';
+    sec.style.opacity='0';
+    arrow.style.transform='rotate(0deg)';
+    btn.style.background='var(--cream)';
+    btn.style.color='var(--black)';
+    btn.style.borderColor='var(--g200)';
+  }
 }
 function setTaxBracket(r){
   taxBracket=r;
@@ -949,6 +979,11 @@ function recalc(){
       <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0 4px;border-top:1px solid rgba(255,255,255,0.2);margin-top:6px;font-weight:700;color:white"><span>${t('totalReturnRow')}</span><span style="color:var(--amber-light);font-variant-numeric:tabular-nums">${fmtRange(ongRetLow,ongRetHigh)}</span></div>
       <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span style="color:rgba(255,255,255,0.6)">${t('roicRow')}</span><span style="color:var(--amber-light);font-weight:700">${fmtPctRange(ongRoicLow,ongRoicHigh)}</span></div>
     </div>`;
+
+  const taxSec=document.getElementById('taxSection');
+  if(taxSec && taxSec.style.opacity==='1'){
+    taxSec.style.maxHeight=taxSec.scrollHeight+'px';
+  }
 
   recalcScenarios();
 }
