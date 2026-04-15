@@ -876,11 +876,14 @@ function recalc(){
   // Projection
   document.getElementById('projResultLabel').textContent=(lang==='es'?'Resultado de Proyección — ':'Projection Result — ')+hzYrs+' '+(lang==='es'?'años':'years');
 
+  const baseFixedAnn=fixedCosts*12;
   let cumCF=0,remLoan=loanAmt;
   const proj=[];
   for(let yr=1;yr<=hzYrs;yr++){
     const pv=price*Math.pow(1+appRate,yr);
-    const yrNOI=annNOI*Math.pow(1+incGr,yr-1);
+    const yrGrossNOI=annNOI*Math.pow(1+incGr,yr-1);
+    const yrFixedCosts=baseFixedAnn*Math.pow(1+costInf,yr-1);
+    const yrNOI=yrGrossNOI-(yrFixedCosts-baseFixedAnn);
     const yrMort=monthlyPMT*12;
     const yrCF=yrNOI-yrMort;
     cumCF+=yrCF;
@@ -922,9 +925,11 @@ function recalc(){
   const annualPropertyTax=e.tax*12;
   const annualOpExpenses=(e.hoa+e.util+e.ins)*12;
   const annualHotelFees=(marriott+opex+ffe+otaCC)*12;
+  const y2PropertyTax=annualPropertyTax*(1+costInf);
+  const y2OpExpenses=annualOpExpenses*(1+costInf);
 
   const commonY1=y1Interest+annualPropertyTax+annualOpExpenses+annualHotelFees;
-  const commonOng=y2Interest+annualPropertyTax+annualOpExpenses+annualHotelFees;
+  const commonOng=y2Interest+y2PropertyTax+y2OpExpenses+annualHotelFees;
 
   const y1TotalLow=y1DepScenLow+commonY1;
   const y1TotalHigh=y1DepScenHigh+commonY1;
@@ -943,8 +948,8 @@ function recalc(){
     {l:t('costSegRow'),d:t('costSegRowSub'),tip:t('tipCostSeg'),y1:fmtRange(bonusLow,bonusHigh),on:'—'},
     {l:t('slDepRow'),d:t('slDepRowSub'),tip:t('tipSlDep'),y1:fmtRange(slAfterHigh,slAfterLow),on:fmtRange(ongDepLow,ongDepHigh)},
     {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')},
-    {l:t('propTaxRow'),d:t('propTaxRowSub'),tip:t('tipPropTax'),y1:fmt(annualPropertyTax),on:fmt(annualPropertyTax)},
-    {l:t('opExpRow'),d:t('opExpRowSub'),tip:t('tipOpExp'),y1:fmt(annualOpExpenses),on:fmt(annualOpExpenses)},
+    {l:t('propTaxRow'),d:t('propTaxRowSub'),tip:t('tipPropTax'),y1:fmt(annualPropertyTax),on:fmt(y2PropertyTax)},
+    {l:t('opExpRow'),d:t('opExpRowSub'),tip:t('tipOpExp'),y1:fmt(annualOpExpenses),on:fmt(y2OpExpenses)},
     {l:t('hotelFeesRow'),d:t('hotelFeesRowSub'),tip:t('tipHotelFees'),y1:fmt(annualHotelFees),on:fmt(annualHotelFees)}
   ];
   let taxHTML=`<thead><tr><th>${t('deductionCol')}</th><th>${t('year1Col')}</th><th>${t('years2PlusCol')}</th></tr></thead><tbody>`;
@@ -956,7 +961,8 @@ function recalc(){
   const appreciationY1=price*appRate;
   const y1RetLow=annCF+y1SavLow+appreciationY1+y1Principal;
   const y1RetHigh=annCF+y1SavHigh+appreciationY1+y1Principal;
-  const annCFy2=annCF*(1+incGr);
+  const y2FixedCostDelta=baseFixedAnn*costInf;
+  const annCFy2=annCF*(1+incGr)-y2FixedCostDelta;
   const appreciationY2=price*Math.pow(1+appRate,2)-price*(1+appRate);
   const ongRetLow=annCFy2+ongSavLow+appreciationY2+y2Principal;
   const ongRetHigh=annCFy2+ongSavHigh+appreciationY2+y2Principal;
