@@ -271,6 +271,15 @@ footer a{color:var(--amber);text-decoration:none}
 .tax-tip .tip-box::after{content:'';position:absolute;top:100%;left:16px;border:6px solid transparent;border-top-color:#1a1a1a}
 .tax-tip:hover .tip-box{opacity:1;pointer-events:auto}
 @media print{.tax-tip .tip-i,.tax-tip .tip-box{display:none !important}}
+/* PROGRAM TOGGLE */
+.program-toggle{display:none;justify-content:center;margin:0 0 8px}
+.program-toggle.visible{display:flex}
+.program-pill{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--g200);background:var(--white);box-shadow:var(--card-shadow)}
+.program-pill button{padding:10px 22px;font-size:12px;font-weight:600;letter-spacing:0.5px;background:transparent;color:var(--g400);border:none;cursor:pointer;transition:all 0.25s;font-family:'Inter',sans-serif;white-space:nowrap}
+.program-pill button.active-rental{background:var(--orange);color:white}
+.program-pill button.active-lb{background:var(--amber);color:var(--black)}
+.lb-badge{display:inline-block;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:600;padding:2px 8px;border-radius:4px;background:rgba(255,168,74,0.15);color:var(--amber);margin-left:4px;vertical-align:middle}
+.lb-badge-dark{background:rgba(255,168,74,0.25);color:var(--amber-light)}
 </style>
 </head>
 <body>
@@ -315,6 +324,14 @@ footer a{color:var(--amber);text-decoration:none}
 </div>
 
 <div class="main">
+
+<!-- PROGRAM TOGGLE (hidden by default, shown via ?lb=1) -->
+<div class="program-toggle" id="programToggle">
+  <div class="program-pill">
+    <button id="btnRental" class="active-rental" onclick="setProgramMode('rental')"><span data-i18n="rentalProgram">Rental Program</span></button>
+    <button id="btnLeaseback" onclick="setProgramMode('leaseback')"><span data-i18n="leasebackProgram">Leaseback Glow Program</span></button>
+  </div>
+</div>
 
 <!-- ========== 1. UNIT TYPES ========== -->
 <div class="section">
@@ -683,16 +700,20 @@ const UNITS = [
     exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:1026.32,ffePct:0.04,util:155.05,ins:104.72,tax:615.09}}
 ];
 
+// FF&E monthly fixed amounts per unit (for leaseback mode)
+const FFE_FIXED={S1:303,A1:368,A2:419,A3:470,A4:475,B1:563,B2:527,B3:508,C1:621};
+
 let sel = UNITS[1];
 let lang = 'en';
 let finMode = 'finance';
+let programMode = 'rental';
 let taxBracket = 0.24;
 const DPM = 365/12;
 
 // ===== i18n =====
 const I = {
-  en:{heroTitle:'Investment Simulator',s1Title:'Unit Types & Prices',s1Sub:'Choose a unit to simulate the investment',s2Title:'Down Payment Installments',s2Sub:'Down payment during construction — no interest, no inflation adjustment',s3Title:'Bank Financing',s3Sub:'How the closing balance will be paid',s4Title:'Fixed Property Costs',s4Sub:'Monthly owner expenses, regardless of occupancy',s5Title:'Revenue Projection — Rental Program',s5Sub:'Average rental rate, occupancy and net distribution to owner',s6Title:'Profitability & Returns',s6Sub:'The final investment result',s7Title:'Projection Assumptions',s7Sub:'Appreciation, income growth and analysis horizon',unitPrice:'Unit Price',unitPriceSub:'Adjust based on your negotiated price',totalDP:'% Total Down Payment',numInstallments:'Number of Installments',perInstallment:'per installment',totalDPLabel:'Total Paid During Construction',balanceClosing:'Balance at Closing',eachInstLabel:'Each Installment',payCash:'Pay cash at closing',financeClosing:'Finance at closing',pctFinanced:'% Financed',pctFinSub:'Of closing balance',annualInterest:'Annual Interest',annIntSub:'US banks finance foreigners',term:'Term',termSub:'Standard amortization',years:'years',monthlyPMT:'Monthly Payment — PMT',pmtSub:'Principal + interest to bank per month',financedBal:'Financed Balance',finBalSub:'Amount entering bank financing',paymentMo:'payment/mo',monthlyFixed:'monthly fixed total',aveRentalRate:'Average Rental Rate per Day',aveRateSub:'Average daily rental rate at the resort — professionally managed',occRate:'Occupancy Rate',occSub:'Annual average — Orlando year-round demand',conservative:'Conservative',base:'Base',optimistic:'Optimistic',grossRevMo:'Gross rev/mo',revenueWaterfall:'Revenue Distribution — Rental Program · Split + Variable Costs',grossMonthly:'Gross Monthly Revenue',rateOccDays:'Rate × Occupancy × 30.4 days/month',marriottFee:'Brand Franchise — 10%',marriottDesc:'Global marketing, booking app, distribution in 140+ countries',hotelOps:'Hotel Operations — 40%',hotelOpsDesc:'Front desk, housekeeping, maintenance, daily operations',ownerRev:'Owner Revenue — 50%',ownerRevDesc:'Your split before variable costs',ffeRes:'FF&E Reserve — 4%',ffeDesc:'Furniture, fixtures & equipment reserve',otaCard:'OTA / Card Fee',otaDesc:'Digital booking platforms + credit card processing',fixedCosts:'Fixed Property Costs',fixedDesc:'HOA + Utilities + Insurance + Property Tax',ownerNet:'Owner Net Monthly Income',netIncomeMo:'net income/mo',monthlyNOI:'Monthly Net Income',monthlyNOISub:'NOI · after all costs',cashFlowMo:'Cash Flow / Month',cashFlowSub:'Net flow after bank payment',annualReturn:'Annual Return on Equity',annualReturnSub:'IRR · internal rate of return',annualNOI:'Annual Net Income',annualNOISub:'NOI · after all costs',cashFlowYr:'Cash Flow / Year',cashFlowYrSub:'Net flow after bank payment',capRate:'Cap Rate',capRateSub:'Annual NOI ÷ purchase price',irrAnnual:'Annual IRR',irrSub:'Annual return on invested equity',payback:'Payback',paybackSub:'Months until NOI covers capital',totalEquity:'Total Invested Capital',totalEquitySub:'Down payment + cash at closing',horizon:'Horizon',appreciation:'Appreciation',incomeGrowth:'Income Growth',costInflation:'Cost Inflation',priceToday:'Price Today',estAppreciation:'Est. Appreciation',accIncome:'Accumulated Income (NOI)',totalWealth:'Total Wealth',year:'Year',propValue:'Property Value',annIncome:'Annual Income',cumCash:'Cum. Cash Flow',equity:'Equity',totalReturn:'Total Return',disclaimer:'This simulator provides estimated projections based on the assumptions entered. Actual results may vary based on market conditions, occupancy rates, operating expenses, and other factors. This is not a guarantee of returns. Consult with your financial advisor before making investment decisions.',badgeDelivery:'Delivery Q3 2028',badgeUnits:'322 Residences',badgeManaged:'Marriott Managed',hoa:'HOA',hoaDesc:'Common area maintenance, pool, fitness, security, amenities',utilities:'Utilities',utilitiesDesc:'Electricity, water and gas estimate',insurance:'Insurance',insuranceDesc:'Property insurance — damage, fire, liability',propertyTax:'Property Tax',propertyTaxDesc:'Osceola County, Florida — annual tax ÷ 12',yieldOnGross:'yield on gross revenue',posFlow:'Positive flow: income > payment',finScenario:'Financed scenario',onEquity:'On invested equity',yrsRecover:'to recover invested capital',dpPlusCash:'Down payment + cash at closing',downloadPDF:'Download PDF',pdfGenerating:'Generating PDF\u2026',pdfReady:'PDF downloaded!',pdfFail:'Could not generate PDF',bonvoyDiscount:'Bonvoy Discount',discountLabel:'Discount',s8Title:'Tax Benefits',s8Sub:'Estimated tax deductions and savings from ownership',y1TaxSavings:'year 1 tax savings',taxBracketLbl:'Tax Bracket',taxBracketSub:'Select your federal marginal rate',deductionCol:'Deduction',year1Col:'Year 1 (with cost seg)',years2PlusCol:'Years 2+ (ongoing)',costSegRow:'Cost seg + bonus depreciation',costSegRowSub:'22–33% of basis reclassified, 100% first-year bonus (condo-hotel benchmark)',slDepRow:'Straight-line depreciation',slDepRowSub:'Nonresidential (39-yr) — transient use < 30 days',mortIntRow:'Mortgage interest',mortIntRowSub:'Interest on financed balance',propTaxRow:'Property taxes',propTaxRowSub:'Osceola County, Florida',opExpRow:'HOA / insurance / utilities',opExpRowSub:'Annual operating expenses',hotelFeesRow:'Hotel program fees',hotelFeesRowSub:'Brand + ops + FF&E + OTA/card (annual) (netted in Section 5)',totalDeductionsRow:'Total deductions',taxSavingsRow:'Tax savings',returnY1Card:'Year 1 Total Return',returnOngoingCard:'Years 2+ Ongoing Return',cashFlowRow:'Cash flow',appreciationRow:'Appreciation',principalRow:'Principal paydown',totalReturnRow:'Total return',roicRow:'Return on invested capital',taxDisclaimer:'Tax estimates based on 80/20 building-to-land ratio and current IRS rules including 100% bonus depreciation (OBBBA, July 2025). Cost segregation range reflects 22–33% of basis reclassified per IRS engineering standards. Florida has no state income tax. This is not tax advice — consult a qualified CPA before making investment decisions.',ongoingDeclining:'(declining)',tipCostSeg:'A cost segregation study breaks your unit into components: cabinets, appliances, flooring, lighting, furniture, countertops. These items wear out faster than the building, so the IRS lets you depreciate them over 5-7 years instead of 39. With 100% bonus depreciation (permanent under OBBBA 2025), you can deduct the full amount in year 1. The 22-33% range is based on 8,000+ engineering studies for condo-hotel units.',tipSlDep:'The remaining building value (after cost segregation) is depreciated evenly over 39 years. Because the Marriott rental program operates with average guest stays under 30 days, the IRS classifies this as nonresidential (transient) property — requiring 39-year depreciation instead of the 27.5 years used for long-term residential rentals.',tipMortInt:'The interest portion of your monthly mortgage payment is fully deductible against rental income. Unlike primary residences (capped at $750K loan), investment properties have no mortgage interest deduction limit. The deduction is largest in year 1 and gradually decreases as more of each payment goes toward principal.',tipPropTax:'Annual property taxes paid to Osceola County are fully deductible as a rental operating expense. Unlike personal residences (subject to the $10K-$40K SALT cap), investment property taxes have no deduction limit.',tipOpExp:'All costs of maintaining and operating your rental unit are tax-deductible: HOA fees cover common area maintenance, pool, fitness center, and security. Insurance covers property damage and liability. Utilities include electricity, water, and gas. These reduce your taxable rental income dollar for dollar.',tipHotelFees:'The Marriott Bonvoy rental program charges are deductible business expenses: Brand franchise fee (10%) covers global marketing and the Bonvoy booking platform. Hotel operations (40%) covers front desk, housekeeping, and daily management. FF&E reserve (4%) funds furniture replacement. OTA/card fees cover booking platforms and credit card processing. Note: these fees are already subtracted from your revenue in Section 5 above.',strNoteTitle:'Short-term rental non-passive treatment (IRC §469)',strNote:'Because average guest stays are under 7 days, this property may qualify for non-passive treatment — allowing tax losses to offset W-2 wages and active business income. Material participation required (500+ hrs/year). The 39-year base depreciation also unlocks Section 179 expensing. Consult a qualified CPA.'},
-  es:{heroTitle:'Simulador de Inversión',s1Title:'Tipos de Unidad y Precios',s1Sub:'Elige una unidad para simular la inversión',s2Title:'Cuotas de Enganche',s2Sub:'Enganche durante construcción — sin intereses, sin ajuste inflacionario',s3Title:'Financiamiento Bancario',s3Sub:'Cómo se pagará el saldo al cierre',s4Title:'Costos Fijos de Propiedad',s4Sub:'Gastos mensuales del propietario, sin importar la ocupación',s5Title:'Proyección de Ingresos — Programa Marriott',s5Sub:'Tarifa promedio de alquiler, ocupación y distribución neta al propietario',s6Title:'Rentabilidad y Retornos',s6Sub:'El resultado final de la inversión',s7Title:'Supuestos de Proyección',s7Sub:'Apreciación, crecimiento de ingresos y horizonte de análisis',unitPrice:'Precio de la Unidad',unitPriceSub:'Ajuste según su precio negociado',totalDP:'% Enganche Total',numInstallments:'Número de Cuotas',perInstallment:'por cuota',totalDPLabel:'Total Pagado en Construcción',balanceClosing:'Saldo al Cierre',eachInstLabel:'Cada Cuota',payCash:'Pagar en efectivo al cierre',financeClosing:'Financiar al cierre',pctFinanced:'% Financiado',pctFinSub:'Del saldo al cierre',annualInterest:'Interés Anual',annIntSub:'Bancos de EE.UU. financian extranjeros',term:'Plazo',termSub:'Amortización estándar',years:'años',monthlyPMT:'Pago Mensual — PMT',pmtSub:'Capital + interés al banco por mes',financedBal:'Saldo Financiado',finBalSub:'Monto entrando a financiamiento',paymentMo:'pago/mes',monthlyFixed:'total fijo mensual',aveRentalRate:'Tarifa Promedio de Alquiler por Día',aveRateSub:'Tarifa diaria promedio del resort — gestionado profesionalmente',occRate:'Tasa de Ocupación',occSub:'Promedio anual — Orlando demanda todo el año',conservative:'Conservador',base:'Base',optimistic:'Optimista',grossRevMo:'Ingreso bruto/mes',revenueWaterfall:'Distribución de Ingresos — Programa Marriott Bonvoy',grossMonthly:'Ingreso Mensual Bruto',rateOccDays:'Tarifa × Ocupación × 30.4 días/mes',marriottFee:'Franquicia de Marca — 10%',marriottDesc:'Marketing global, app de reservas, distribución en 140+ países',hotelOps:'Operaciones del Hotel — 40%',hotelOpsDesc:'Recepción, limpieza, mantenimiento, operaciones diarias',ownerRev:'Ingreso del Propietario — 50%',ownerRevDesc:'Tu parte antes de costos variables',ffeRes:'Reserva FF&E — 4%',ffeDesc:'Reserva de mobiliario y equipamiento',otaCard:'Comisión OTA / Tarjeta',otaDesc:'Plataformas de reserva + procesamiento de tarjetas',fixedCosts:'Costos Fijos de Propiedad',fixedDesc:'HOA + Servicios + Seguro + Impuesto',ownerNet:'Ingreso Neto Mensual del Propietario',netIncomeMo:'ingreso neto/mes',monthlyNOI:'Ingreso Neto Mensual',monthlyNOISub:'NOI · después de todos los costos',cashFlowMo:'Flujo de Caja / Mes',cashFlowSub:'Flujo neto después del pago bancario',annualReturn:'Retorno Anual sobre Capital',annualReturnSub:'TIR · tasa interna de retorno',annualNOI:'Ingreso Neto Anual',annualNOISub:'NOI · después de todos los costos',cashFlowYr:'Flujo de Caja / Año',cashFlowYrSub:'Flujo neto después del pago bancario',capRate:'Tasa de Capitalización',capRateSub:'NOI anual ÷ precio de compra',irrAnnual:'TIR Anual',irrSub:'Retorno anual sobre capital invertido',payback:'Período de Recuperación',paybackSub:'Meses hasta que NOI cubra el capital',totalEquity:'Capital Total Invertido',totalEquitySub:'Enganche + efectivo al cierre',horizon:'Horizonte',appreciation:'Apreciación',incomeGrowth:'Crecimiento de Ingresos',costInflation:'Inflación de Costos',priceToday:'Precio Hoy',estAppreciation:'Apreciación Est.',accIncome:'Ingreso Acumulado (NOI)',totalWealth:'Patrimonio Total',year:'Año',propValue:'Valor Propiedad',annIncome:'Ingreso Anual',cumCash:'Flujo Acumulado',equity:'Patrimonio',totalReturn:'Retorno Total',disclaimer:'Este simulador proporciona proyecciones estimadas basadas en los supuestos ingresados. Los resultados pueden variar según condiciones del mercado, ocupación, gastos operativos y otros factores. No es garantía de retornos. Consulte con su asesor financiero.',badgeDelivery:'Entrega Q3 2028',badgeUnits:'322 Residencias',badgeManaged:'Gestionado por Marriott',hoa:'HOA',hoaDesc:'Mantenimiento de áreas comunes, piscina, gym, seguridad',utilities:'Servicios',utilitiesDesc:'Electricidad, agua y gas estimados',insurance:'Seguro',insuranceDesc:'Seguro de propiedad — daños, incendio, responsabilidad',propertyTax:'Impuesto Predial',propertyTaxDesc:'Condado de Osceola, Florida — impuesto anual ÷ 12',yieldOnGross:'rendimiento sobre ingreso bruto',posFlow:'Flujo positivo: ingreso > pago',finScenario:'Escenario financiado',onEquity:'Sobre capital invertido',yrsRecover:'para recuperar capital invertido',dpPlusCash:'Enganche + efectivo al cierre',downloadPDF:'Descargar PDF',pdfGenerating:'Generando PDF\u2026',pdfReady:'PDF descargado!',pdfFail:'No se pudo generar el PDF',bonvoyDiscount:'Descuento Bonvoy',discountLabel:'Descuento',s8Title:'Beneficios Fiscales',s8Sub:'Deducciones fiscales estimadas y ahorros por ser propietario',y1TaxSavings:'ahorro fiscal año 1',taxBracketLbl:'Tramo Fiscal',taxBracketSub:'Seleccione su tasa marginal federal',deductionCol:'Deducción',year1Col:'Año 1 (con segregación)',years2PlusCol:'Años 2+ (continuo)',costSegRow:'Segregación de costos + depreciación acelerada',costSegRowSub:'22–33% de la base reclasificada, bono 100% primer año (referencia condo-hotel)',slDepRow:'Depreciación lineal',slDepRowSub:'No residencial (39 años) — uso transitorio < 30 días',mortIntRow:'Intereses hipotecarios',mortIntRowSub:'Intereses sobre saldo financiado',propTaxRow:'Impuestos a la propiedad',propTaxRowSub:'Condado de Osceola, Florida',opExpRow:'Gastos operativos',opExpRowSub:'HOA / seguro / servicios anuales',hotelFeesRow:'Tarifas del programa hotelero',hotelFeesRowSub:'Marca + operación + FF&E + OTA/tarjeta (anual) (neteado en Sección 5)',totalDeductionsRow:'Deducciones totales',taxSavingsRow:'Ahorro fiscal',returnY1Card:'Retorno Total Año 1',returnOngoingCard:'Retorno Continuo Años 2+',cashFlowRow:'Flujo de caja',appreciationRow:'Apreciación',principalRow:'Amortización de capital',totalReturnRow:'Retorno total',roicRow:'Retorno sobre capital invertido',taxDisclaimer:'Estimaciones fiscales basadas en ratio edificio/tierra 80/20 y normas vigentes del IRS incluyendo depreciación bono 100% (OBBBA, julio 2025). El rango de segregación de costos refleja 22–33% de la base reclasificada según estándares de ingeniería del IRS. Florida no tiene impuesto estatal sobre la renta. Esto no constituye asesoría fiscal — consulte a un CPA calificado antes de tomar decisiones de inversión.',ongoingDeclining:'(decreciente)',tipCostSeg:'Un estudio de segregación de costos descompone su unidad en componentes: gabinetes, electrodomésticos, pisos, iluminación, muebles. Estos se deprecian en 5-7 años en vez de 39. Con la depreciación bono del 100% (permanente bajo OBBBA 2025), puede deducir el monto total en el año 1. El rango 22-33% se basa en 8,000+ estudios de ingeniería para unidades condo-hotel.',tipSlDep:'El valor restante del edificio (después de la segregación) se deprecia uniformemente en 39 años. Debido a que el programa Marriott opera con estadías promedio menores a 30 días, el IRS clasifica esto como propiedad no residencial (transitoria) — requiriendo 39 años en vez de los 27.5 años para alquileres residenciales.',tipMortInt:'La porción de interés de su pago mensual es totalmente deducible contra ingresos de alquiler. A diferencia de residencias principales (limitadas a préstamos de $750K), las propiedades de inversión no tienen límite. La deducción es mayor en el año 1 y disminuye gradualmente.',tipPropTax:'Los impuestos anuales pagados al Condado de Osceola son totalmente deducibles como gasto operativo del alquiler. A diferencia de residencias personales (sujetas al límite SALT de $10K-$40K), los impuestos de propiedades de inversión no tienen límite de deducción.',tipOpExp:'Todos los costos de mantener y operar su unidad son deducibles: HOA cubre mantenimiento de áreas comunes, piscina, gimnasio y seguridad. El seguro cubre daños y responsabilidad. Los servicios incluyen electricidad, agua y gas.',tipHotelFees:'Los cargos del programa Marriott Bonvoy son gastos comerciales deducibles: Franquicia (10%) cubre marketing global y la plataforma Bonvoy. Operaciones (40%) cubre recepción, limpieza y gestión. Reserva FF&E (4%) financia reemplazo de muebles. OTA/tarjeta cubre plataformas de reserva y procesamiento de tarjetas. Nota: estas tarifas ya están restadas de sus ingresos en la Sección 5.',strNoteTitle:'Tratamiento no-pasivo de alquiler a corto plazo (IRC §469)',strNote:'Debido a que la estadía promedio es menor a 7 días, esta propiedad puede calificar para tratamiento no-pasivo — permitiendo que las pérdidas compensen ingresos W-2 y de negocios activos. Se requiere participación material (500+ horas/año). La depreciación base de 39 años también permite la deducción bajo Sección 179. Consulte un CPA calificado.'}
+  en:{heroTitle:'Investment Simulator',s1Title:'Unit Types & Prices',s1Sub:'Choose a unit to simulate the investment',s2Title:'Down Payment Installments',s2Sub:'Down payment during construction — no interest, no inflation adjustment',s3Title:'Bank Financing',s3Sub:'How the closing balance will be paid',s4Title:'Fixed Property Costs',s4Sub:'Monthly owner expenses, regardless of occupancy',s5Title:'Revenue Projection — Rental Program',s5Sub:'Average rental rate, occupancy and net distribution to owner',s6Title:'Profitability & Returns',s6Sub:'The final investment result',s7Title:'Projection Assumptions',s7Sub:'Appreciation, income growth and analysis horizon',unitPrice:'Unit Price',unitPriceSub:'Adjust based on your negotiated price',totalDP:'% Total Down Payment',numInstallments:'Number of Installments',perInstallment:'per installment',totalDPLabel:'Total Paid During Construction',balanceClosing:'Balance at Closing',eachInstLabel:'Each Installment',payCash:'Pay cash at closing',financeClosing:'Finance at closing',pctFinanced:'% Financed',pctFinSub:'Of closing balance',annualInterest:'Annual Interest',annIntSub:'US banks finance foreigners',term:'Term',termSub:'Standard amortization',years:'years',monthlyPMT:'Monthly Payment — PMT',pmtSub:'Principal + interest to bank per month',financedBal:'Financed Balance',finBalSub:'Amount entering bank financing',paymentMo:'payment/mo',monthlyFixed:'monthly fixed total',aveRentalRate:'Average Rental Rate per Day',aveRateSub:'Average daily rental rate at the resort — professionally managed',occRate:'Occupancy Rate',occSub:'Annual average — Orlando year-round demand',conservative:'Conservative',base:'Base',optimistic:'Optimistic',grossRevMo:'Gross rev/mo',revenueWaterfall:'Revenue Distribution — Rental Program · Split + Variable Costs',grossMonthly:'Gross Monthly Revenue',rateOccDays:'Rate × Occupancy × 30.4 days/month',marriottFee:'Brand Franchise — 10%',marriottDesc:'Global marketing, booking app, distribution in 140+ countries',hotelOps:'Hotel Operations — 40%',hotelOpsDesc:'Front desk, housekeeping, maintenance, daily operations',ownerRev:'Owner Revenue — 50%',ownerRevDesc:'Your split before variable costs',ffeRes:'FF&E Reserve — 4%',ffeDesc:'Furniture, fixtures & equipment reserve',otaCard:'OTA / Card Fee',otaDesc:'Digital booking platforms + credit card processing',fixedCosts:'Fixed Property Costs',fixedDesc:'HOA + Utilities + Insurance + Property Tax',ownerNet:'Owner Net Monthly Income',netIncomeMo:'net income/mo',monthlyNOI:'Monthly Net Income',monthlyNOISub:'NOI · after all costs',cashFlowMo:'Cash Flow / Month',cashFlowSub:'Net flow after bank payment',annualReturn:'Annual Return on Equity',annualReturnSub:'IRR · internal rate of return',annualNOI:'Annual Net Income',annualNOISub:'NOI · after all costs',cashFlowYr:'Cash Flow / Year',cashFlowYrSub:'Net flow after bank payment',capRate:'Cap Rate',capRateSub:'Annual NOI ÷ purchase price',irrAnnual:'Annual IRR',irrSub:'Annual return on invested equity',payback:'Payback',paybackSub:'Months until NOI covers capital',totalEquity:'Total Invested Capital',totalEquitySub:'Down payment + cash at closing',horizon:'Horizon',appreciation:'Appreciation',incomeGrowth:'Income Growth',costInflation:'Cost Inflation',priceToday:'Price Today',estAppreciation:'Est. Appreciation',accIncome:'Accumulated Income (NOI)',totalWealth:'Total Wealth',year:'Year',propValue:'Property Value',annIncome:'Annual Income',cumCash:'Cum. Cash Flow',equity:'Equity',totalReturn:'Total Return',disclaimer:'This simulator provides estimated projections based on the assumptions entered. Actual results may vary based on market conditions, occupancy rates, operating expenses, and other factors. This is not a guarantee of returns. Consult with your financial advisor before making investment decisions.',badgeDelivery:'Delivery Q3 2028',badgeUnits:'322 Residences',badgeManaged:'Marriott Managed',hoa:'HOA',hoaDesc:'Common area maintenance, pool, fitness, security, amenities',utilities:'Utilities',utilitiesDesc:'Electricity, water and gas estimate',insurance:'Insurance',insuranceDesc:'Property insurance — damage, fire, liability',propertyTax:'Property Tax',propertyTaxDesc:'Osceola County, Florida — annual tax ÷ 12',yieldOnGross:'yield on gross revenue',posFlow:'Positive flow: income > payment',finScenario:'Financed scenario',onEquity:'On invested equity',yrsRecover:'to recover invested capital',dpPlusCash:'Down payment + cash at closing',downloadPDF:'Download PDF',pdfGenerating:'Generating PDF\u2026',pdfReady:'PDF downloaded!',pdfFail:'Could not generate PDF',bonvoyDiscount:'Bonvoy Discount',discountLabel:'Discount',s8Title:'Tax Benefits',s8Sub:'Estimated tax deductions and savings from ownership',y1TaxSavings:'year 1 tax savings',taxBracketLbl:'Tax Bracket',taxBracketSub:'Select your federal marginal rate',deductionCol:'Deduction',year1Col:'Year 1 (with cost seg)',years2PlusCol:'Years 2+ (ongoing)',costSegRow:'Cost seg + bonus depreciation',costSegRowSub:'22–33% of basis reclassified, 100% first-year bonus (condo-hotel benchmark)',slDepRow:'Straight-line depreciation',slDepRowSub:'Nonresidential (39-yr) — transient use < 30 days',mortIntRow:'Mortgage interest',mortIntRowSub:'Interest on financed balance',propTaxRow:'Property taxes',propTaxRowSub:'Osceola County, Florida',opExpRow:'HOA / insurance / utilities',opExpRowSub:'Annual operating expenses',hotelFeesRow:'Hotel program fees',hotelFeesRowSub:'Brand + ops + FF&E + OTA/card (annual) (netted in Section 5)',totalDeductionsRow:'Total deductions',taxSavingsRow:'Tax savings',returnY1Card:'Year 1 Total Return',returnOngoingCard:'Years 2+ Ongoing Return',cashFlowRow:'Cash flow',appreciationRow:'Appreciation',principalRow:'Principal paydown',totalReturnRow:'Total return',roicRow:'Return on invested capital',taxDisclaimer:'Tax estimates based on 80/20 building-to-land ratio and current IRS rules including 100% bonus depreciation (OBBBA, July 2025). Cost segregation range reflects 22–33% of basis reclassified per IRS engineering standards. Florida has no state income tax. This is not tax advice — consult a qualified CPA before making investment decisions.',ongoingDeclining:'(declining)',tipCostSeg:'A cost segregation study breaks your unit into components: cabinets, appliances, flooring, lighting, furniture, countertops. These items wear out faster than the building, so the IRS lets you depreciate them over 5-7 years instead of 39. With 100% bonus depreciation (permanent under OBBBA 2025), you can deduct the full amount in year 1. The 22-33% range is based on 8,000+ engineering studies for condo-hotel units.',tipSlDep:'The remaining building value (after cost segregation) is depreciated evenly over 39 years. Because the Marriott rental program operates with average guest stays under 30 days, the IRS classifies this as nonresidential (transient) property — requiring 39-year depreciation instead of the 27.5 years used for long-term residential rentals.',tipMortInt:'The interest portion of your monthly mortgage payment is fully deductible against rental income. Unlike primary residences (capped at $750K loan), investment properties have no mortgage interest deduction limit. The deduction is largest in year 1 and gradually decreases as more of each payment goes toward principal.',tipPropTax:'Annual property taxes paid to Osceola County are fully deductible as a rental operating expense. Unlike personal residences (subject to the $10K-$40K SALT cap), investment property taxes have no deduction limit.',tipOpExp:'All costs of maintaining and operating your rental unit are tax-deductible: HOA fees cover common area maintenance, pool, fitness center, and security. Insurance covers property damage and liability. Utilities include electricity, water, and gas. These reduce your taxable rental income dollar for dollar.',tipHotelFees:'The Marriott Bonvoy rental program charges are deductible business expenses: Brand franchise fee (10%) covers global marketing and the Bonvoy booking platform. Hotel operations (40%) covers front desk, housekeeping, and daily management. FF&E reserve (4%) funds furniture replacement. OTA/card fees cover booking platforms and credit card processing. Note: these fees are already subtracted from your revenue in Section 5 above.',strNoteTitle:'Short-term rental non-passive treatment (IRC §469)',strNote:'Because average guest stays are under 7 days, this property may qualify for non-passive treatment — allowing tax losses to offset W-2 wages and active business income. Material participation required (500+ hrs/year). The 39-year base depreciation also unlocks Section 179 expensing. Consult a qualified CPA.',rentalProgram:'Rental Program',leasebackProgram:'Leaseback Glow Program',lbGuaranteed:'10% Guaranteed Leaseback',lbAnnual:'Annual',lbQuarterly:'Quarterly',lbMonthlyEquiv:'Monthly equivalent',lbBasedOn:'Based on purchase price',lbGuaranteedIncome:'Guaranteed Monthly Income',lbGuaranteedDesc:'Purchase price × 10% ÷ 12',lbFfeRes:'FF&E Reserve',lbFfeDesc:'Furniture, fixtures & equipment reserve',lbOwnerNet:'Owner Net Monthly Income (Leaseback)',lbNetIncomeMo:'leaseback net/mo',lbNote:'Paid quarterly. Leaseback program runs for the first 2 years of ownership. After Year 2, the unit transitions to the Marriott Bonvoy Rental Program.',lbS5Title:'Revenue — Leaseback Glow Program',lbS5Sub:'Guaranteed 10% annual return on purchase price for 2 years',lbTag:'Leaseback',rentalTag:'Rental',lbOwnerCosts:'Owner Costs',lbHotelFeesNote:'Hotel program fees (brand, ops, OTA) are absorbed by the operator during leaseback'},
+  es:{heroTitle:'Simulador de Inversión',s1Title:'Tipos de Unidad y Precios',s1Sub:'Elige una unidad para simular la inversión',s2Title:'Cuotas de Enganche',s2Sub:'Enganche durante construcción — sin intereses, sin ajuste inflacionario',s3Title:'Financiamiento Bancario',s3Sub:'Cómo se pagará el saldo al cierre',s4Title:'Costos Fijos de Propiedad',s4Sub:'Gastos mensuales del propietario, sin importar la ocupación',s5Title:'Proyección de Ingresos — Programa Marriott',s5Sub:'Tarifa promedio de alquiler, ocupación y distribución neta al propietario',s6Title:'Rentabilidad y Retornos',s6Sub:'El resultado final de la inversión',s7Title:'Supuestos de Proyección',s7Sub:'Apreciación, crecimiento de ingresos y horizonte de análisis',unitPrice:'Precio de la Unidad',unitPriceSub:'Ajuste según su precio negociado',totalDP:'% Enganche Total',numInstallments:'Número de Cuotas',perInstallment:'por cuota',totalDPLabel:'Total Pagado en Construcción',balanceClosing:'Saldo al Cierre',eachInstLabel:'Cada Cuota',payCash:'Pagar en efectivo al cierre',financeClosing:'Financiar al cierre',pctFinanced:'% Financiado',pctFinSub:'Del saldo al cierre',annualInterest:'Interés Anual',annIntSub:'Bancos de EE.UU. financian extranjeros',term:'Plazo',termSub:'Amortización estándar',years:'años',monthlyPMT:'Pago Mensual — PMT',pmtSub:'Capital + interés al banco por mes',financedBal:'Saldo Financiado',finBalSub:'Monto entrando a financiamiento',paymentMo:'pago/mes',monthlyFixed:'total fijo mensual',aveRentalRate:'Tarifa Promedio de Alquiler por Día',aveRateSub:'Tarifa diaria promedio del resort — gestionado profesionalmente',occRate:'Tasa de Ocupación',occSub:'Promedio anual — Orlando demanda todo el año',conservative:'Conservador',base:'Base',optimistic:'Optimista',grossRevMo:'Ingreso bruto/mes',revenueWaterfall:'Distribución de Ingresos — Programa Marriott Bonvoy',grossMonthly:'Ingreso Mensual Bruto',rateOccDays:'Tarifa × Ocupación × 30.4 días/mes',marriottFee:'Franquicia de Marca — 10%',marriottDesc:'Marketing global, app de reservas, distribución en 140+ países',hotelOps:'Operaciones del Hotel — 40%',hotelOpsDesc:'Recepción, limpieza, mantenimiento, operaciones diarias',ownerRev:'Ingreso del Propietario — 50%',ownerRevDesc:'Tu parte antes de costos variables',ffeRes:'Reserva FF&E — 4%',ffeDesc:'Reserva de mobiliario y equipamiento',otaCard:'Comisión OTA / Tarjeta',otaDesc:'Plataformas de reserva + procesamiento de tarjetas',fixedCosts:'Costos Fijos de Propiedad',fixedDesc:'HOA + Servicios + Seguro + Impuesto',ownerNet:'Ingreso Neto Mensual del Propietario',netIncomeMo:'ingreso neto/mes',monthlyNOI:'Ingreso Neto Mensual',monthlyNOISub:'NOI · después de todos los costos',cashFlowMo:'Flujo de Caja / Mes',cashFlowSub:'Flujo neto después del pago bancario',annualReturn:'Retorno Anual sobre Capital',annualReturnSub:'TIR · tasa interna de retorno',annualNOI:'Ingreso Neto Anual',annualNOISub:'NOI · después de todos los costos',cashFlowYr:'Flujo de Caja / Año',cashFlowYrSub:'Flujo neto después del pago bancario',capRate:'Tasa de Capitalización',capRateSub:'NOI anual ÷ precio de compra',irrAnnual:'TIR Anual',irrSub:'Retorno anual sobre capital invertido',payback:'Período de Recuperación',paybackSub:'Meses hasta que NOI cubra el capital',totalEquity:'Capital Total Invertido',totalEquitySub:'Enganche + efectivo al cierre',horizon:'Horizonte',appreciation:'Apreciación',incomeGrowth:'Crecimiento de Ingresos',costInflation:'Inflación de Costos',priceToday:'Precio Hoy',estAppreciation:'Apreciación Est.',accIncome:'Ingreso Acumulado (NOI)',totalWealth:'Patrimonio Total',year:'Año',propValue:'Valor Propiedad',annIncome:'Ingreso Anual',cumCash:'Flujo Acumulado',equity:'Patrimonio',totalReturn:'Retorno Total',disclaimer:'Este simulador proporciona proyecciones estimadas basadas en los supuestos ingresados. Los resultados pueden variar según condiciones del mercado, ocupación, gastos operativos y otros factores. No es garantía de retornos. Consulte con su asesor financiero.',badgeDelivery:'Entrega Q3 2028',badgeUnits:'322 Residencias',badgeManaged:'Gestionado por Marriott',hoa:'HOA',hoaDesc:'Mantenimiento de áreas comunes, piscina, gym, seguridad',utilities:'Servicios',utilitiesDesc:'Electricidad, agua y gas estimados',insurance:'Seguro',insuranceDesc:'Seguro de propiedad — daños, incendio, responsabilidad',propertyTax:'Impuesto Predial',propertyTaxDesc:'Condado de Osceola, Florida — impuesto anual ÷ 12',yieldOnGross:'rendimiento sobre ingreso bruto',posFlow:'Flujo positivo: ingreso > pago',finScenario:'Escenario financiado',onEquity:'Sobre capital invertido',yrsRecover:'para recuperar capital invertido',dpPlusCash:'Enganche + efectivo al cierre',downloadPDF:'Descargar PDF',pdfGenerating:'Generando PDF\u2026',pdfReady:'PDF descargado!',pdfFail:'No se pudo generar el PDF',bonvoyDiscount:'Descuento Bonvoy',discountLabel:'Descuento',s8Title:'Beneficios Fiscales',s8Sub:'Deducciones fiscales estimadas y ahorros por ser propietario',y1TaxSavings:'ahorro fiscal año 1',taxBracketLbl:'Tramo Fiscal',taxBracketSub:'Seleccione su tasa marginal federal',deductionCol:'Deducción',year1Col:'Año 1 (con segregación)',years2PlusCol:'Años 2+ (continuo)',costSegRow:'Segregación de costos + depreciación acelerada',costSegRowSub:'22–33% de la base reclasificada, bono 100% primer año (referencia condo-hotel)',slDepRow:'Depreciación lineal',slDepRowSub:'No residencial (39 años) — uso transitorio < 30 días',mortIntRow:'Intereses hipotecarios',mortIntRowSub:'Intereses sobre saldo financiado',propTaxRow:'Impuestos a la propiedad',propTaxRowSub:'Condado de Osceola, Florida',opExpRow:'Gastos operativos',opExpRowSub:'HOA / seguro / servicios anuales',hotelFeesRow:'Tarifas del programa hotelero',hotelFeesRowSub:'Marca + operación + FF&E + OTA/tarjeta (anual) (neteado en Sección 5)',totalDeductionsRow:'Deducciones totales',taxSavingsRow:'Ahorro fiscal',returnY1Card:'Retorno Total Año 1',returnOngoingCard:'Retorno Continuo Años 2+',cashFlowRow:'Flujo de caja',appreciationRow:'Apreciación',principalRow:'Amortización de capital',totalReturnRow:'Retorno total',roicRow:'Retorno sobre capital invertido',taxDisclaimer:'Estimaciones fiscales basadas en ratio edificio/tierra 80/20 y normas vigentes del IRS incluyendo depreciación bono 100% (OBBBA, julio 2025). El rango de segregación de costos refleja 22–33% de la base reclasificada según estándares de ingeniería del IRS. Florida no tiene impuesto estatal sobre la renta. Esto no constituye asesoría fiscal — consulte a un CPA calificado antes de tomar decisiones de inversión.',ongoingDeclining:'(decreciente)',tipCostSeg:'Un estudio de segregación de costos descompone su unidad en componentes: gabinetes, electrodomésticos, pisos, iluminación, muebles. Estos se deprecian en 5-7 años en vez de 39. Con la depreciación bono del 100% (permanente bajo OBBBA 2025), puede deducir el monto total en el año 1. El rango 22-33% se basa en 8,000+ estudios de ingeniería para unidades condo-hotel.',tipSlDep:'El valor restante del edificio (después de la segregación) se deprecia uniformemente en 39 años. Debido a que el programa Marriott opera con estadías promedio menores a 30 días, el IRS clasifica esto como propiedad no residencial (transitoria) — requiriendo 39 años en vez de los 27.5 años para alquileres residenciales.',tipMortInt:'La porción de interés de su pago mensual es totalmente deducible contra ingresos de alquiler. A diferencia de residencias principales (limitadas a préstamos de $750K), las propiedades de inversión no tienen límite. La deducción es mayor en el año 1 y disminuye gradualmente.',tipPropTax:'Los impuestos anuales pagados al Condado de Osceola son totalmente deducibles como gasto operativo del alquiler. A diferencia de residencias personales (sujetas al límite SALT de $10K-$40K), los impuestos de propiedades de inversión no tienen límite de deducción.',tipOpExp:'Todos los costos de mantener y operar su unidad son deducibles: HOA cubre mantenimiento de áreas comunes, piscina, gimnasio y seguridad. El seguro cubre daños y responsabilidad. Los servicios incluyen electricidad, agua y gas.',tipHotelFees:'Los cargos del programa Marriott Bonvoy son gastos comerciales deducibles: Franquicia (10%) cubre marketing global y la plataforma Bonvoy. Operaciones (40%) cubre recepción, limpieza y gestión. Reserva FF&E (4%) financia reemplazo de muebles. OTA/tarjeta cubre plataformas de reserva y procesamiento de tarjetas. Nota: estas tarifas ya están restadas de sus ingresos en la Sección 5.',strNoteTitle:'Tratamiento no-pasivo de alquiler a corto plazo (IRC §469)',strNote:'Debido a que la estadía promedio es menor a 7 días, esta propiedad puede calificar para tratamiento no-pasivo — permitiendo que las pérdidas compensen ingresos W-2 y de negocios activos. Se requiere participación material (500+ horas/año). La depreciación base de 39 años también permite la deducción bajo Sección 179. Consulte un CPA calificado.',rentalProgram:'Programa de Alquiler',leasebackProgram:'Programa de Leaseback Glow',lbGuaranteed:'10% Leaseback Garantizado',lbAnnual:'Anual',lbQuarterly:'Trimestral',lbMonthlyEquiv:'Equivalente mensual',lbBasedOn:'Basado en precio de compra',lbGuaranteedIncome:'Ingreso Mensual Garantizado',lbGuaranteedDesc:'Precio de compra × 10% ÷ 12',lbFfeRes:'Reserva FF&E',lbFfeDesc:'Reserva de mobiliario y equipamiento',lbOwnerNet:'Ingreso Neto Mensual del Propietario (Leaseback)',lbNetIncomeMo:'neto leaseback/mes',lbNote:'Pagado trimestralmente. El programa de leaseback cubre los primeros 2 años de propiedad. Después del Año 2, la unidad transiciona al Programa de Alquiler Marriott Bonvoy.',lbS5Title:'Ingresos — Programa de Leaseback Glow',lbS5Sub:'Retorno anual garantizado del 10% sobre el precio de compra por 2 años',lbTag:'Leaseback',rentalTag:'Alquiler',lbOwnerCosts:'Costos del Propietario',lbHotelFeesNote:'Las tarifas del programa hotelero (marca, operaciones, OTA) son absorbidas por el operador durante el leaseback'}
 };
 function t(k){return I[lang][k]||k}
 function setLang(l){
@@ -706,6 +727,12 @@ function setFinMode(m){
   document.getElementById('btnCash').classList.toggle('active',m==='cash');
   document.getElementById('btnFinance').classList.toggle('active',m==='finance');
   document.getElementById('finInputs').style.display=m==='finance'?'block':'none';
+  recalc();
+}
+function setProgramMode(m){
+  programMode=m;
+  document.getElementById('btnRental').className=m==='rental'?'active-rental':'';
+  document.getElementById('btnLeaseback').className=m==='leaseback'?'active-lb':'';
   recalc();
 }
 function toggleTaxSection(){
@@ -821,7 +848,7 @@ function recalc(){
   document.getElementById('finBalDisplay').textContent=fmt(loanAmt);
   document.getElementById('pmtSummary').textContent=finMode==='finance'?fmt(monthlyPMT)+'/mo':'—';
 
-  // Revenue (using RevPAR directly: RevPAR * 30.4 days)
+  // ===== REVENUE — shared calculations =====
   const gross=revPAR*DPM;
   const marriott=gross*e.marriottPct;
   const opex=gross*e.opexPct;
@@ -829,10 +856,35 @@ function recalc(){
   const ffe=gross*e.ffePct;
   const otaCC=gross*(e.otaPct+e.ccPct);
   const fixedCosts=e.hoa+e.util+e.ins+e.tax;
-  const noi=ownerRev-ffe-otaCC-fixedCosts;
-  const cashFlow=noi-monthlyPMT;
+  const cashInvested=finMode==='finance'?dpTotal+(balance-loanAmt):price;
+  const fmtRange=(a,b)=>fmt(a)+' – '+fmt(b);
+  const fmtPctRange=(a,b)=>a.toFixed(1)+'% – '+b.toFixed(1)+'%';
+  const lightRow=(lbl,val)=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:var(--g500)">${lbl}</span><span style="color:var(--black);font-weight:600;font-variant-numeric:tabular-nums">${val}</span></div>`;
+  const darkRow=(lbl,val)=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:rgba(255,255,255,0.6)">${lbl}</span><span style="color:white;font-weight:600;font-variant-numeric:tabular-nums">${val}</span></div>`;
 
+  // Leaseback-specific values
+  const lbGrossAnn=price*0.10;
+  const lbGrossMo=lbGrossAnn/12;
+  const lbFfe=FFE_FIXED[u.id]||0;
+  const lbOwnerCosts=fixedCosts+lbFfe;
+  const lbNoi=lbGrossMo-lbOwnerCosts;
+
+  // Rental-specific values
+  const rentalNoi=ownerRev-ffe-otaCC-fixedCosts;
+
+  // Choose active NOI based on mode
+  const noi=programMode==='leaseback'?lbNoi:rentalNoi;
+  const cashFlow=noi-monthlyPMT;
+  const annNOI=noi*12, annCF=cashFlow*12;
+
+  // Rental program annual NOI (needed for projection years 3+ in leaseback)
+  const rentalAnnNOI=rentalNoi*12;
+
+  // Section 5 toggle visibility
+  document.querySelector('[data-i18n="s5Title"]').textContent=programMode==='leaseback'?t('lbS5Title'):t('s5Title');
+  document.querySelector('[data-i18n="s5Sub"]').textContent=programMode==='leaseback'?t('lbS5Sub'):t('s5Sub');
   document.getElementById('noiSummary').textContent=fmt(noi)+'/mo';
+  document.querySelector('[data-i18n="netIncomeMo"]').textContent=programMode==='leaseback'?t('lbNetIncomeMo'):t('netIncomeMo');
   document.getElementById('fixedCostSummary').textContent=fmt(fixedCosts)+'/mo';
 
   // Fixed costs panel
@@ -844,23 +896,53 @@ function recalc(){
   ].map(r=>`<div class="form-row"><div class="form-row-label"><div class="label-main">${r.l}</div><div class="label-sub">${r.d}</div></div><div class="form-row-value">${fmt(r.v)}</div></div>`).join('')+
   `<div class="form-row" style="border-top:2px solid var(--black);font-weight:600;font-size:14px"><span>= ${t('monthlyFixed')}</span><span style="color:var(--orange);font-size:16px;font-weight:700">${fmt(fixedCosts)}</span></div>`;
 
-  // Waterfall
-  const wfData=[
-    {l:t('grossMonthly'),d:t('rateOccDays'),v:gross,pos:true},
-    {l:'(-) '+t('marriottFee'),d:t('marriottDesc'),v:-marriott},
-    {l:'(-) '+t('hotelOps'),d:t('hotelOpsDesc'),v:-opex},
-    {l:'= '+t('ownerRev'),d:t('ownerRevDesc'),v:ownerRev,pos:true,bold:true},
-    {l:'(-) '+t('ffeRes'),d:t('ffeDesc'),v:-ffe},
-    {l:'(-) '+t('otaCard'),d:t('otaDesc'),v:-otaCC},
-    {l:'(-) '+t('fixedCosts'),d:t('fixedDesc'),v:-fixedCosts},
-  ];
-  let wfHTML=wfData.map(r=>`<div class="waterfall-row"><div class="wf-label${r.pos?' income':''}" style="${r.bold?'font-weight:600':''}"><div>${r.l}</div><div style="font-size:10px;color:var(--g300)">${r.d}</div></div><div class="wf-amount${r.v<0?' negative':''}">${r.v>=0?fmt(r.v):'('+fmt(Math.abs(r.v))+')'}</div></div>`).join('');
-  wfHTML+=`<div class="waterfall-net"><div class="wf-label">= ${t('ownerNet')}<br><span style="font-size:10px;opacity:0.7">${(noi/gross*100).toFixed(1)}% ${t('yieldOnGross')}</span></div><div class="wf-amount">${fmt(noi)}</div></div>`;
-  document.getElementById('waterfallBody').innerHTML=wfHTML;
+  // ===== SECTION 5 — WATERFALL =====
+  if(programMode==='leaseback'){
+    // Hide scenario cards, show leaseback card + waterfall
+    document.querySelectorAll('.scenario-grid').forEach(el=>el.style.display='none');
+    const lbQuarterly=lbGrossAnn/4;
+    let s5HTML=`<div style="background:linear-gradient(135deg,rgba(255,168,74,0.12),rgba(255,217,160,0.08));border:2px solid var(--amber);border-radius:14px;padding:22px;text-align:center;margin-bottom:20px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--amber)">${t('lbGuaranteed')}</div>
+      <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap">
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('lbAnnual')}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${fmt(lbGrossAnn)}</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('lbQuarterly')}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${fmt(lbQuarterly)}</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('lbMonthlyEquiv')}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${fmt(lbGrossMo)}</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--g400);margin-top:10px">${t('lbBasedOn')}: ${fmt(price)}</div>
+    </div>`;
+    // Waterfall
+    const lbWfData=[
+      {l:t('lbGuaranteedIncome'),d:t('lbGuaranteedDesc'),v:lbGrossMo,pos:true},
+      {l:'(-) '+t('propertyTax'),d:t('propertyTaxDesc'),v:-e.tax},
+      {l:'(-) '+t('hoa'),d:t('hoaDesc'),v:-e.hoa},
+      {l:'(-) '+t('insurance'),d:t('insuranceDesc'),v:-e.ins},
+      {l:'(-) '+t('lbFfeRes'),d:t('lbFfeDesc'),v:-lbFfe},
+      {l:'(-) '+t('utilities'),d:t('utilitiesDesc'),v:-e.util},
+    ];
+    s5HTML+='<div style="padding-top:16px;border-top:1px solid var(--g100)"><div style="font-size:11px;color:var(--g400);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:12px">'+t('lbOwnerCosts')+'</div>';
+    s5HTML+=lbWfData.map(r=>`<div class="waterfall-row"><div class="wf-label${r.pos?' income':''}" style="${r.pos?'font-weight:600':''}"><div>${r.l}</div><div style="font-size:10px;color:var(--g300)">${r.d}</div></div><div class="wf-amount${r.v<0?' negative':''}">${r.v>=0?fmt(r.v):'('+fmt(Math.abs(r.v))+')'}</div></div>`).join('');
+    s5HTML+=`<div class="waterfall-net" style="background:linear-gradient(90deg,rgba(255,168,74,0.10),transparent)"><div class="wf-label" style="color:var(--amber)">= ${t('lbOwnerNet')}</div><div class="wf-amount" style="color:var(--amber);font-size:20px;font-weight:700">${fmt(lbNoi)}</div></div>`;
+    s5HTML+=`<div style="background:var(--g50);border-radius:8px;padding:12px 16px;margin-top:16px;font-size:11px;color:var(--g500);line-height:1.6">${t('lbNote')}</div>`;
+    s5HTML+=`<div style="margin-top:12px;font-size:11px;color:var(--g400);font-style:italic">${t('lbHotelFeesNote')}</div></div>`;
+    document.getElementById('waterfallBody').innerHTML=s5HTML;
+  } else {
+    // Rental Program — show scenario cards and normal waterfall
+    document.querySelectorAll('.scenario-grid').forEach(el=>el.style.display='');
+    const wfData=[
+      {l:t('grossMonthly'),d:t('rateOccDays'),v:gross,pos:true},
+      {l:'(-) '+t('marriottFee'),d:t('marriottDesc'),v:-marriott},
+      {l:'(-) '+t('hotelOps'),d:t('hotelOpsDesc'),v:-opex},
+      {l:'= '+t('ownerRev'),d:t('ownerRevDesc'),v:ownerRev,pos:true,bold:true},
+      {l:'(-) '+t('ffeRes'),d:t('ffeDesc'),v:-ffe},
+      {l:'(-) '+t('otaCard'),d:t('otaDesc'),v:-otaCC},
+      {l:'(-) '+t('fixedCosts'),d:t('fixedDesc'),v:-fixedCosts},
+    ];
+    let wfHTML=wfData.map(r=>`<div class="waterfall-row"><div class="wf-label${r.pos?' income':''}" style="${r.bold?'font-weight:600':''}"><div>${r.l}</div><div style="font-size:10px;color:var(--g300)">${r.d}</div></div><div class="wf-amount${r.v<0?' negative':''}">${r.v>=0?fmt(r.v):'('+fmt(Math.abs(r.v))+')'}</div></div>`).join('');
+    wfHTML+=`<div class="waterfall-net"><div class="wf-label">= ${t('ownerNet')}<br><span style="font-size:10px;opacity:0.7">${(rentalNoi/gross*100).toFixed(1)}% ${t('yieldOnGross')}</span></div><div class="wf-amount">${fmt(rentalNoi)}</div></div>`;
+    document.getElementById('waterfallBody').innerHTML=wfHTML;
+  }
 
-  // Results
-  const annNOI=noi*12, annCF=cashFlow*12;
-  const cashInvested=finMode==='finance'?dpTotal+(balance-loanAmt):price;
+  // ===== SECTION 6 — RESULTS =====
   const capRate=annNOI/price;
   const irrOnEquity=annCF/cashInvested;
   const paybackMonths=cashFlow>0?Math.ceil(cashInvested/cashFlow):999;
@@ -873,24 +955,36 @@ function recalc(){
     <div class="result-box"><div class="rb-label">${t('payback')}</div><div class="rb-value">${paybackMonths<999?paybackMonths+' mo':'N/A'}</div><div class="rb-sub">${paybackMonths<999?'≈ '+(paybackMonths/12).toFixed(1)+' '+t('yrsRecover'):''}</div></div>
     <div class="result-box"><div class="rb-label">${t('totalEquity')}</div><div class="rb-value">${fmt(cashInvested)}</div><div class="rb-sub">${t('dpPlusCash')}</div></div>`;
 
-  // Projection
+  // ===== SECTION 7 — PROJECTION =====
   document.getElementById('projResultLabel').textContent=(lang==='es'?'Resultado de Proyección — ':'Projection Result — ')+hzYrs+' '+(lang==='es'?'años':'years');
 
   const baseFixedAnn=fixedCosts*12;
+  const lbOwnerCostsAnn=lbOwnerCosts*12;
   let cumCF=0,remLoan=loanAmt;
   const proj=[];
   for(let yr=1;yr<=hzYrs;yr++){
     const pv=price*Math.pow(1+appRate,yr);
-    const yrGrossIncome=annNOI*Math.pow(1+incGr,yr-1);
-    const yrInflatedFixedCosts=baseFixedAnn*(Math.pow(1+costInf,yr)-1);
-    const yrNOI=yrGrossIncome-yrInflatedFixedCosts;
+    let yrNOI;
+    let isLb=false;
+    if(programMode==='leaseback'&&yr<=2){
+      // Leaseback: flat 10% guaranteed, owner costs inflate
+      const yrLbOwnerCosts=lbOwnerCostsAnn*Math.pow(1+costInf,yr-1);
+      yrNOI=lbGrossAnn-yrLbOwnerCosts;
+      isLb=true;
+    } else {
+      // Rental program (or leaseback years 3+)
+      const rentalYr=programMode==='leaseback'?yr-2:yr;
+      const yrGrossIncome=rentalAnnNOI*Math.pow(1+incGr,rentalYr-1);
+      const yrInflatedFixedCosts=baseFixedAnn*(Math.pow(1+costInf,yr)-1);
+      yrNOI=yrGrossIncome-yrInflatedFixedCosts;
+    }
     const yrMort=monthlyPMT*12;
     const yrCF=yrNOI-yrMort;
     cumCF+=yrCF;
     if(finMode==='finance'&&remLoan>0){const mr=ir/12;for(let m=0;m<12;m++){const ip=remLoan*mr;remLoan=Math.max(0,remLoan-(monthlyPMT-ip))}}
     const eq=pv-remLoan;
     const tr=((eq+cumCF-cashInvested)/cashInvested*100);
-    proj.push({yr,pv,yrNOI:yrCF,cumCF,eq,tr});
+    proj.push({yr,pv,yrNOI:yrCF,cumCF,eq,tr,isLb});
   }
 
   const last=proj[proj.length-1]||{};
@@ -901,8 +995,15 @@ function recalc(){
     <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('accIncome')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(last.cumCF||0)}</div></div>
     <div style="background:var(--header-bg);border-radius:10px;padding:14px;text-align:center;color:white"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--amber-light)">${t('totalWealth')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(estVal+(last.cumCF||0))}</div></div>`;
 
-  let th=`<thead><tr><th>${t('year')}</th><th>${t('propValue')}</th><th>${t('annIncome')}</th><th>${t('cumCash')}</th><th>${t('equity')}</th><th>${t('totalReturn')}</th></tr></thead>`;
-  let tb='<tbody>'+proj.map(p=>`<tr><td>${p.yr}</td><td>${fmtK(p.pv)}</td><td>${fmt(p.yrNOI)}</td><td>${fmt(p.cumCF)}</td><td>${fmtK(p.eq)}</td><td style="color:${p.tr>=0?'var(--olive)':'var(--orange)'};font-weight:600">${p.tr.toFixed(1)}%</td></tr>`).join('')+'</tbody>';
+  let th=`<thead><tr><th>${t('year')}</th>${programMode==='leaseback'?'<th></th>':''}
+    <th>${t('propValue')}</th><th>${t('annIncome')}</th><th>${t('cumCash')}</th><th>${t('equity')}</th><th>${t('totalReturn')}</th></tr></thead>`;
+  let tb='<tbody>'+proj.map(p=>{
+    const badge=programMode==='leaseback'?(p.isLb?`<span class="lb-badge">${t('lbTag')}</span>`:`<span class="lb-badge" style="background:rgba(90,90,55,0.1);color:var(--olive)">${t('rentalTag')}</span>`):'';
+    return `<tr${p.isLb?' style="background:rgba(255,168,74,0.04)"':''}>
+      <td>${p.yr}</td>${programMode==='leaseback'?'<td>'+badge+'</td>':''}
+      <td>${fmtK(p.pv)}</td><td>${fmt(p.yrNOI)}</td><td>${fmt(p.cumCF)}</td><td>${fmtK(p.eq)}</td>
+      <td style="color:${p.tr>=0?'var(--olive)':'var(--orange)'};font-weight:600">${p.tr.toFixed(1)}%</td></tr>`;
+  }).join('')+'</tbody>';
   document.getElementById('projTable').innerHTML=th+tb;
 
   // ===== TAX BENEFITS (Section 8) =====
@@ -918,17 +1019,25 @@ function recalc(){
 
   // Amortization loop for actual interest & principal (year 1 and year 2)
   let y1Interest=0,y1Principal=0,y2Interest=0,y2Principal=0;
-  {let remLoan=loanAmt;const mr=ir/12;
-  for(let m=0;m<24;m++){const intPmt=remLoan*mr;const princPmt=monthlyPMT-intPmt;if(m<12){y1Interest+=intPmt;y1Principal+=princPmt}else{y2Interest+=intPmt;y2Principal+=princPmt}remLoan-=princPmt;}}
+  {let remLoan2=loanAmt;const mr=ir/12;
+  for(let m=0;m<24;m++){const intPmt=remLoan2*mr;const princPmt=monthlyPMT-intPmt;if(m<12){y1Interest+=intPmt;y1Principal+=princPmt}else{y2Interest+=intPmt;y2Principal+=princPmt}remLoan2-=princPmt;}}
 
   const annualPropertyTax=e.tax*12;
   const annualOpExpenses=(e.hoa+e.util+e.ins)*12;
   const annualHotelFees=(marriott+opex+ffe+otaCC)*12;
+  const annualLbFfe=lbFfe*12;
   const y2PropertyTax=annualPropertyTax*Math.pow(1+costInf,2);
   const y2OpExpenses=annualOpExpenses*Math.pow(1+costInf,2);
 
-  const commonY1=y1Interest+annualPropertyTax+annualOpExpenses+annualHotelFees;
-  const commonOng=y2Interest+y2PropertyTax+y2OpExpenses+annualHotelFees;
+  let commonY1,commonOng;
+  if(programMode==='leaseback'){
+    // Leaseback: no hotel fees deduction, but FF&E reserve is deductible
+    commonY1=y1Interest+annualPropertyTax+annualOpExpenses+annualLbFfe;
+    commonOng=y2Interest+y2PropertyTax+y2OpExpenses+annualLbFfe;
+  } else {
+    commonY1=y1Interest+annualPropertyTax+annualOpExpenses+annualHotelFees;
+    commonOng=y2Interest+y2PropertyTax+y2OpExpenses+annualHotelFees;
+  }
 
   const y1TotalLow=y1DepScenLow+commonY1;
   const y1TotalHigh=y1DepScenHigh+commonY1;
@@ -940,10 +1049,16 @@ function recalc(){
   const ongSavLow=ongTotalLow*taxBracket;
   const ongSavHigh=ongTotalHigh*taxBracket;
 
-  const fmtRange=(a,b)=>fmt(a)+' – '+fmt(b);
   document.getElementById('taxY1Summary').textContent=fmtRange(y1SavLow,y1SavHigh);
 
-  const taxRows=[
+  const taxRows=programMode==='leaseback'?[
+    {l:t('costSegRow'),d:t('costSegRowSub'),tip:t('tipCostSeg'),y1:fmtRange(bonusLow,bonusHigh),on:'—'},
+    {l:t('slDepRow'),d:t('slDepRowSub'),tip:t('tipSlDep'),y1:fmtRange(slAfterHigh,slAfterLow),on:fmtRange(ongDepLow,ongDepHigh)},
+    {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')},
+    {l:t('propTaxRow'),d:t('propTaxRowSub'),tip:t('tipPropTax'),y1:fmt(annualPropertyTax),on:fmt(y2PropertyTax)},
+    {l:t('opExpRow'),d:t('opExpRowSub'),tip:t('tipOpExp'),y1:fmt(annualOpExpenses),on:fmt(y2OpExpenses)},
+    {l:t('lbFfeRes'),d:t('lbFfeDesc'),tip:t('tipOpExp'),y1:fmt(annualLbFfe),on:fmt(annualLbFfe)}
+  ]:[
     {l:t('costSegRow'),d:t('costSegRowSub'),tip:t('tipCostSeg'),y1:fmtRange(bonusLow,bonusHigh),on:'—'},
     {l:t('slDepRow'),d:t('slDepRowSub'),tip:t('tipSlDep'),y1:fmtRange(slAfterHigh,slAfterLow),on:fmtRange(ongDepLow,ongDepHigh)},
     {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')},
@@ -961,7 +1076,7 @@ function recalc(){
   const y1RetLow=annCF+y1SavLow+appreciationY1+y1Principal;
   const y1RetHigh=annCF+y1SavHigh+appreciationY1+y1Principal;
   const y2FixedCostDelta=baseFixedAnn*(Math.pow(1+costInf,2)-1);
-  const annCFy2=annCF*(1+incGr)-y2FixedCostDelta;
+  const annCFy2=programMode==='leaseback'?annCF:annCF*(1+incGr)-y2FixedCostDelta;
   const appreciationY2=price*Math.pow(1+appRate,2)-price*(1+appRate);
   const ongRetLow=annCFy2+ongSavLow+appreciationY2+y2Principal;
   const ongRetHigh=annCFy2+ongSavHigh+appreciationY2+y2Principal;
@@ -969,14 +1084,10 @@ function recalc(){
   const y1RoicHigh=cashInvested>0?y1RetHigh/cashInvested*100:0;
   const ongRoicLow=cashInvested>0?ongRetLow/cashInvested*100:0;
   const ongRoicHigh=cashInvested>0?ongRetHigh/cashInvested*100:0;
-  const fmtPctRange=(a,b)=>a.toFixed(1)+'% – '+b.toFixed(1)+'%';
-
-  const lightRow=(lbl,val)=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:var(--g500)">${lbl}</span><span style="color:var(--black);font-weight:600;font-variant-numeric:tabular-nums">${val}</span></div>`;
-  const darkRow=(lbl,val)=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:rgba(255,255,255,0.6)">${lbl}</span><span style="color:white;font-weight:600;font-variant-numeric:tabular-nums">${val}</span></div>`;
 
   document.getElementById('taxReturnCards')['inner'+'HTML']=`
     <div class="result-box" style="text-align:left;padding:20px">
-      <div class="rb-label" style="margin-bottom:10px">${t('returnY1Card')}</div>
+      <div class="rb-label" style="margin-bottom:10px">${t('returnY1Card')}${programMode==='leaseback'?' <span class="lb-badge" style="font-size:8px">'+t('lbTag')+'</span>':''}</div>
       ${lightRow(t('cashFlowRow'),fmt(annCF))}
       ${lightRow(t('taxSavingsRow'),fmtRange(y1SavLow,y1SavHigh))}
       ${lightRow(t('appreciationRow'),fmt(appreciationY1))}
@@ -985,7 +1096,7 @@ function recalc(){
       <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span style="color:var(--g500)">${t('roicRow')}</span><span style="color:var(--orange);font-weight:700">${fmtPctRange(y1RoicLow,y1RoicHigh)}</span></div>
     </div>
     <div class="result-box dark" style="text-align:left;padding:20px">
-      <div class="rb-label" style="margin-bottom:10px">${t('returnOngoingCard')}</div>
+      <div class="rb-label" style="margin-bottom:10px">${t('returnOngoingCard')}${programMode==='leaseback'?' <span class="lb-badge lb-badge-dark" style="font-size:8px">'+t('lbTag')+'</span>':''}</div>
       ${darkRow(t('cashFlowRow'),fmt(annCFy2))}
       ${darkRow(t('taxSavingsRow'),fmtRange(ongSavLow,ongSavHigh))}
       ${darkRow(t('appreciationRow'),fmt(appreciationY2))}
@@ -1070,7 +1181,12 @@ function showToast(msg){
 // ===== LOAD FROM URL PARAMS =====
 function loadFromURL(){
   const p = new URLSearchParams(window.location.search);
-  if(!p.has('unit')) return;
+  // Show leaseback toggle if lb=1 or mode=leaseback
+  if(p.get('lb')==='1'||p.get('mode')==='leaseback'){
+    document.getElementById('programToggle').classList.add('visible');
+    if(p.get('mode')==='leaseback') setProgramMode('leaseback');
+  }
+  if(!p.has('unit')&&!p.get('lb')&&!p.get('mode')) return;
   // Select unit
   const unitId = p.get('unit');
   const found = UNITS.find(u=>u.id===unitId);
