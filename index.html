@@ -494,16 +494,16 @@ footer a{color:var(--amber);text-decoration:none}
       <div class="scenario-card" id="scCard1" onclick="applyScenario(1)">
         <div class="sc-tag" data-i18n="conservative">Conservative</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>RevPAR</label><input type="number" id="sc1Rate" value="260" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label>RevPAR</label><input type="number" id="sc1Rate" value="302" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$7,904</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$9,181</strong></div>
       </div>
       <div class="scenario-card active" id="scCard2" onclick="applyScenario(2)">
         <div class="sc-tag" data-i18n="base">Base</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>RevPAR</label><input type="number" id="sc2Rate" value="302" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label>RevPAR</label><input type="number" id="sc2Rate" value="323" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$9,181</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$9,825</strong></div>
       </div>
       <div class="scenario-card" id="scCard3" onclick="applyScenario(3)">
         <div class="sc-tag" data-i18n="optimistic">Optimistic</div>
@@ -758,8 +758,8 @@ function syncInputs(){
     document.getElementById('discountResult').textContent = '';
   }
   // Update scenario defaults (RevPAR-based)
-  document.getElementById('sc1Rate').value=Math.round(sel.adr*0.86);
-  document.getElementById('sc2Rate').value=Math.round(sel.adr);
+  document.getElementById('sc1Rate').value=Math.round(sel.adr);
+  document.getElementById('sc2Rate').value=Math.round(sel.adr*1.07);
   document.getElementById('sc3Rate').value=Math.round(sel.adr*1.14);
 }
 
