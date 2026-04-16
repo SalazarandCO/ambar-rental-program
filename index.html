@@ -782,6 +782,7 @@ function setTaxBracket(r){
 
 const fmt=n=>'$'+Math.round(n).toLocaleString('en-US');
 const fmtK=n=>n>=1e6?'$'+(n/1e6).toFixed(2)+'M':'$'+Math.round(n).toLocaleString('en-US');
+const displayArea=sqft=>lang==='es'?Math.round(sqft/10.7639).toLocaleString('en-US')+' m²':sqft.toLocaleString('en-US')+' ft²';
 
 function renderUnits(){
   const g=document.getElementById('unitGrid');g.innerHTML='';
@@ -792,7 +793,7 @@ function renderUnits(){
     c.innerHTML=`<div class="uc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
       <div class="uc-type">${u.type[lang]}</div>
       <div class="uc-id">${u.id}</div>
-      <div class="uc-sqft">${u.sqft} ft²</div>`;
+      <div class="uc-sqft">${displayArea(u.sqft)}</div>`;
     g.appendChild(c);
   });
 }
