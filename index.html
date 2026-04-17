@@ -538,7 +538,7 @@ footer a{color:var(--amber);text-decoration:none}
       <div class="scenario-card" id="scCard1" onclick="applyScenario(1)">
         <div class="sc-tag" data-i18n="conservative">Conservative</div>
         <div class="sc-fields">
-          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc1Rate" value="383" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc1Rate" value="383" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
         <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc1RevPar">$302</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$9,202</strong></div>
@@ -546,7 +546,7 @@ footer a{color:var(--amber);text-decoration:none}
       <div class="scenario-card active" id="scCard2" onclick="applyScenario(2)">
         <div class="sc-tag" data-i18n="base">Base</div>
         <div class="sc-fields">
-          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc2Rate" value="409" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc2Rate" value="409" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
         <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc2RevPar">$323</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$9,828</strong></div>
@@ -554,7 +554,7 @@ footer a{color:var(--amber);text-decoration:none}
       <div class="scenario-card" id="scCard3" onclick="applyScenario(3)">
         <div class="sc-tag" data-i18n="optimistic">Optimistic</div>
         <div class="sc-fields">
-          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc3Rate" value="436" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc3Rate" value="436" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
         <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc3RevPar">$344</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc3Rev">$10,477</strong></div>
@@ -778,18 +778,26 @@ function setRateMode(m){
   document.querySelectorAll('.rate-label').forEach(el => { el.textContent = m==='adr' ? 'ADR' : 'RevPAR'; });
   // Swap derived sub-display labels (the opposite of the input label)
   document.querySelectorAll('.derived-label').forEach(el => { el.textContent = m==='adr' ? 'RevPAR' : 'ADR'; });
-  // Convert each scenario's stored value so implied gross is preserved
+  // Convert each scenario's stored value so implied gross is preserved.
+  // Pretty integer goes into .value for display; full-precision value goes into data-raw so the
+  // math doesn't lose accuracy across mode flips (lossless round-trip).
   [1,2,3].forEach(i => {
     const el = document.getElementById('sc'+i+'Rate');
-    const cur = +el.value;
+    const cur = +(el.getAttribute('data-raw') || el.value);
     let next = cur;
-    if(prev==='adr' && m==='revpar')       next = cur * occ;       // ADR → RevPAR
+    if(prev==='adr' && m==='revpar')       next = cur * occ;          // ADR → RevPAR
     else if(prev==='revpar' && m==='adr')  next = occ>0 ? cur/occ : cur; // RevPAR → ADR
     el.value = Math.round(next);
+    el.setAttribute('data-raw', String(next));
   });
-  // Sync the hidden adrInput with whichever scenario is currently active
+  // Sync hidden adrInput with the active scenario, preserving precision
   const activeIdx = [1,2,3].find(i => document.getElementById('scCard'+i).classList.contains('active')) || 2;
-  document.getElementById('adrInput').value = document.getElementById('sc'+activeIdx+'Rate').value;
+  const active = document.getElementById('sc'+activeIdx+'Rate');
+  const adrEl = document.getElementById('adrInput');
+  adrEl.value = active.value;
+  const activeRaw = active.getAttribute('data-raw');
+  if(activeRaw) adrEl.setAttribute('data-raw', activeRaw);
+  else adrEl.removeAttribute('data-raw');
   recalcScenarios();
   recalc();
 }
@@ -880,7 +888,9 @@ function onOccChange(){
 function recalcScenarios(){
   const occ=+document.getElementById('occSlider').value/100;
   [1,2,3].forEach(i=>{
-    const v=+document.getElementById('sc'+i+'Rate').value;
+    const el=document.getElementById('sc'+i+'Rate');
+    // Prefer data-raw (full precision) over .value (rounded integer for display).
+    const v=+(el.getAttribute('data-raw') || el.value);
     // ADR mode: input is ADR → RevPAR = ADR × occ, sub-display shows RevPAR.
     // RevPAR mode: input is RevPAR directly → sub-display shows the derived ADR (RevPAR ÷ occ).
     const revpar  = rateMode==='revpar' ? v : v*occ;
@@ -892,15 +902,22 @@ function recalcScenarios(){
 
 function applyScenario(n){
   [1,2,3].forEach(i=>document.getElementById('scCard'+i).classList.toggle('active',i===n));
-  const adr=+document.getElementById('sc'+n+'Rate').value;
-  document.getElementById('adrInput').value=adr;
+  const src=document.getElementById('sc'+n+'Rate');
+  const adrEl=document.getElementById('adrInput');
+  adrEl.value=src.value;
+  // Carry the full-precision data-raw across so math is lossless through a scenario click.
+  const raw=src.getAttribute('data-raw');
+  if(raw) adrEl.setAttribute('data-raw', raw);
+  else adrEl.removeAttribute('data-raw');
   recalc();
 }
 
 function recalc(){
   const u=sel, e=u.exp;
   const price=+document.getElementById('priceInput').value;
-  const adr=+document.getElementById('adrInput').value;
+  const adrEl=document.getElementById('adrInput');
+  // Prefer data-raw (full precision preserved across mode flips) over .value (rounded display).
+  const adr=+(adrEl.getAttribute('data-raw') || adrEl.value);
   const occ=+document.getElementById('occSlider').value/100;
   document.getElementById('occVal').textContent=Math.round(occ*100)+'%';
   // In ADR mode, adrInput holds ADR → RevPAR = ADR × occupancy.
