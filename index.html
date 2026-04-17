@@ -43,6 +43,12 @@ header{background:var(--header-bg);padding:16px 0 16px}
 .lang-btn{padding:6px 14px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;background:transparent;color:rgba(255,255,255,0.5);border:none;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;font-weight:500}
 .lang-btn.active{background:var(--orange);color:var(--white)}
 
+/* RATE MODE TOGGLE (ADR / RevPAR) */
+.rate-toggle{display:inline-flex;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--g200);background:var(--white)}
+.rate-btn{padding:6px 14px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;background:transparent;color:var(--g400);border:none;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;font-weight:500}
+.rate-btn.active{background:var(--orange);color:var(--white)}
+.rate-btn:hover:not(.active){background:var(--g50);color:var(--g500)}
+
 /* SHARE BUTTON */
 .share-fab{position:fixed;bottom:24px;right:24px;z-index:900;display:flex;align-items:center;gap:8px;background:var(--orange);color:white;border:none;border-radius:40px;padding:12px 22px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.5px;cursor:pointer;box-shadow:0 4px 20px rgba(243,111,67,0.4);transition:all 0.3s}
 .share-fab:hover{background:#e05e35;box-shadow:0 6px 28px rgba(243,111,67,0.5);transform:translateY(-2px)}
@@ -502,13 +508,19 @@ footer a{color:var(--amber);text-decoration:none}
         <div class="section-subtitle" data-i18n="s5Sub">Average rental rate, occupancy and net distribution to owner</div>
       </div>
     </div>
-    <div class="section-summary">
-      <div class="section-summary-value" id="noiSummary">$2,701/mo</div>
-      <div class="section-summary-label" data-i18n="netIncomeMo">net income/mo</div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end">
+      <div class="rate-toggle" id="rateToggle" role="tablist" aria-label="Rate input mode">
+        <button class="rate-btn active" id="btnADR" onclick="setRateMode('adr')" role="tab" aria-selected="true">ADR</button>
+        <button class="rate-btn" id="btnRevPAR" onclick="setRateMode('revpar')" role="tab" aria-selected="false">RevPAR</button>
+      </div>
+      <div class="section-summary">
+        <div class="section-summary-value" id="noiSummary">$2,701/mo</div>
+        <div class="section-summary-label" data-i18n="netIncomeMo">net income/mo</div>
+      </div>
     </div>
   </div>
   <div class="section-body">
-    <!-- Hidden input: selected ADR flows into recalc -->
+    <!-- Hidden input: selected rate (ADR in ADR mode, RevPAR in RevPAR mode) flows into recalc -->
     <input type="hidden" id="adrInput" value="409">
 
     <!-- Occupancy Slider -->
@@ -526,25 +538,25 @@ footer a{color:var(--amber);text-decoration:none}
       <div class="scenario-card" id="scCard1" onclick="applyScenario(1)">
         <div class="sc-tag" data-i18n="conservative">Conservative</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>ADR</label><input type="number" id="sc1Rate" value="383" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc1Rate" value="383" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-revpar">RevPAR <strong id="sc1RevPar">$302</strong></div>
+        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc1RevPar">$302</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$9,202</strong></div>
       </div>
       <div class="scenario-card active" id="scCard2" onclick="applyScenario(2)">
         <div class="sc-tag" data-i18n="base">Base</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>ADR</label><input type="number" id="sc2Rate" value="409" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc2Rate" value="409" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-revpar">RevPAR <strong id="sc2RevPar">$323</strong></div>
+        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc2RevPar">$323</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$9,828</strong></div>
       </div>
       <div class="scenario-card" id="scCard3" onclick="applyScenario(3)">
         <div class="sc-tag" data-i18n="optimistic">Optimistic</div>
         <div class="sc-fields">
-          <div class="sc-field"><label>ADR</label><input type="number" id="sc3Rate" value="436" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc3Rate" value="436" onchange="recalcScenarios()" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-revpar">RevPAR <strong id="sc3RevPar">$344</strong></div>
+        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc3RevPar">$344</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc3Rev">$10,477</strong></div>
       </div>
     </div>
@@ -721,6 +733,7 @@ let lang = 'en';
 let finMode = 'finance';
 let programMode = 'rental';
 let taxBracket = 0.24;
+let rateMode = 'adr'; // 'adr' (default, uses ADR × occupancy) or 'revpar' (RevPAR entered directly)
 const DPM = 365/12;
 
 // ===== i18n =====
@@ -740,6 +753,44 @@ function setFinMode(m){
   document.getElementById('btnCash').classList.toggle('active',m==='cash');
   document.getElementById('btnFinance').classList.toggle('active',m==='finance');
   document.getElementById('finInputs').style.display=m==='finance'?'block':'none';
+  recalc();
+}
+
+// Toggle between ADR input mode (user enters ADR, occupancy slider visible, gross = ADR × occ × 30.4)
+// and RevPAR input mode (user enters RevPAR directly, occupancy hidden, gross = RevPAR × 30.4).
+// When switching, existing scenario values are converted by the current occupancy so the implied
+// gross stays consistent across modes.
+function setRateMode(m){
+  if(m===rateMode) return;
+  const occ = +document.getElementById('occSlider').value/100;
+  const prev = rateMode;
+  rateMode = m;
+  // Button + aria state
+  const adrBtn = document.getElementById('btnADR');
+  const rpBtn = document.getElementById('btnRevPAR');
+  adrBtn.classList.toggle('active', m==='adr');
+  rpBtn.classList.toggle('active', m==='revpar');
+  adrBtn.setAttribute('aria-selected', m==='adr' ? 'true' : 'false');
+  rpBtn.setAttribute('aria-selected', m==='revpar' ? 'true' : 'false');
+  // Hide the occupancy slider in RevPAR mode (RevPAR already bakes it in)
+  document.getElementById('occGroup').style.display = m==='revpar' ? 'none' : '';
+  // Swap scenario card input labels (ADR ↔ RevPAR)
+  document.querySelectorAll('.rate-label').forEach(el => { el.textContent = m==='adr' ? 'ADR' : 'RevPAR'; });
+  // Swap derived sub-display labels (the opposite of the input label)
+  document.querySelectorAll('.derived-label').forEach(el => { el.textContent = m==='adr' ? 'RevPAR' : 'ADR'; });
+  // Convert each scenario's stored value so implied gross is preserved
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('sc'+i+'Rate');
+    const cur = +el.value;
+    let next = cur;
+    if(prev==='adr' && m==='revpar')       next = cur * occ;       // ADR → RevPAR
+    else if(prev==='revpar' && m==='adr')  next = occ>0 ? cur/occ : cur; // RevPAR → ADR
+    el.value = Math.round(next);
+  });
+  // Sync the hidden adrInput with whichever scenario is currently active
+  const activeIdx = [1,2,3].find(i => document.getElementById('scCard'+i).classList.contains('active')) || 2;
+  document.getElementById('adrInput').value = document.getElementById('sc'+activeIdx+'Rate').value;
+  recalcScenarios();
   recalc();
 }
 function toggleProgramDrawer(){
@@ -829,9 +880,12 @@ function onOccChange(){
 function recalcScenarios(){
   const occ=+document.getElementById('occSlider').value/100;
   [1,2,3].forEach(i=>{
-    const adr=+document.getElementById('sc'+i+'Rate').value;
-    const revpar=adr*occ;
-    document.getElementById('sc'+i+'RevPar').textContent=fmt(revpar);
+    const v=+document.getElementById('sc'+i+'Rate').value;
+    // ADR mode: input is ADR → RevPAR = ADR × occ, sub-display shows RevPAR.
+    // RevPAR mode: input is RevPAR directly → sub-display shows the derived ADR (RevPAR ÷ occ).
+    const revpar  = rateMode==='revpar' ? v : v*occ;
+    const derived = rateMode==='revpar' ? (occ>0 ? v/occ : 0) : revpar;
+    document.getElementById('sc'+i+'RevPar').textContent=fmt(derived);
     document.getElementById('sc'+i+'Rev').textContent=fmt(revpar*DPM);
   });
 }
@@ -849,7 +903,9 @@ function recalc(){
   const adr=+document.getElementById('adrInput').value;
   const occ=+document.getElementById('occSlider').value/100;
   document.getElementById('occVal').textContent=Math.round(occ*100)+'%';
-  const revPAR=adr*occ;
+  // In ADR mode, adrInput holds ADR → RevPAR = ADR × occupancy.
+  // In RevPAR mode, adrInput holds RevPAR directly (occupancy already baked in).
+  const revPAR = rateMode==='revpar' ? adr : adr*occ;
   const dpPct=+document.getElementById('downPayment').value/100;
   const nin=+document.getElementById('numInstall').value;
   const finPct=+document.getElementById('finPct').value/100;
@@ -1241,6 +1297,7 @@ function loadFromURL(){
   if(p.has('dp')) document.getElementById('downPayment').value = p.get('dp');
   if(p.has('nin')) document.getElementById('numInstall').value = p.get('nin');
   if(p.has('fm')) setFinMode(p.get('fm'));
+  if(p.has('rm')) setRateMode(p.get('rm'));
   if(p.has('fp')) document.getElementById('finPct').value = p.get('fp');
   if(p.has('ir')) document.getElementById('interestRate').value = p.get('ir');
   if(p.has('lt')) document.getElementById('loanTerm').value = p.get('lt');
