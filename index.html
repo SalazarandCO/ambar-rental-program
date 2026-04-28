@@ -1156,22 +1156,13 @@ function recalc(){
   {let remLoan2=loanAmt;const mr=ir/12;
   for(let m=0;m<24;m++){const intPmt=remLoan2*mr;const princPmt=monthlyPMT-intPmt;if(m<12){y1Interest+=intPmt;y1Principal+=princPmt}else{y2Interest+=intPmt;y2Principal+=princPmt}remLoan2-=princPmt;}}
 
-  const annualPropertyTax=e.tax*12;
-  const annualOpExpenses=(e.hoa+e.util+e.ins)*12;
-  const annualHotelFees=(marriott+opex+ffe+otaCC)*12;
-  const annualLbFfe=lbFfe*12;
-  const y2PropertyTax=annualPropertyTax*Math.pow(1+costInf,2);
-  const y2OpExpenses=annualOpExpenses*Math.pow(1+costInf,2);
-
-  let commonY1,commonOng;
-  if(programMode==='leaseback'){
-    // Leaseback: no hotel fees deduction, but FF&E reserve is deductible
-    commonY1=y1Interest+annualPropertyTax+annualOpExpenses+annualLbFfe;
-    commonOng=y2Interest+y2PropertyTax+y2OpExpenses+annualLbFfe;
-  } else {
-    commonY1=y1Interest+annualPropertyTax+annualOpExpenses+annualHotelFees;
-    commonOng=y2Interest+y2PropertyTax+y2OpExpenses+annualHotelFees;
-  }
+  // Property taxes, HOA / utilities / insurance, hotel fees, and (for leaseback) FF&E
+  // reserve are ALL already netted out of owner NOI in Section 4 — they reduce the
+  // taxable rental income at the source. Showing them again as separate tax deductions
+  // here would double-count, so the only operating-side deduction kept is mortgage
+  // interest (which is a financing cost, not an operating expense).
+  const commonY1 = y1Interest;
+  const commonOng = y2Interest;
 
   const y1TotalLow=y1DepScenLow+commonY1;
   const y1TotalHigh=y1DepScenHigh+commonY1;
@@ -1185,20 +1176,13 @@ function recalc(){
 
   document.getElementById('taxY1Summary').textContent=fmtRange(y1SavLow,y1SavHigh);
 
-  const taxRows=programMode==='leaseback'?[
+  // Operating-cost rows (property tax, HOA/util/insurance, hotel fees, leaseback FF&E)
+  // are intentionally omitted — they're already deducted from rental income in Section 4
+  // and would double-count if shown here. Both modes share the same row set now.
+  const taxRows=[
     {l:t('costSegRow'),d:t('costSegRowSub'),tip:t('tipCostSeg'),y1:fmtRange(bonusLow,bonusHigh),on:'—'},
     {l:t('slDepRow'),d:t('slDepRowSub'),tip:t('tipSlDep'),y1:fmtRange(slAfterHigh,slAfterLow),on:fmtRange(ongDepLow,ongDepHigh)},
-    {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')},
-    {l:t('propTaxRow'),d:t('propTaxRowSub'),tip:t('tipPropTax'),y1:fmt(annualPropertyTax),on:fmt(y2PropertyTax)},
-    {l:t('opExpRow'),d:t('opExpRowSub'),tip:t('tipOpExp'),y1:fmt(annualOpExpenses),on:fmt(y2OpExpenses)},
-    {l:t('lbFfeRes'),d:t('lbFfeDesc'),tip:t('tipOpExp'),y1:fmt(annualLbFfe),on:fmt(annualLbFfe)}
-  ]:[
-    {l:t('costSegRow'),d:t('costSegRowSub'),tip:t('tipCostSeg'),y1:fmtRange(bonusLow,bonusHigh),on:'—'},
-    {l:t('slDepRow'),d:t('slDepRowSub'),tip:t('tipSlDep'),y1:fmtRange(slAfterHigh,slAfterLow),on:fmtRange(ongDepLow,ongDepHigh)},
-    {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')},
-    {l:t('propTaxRow'),d:t('propTaxRowSub'),tip:t('tipPropTax'),y1:fmt(annualPropertyTax),on:fmt(y2PropertyTax)},
-    {l:t('opExpRow'),d:t('opExpRowSub'),tip:t('tipOpExp'),y1:fmt(annualOpExpenses),on:fmt(y2OpExpenses)},
-    {l:t('hotelFeesRow'),d:t('hotelFeesRowSub'),tip:t('tipHotelFees'),y1:fmt(annualHotelFees),on:fmt(annualHotelFees)}
+    {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')}
   ];
   let taxHTML=`<thead><tr><th>${t('deductionCol')}</th><th>${t('year1Col')}</th><th>${t('years2PlusCol')}</th></tr></thead><tbody>`;
   taxHTML+=taxRows.map(r=>`<tr><td><div class="tax-tip" style="font-weight:500;color:var(--olive)">${r.l}<span class="tip-i">i</span><div class="tip-box">${r.tip}</div></div><div style="font-size:10px;color:var(--g400);font-weight:400;margin-top:2px">${r.d}</div></td><td style="color:var(--orange);font-weight:600">${r.y1}</td><td>${r.on}</td></tr>`).join('');
