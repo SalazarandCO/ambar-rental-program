@@ -734,6 +734,7 @@ let finMode = 'finance';
 let programMode = 'rental';
 let taxBracket = 0.24;
 let rateMode = 'adr'; // 'adr' (default, uses ADR × occupancy) or 'revpar' (RevPAR entered directly)
+let prevOcc = sel.occ; // tracks previous occupancy so the ADR slider preserves RevPAR (ADR × occ) when occupancy moves
 const DPM = 365/12;
 
 // ===== i18n =====
@@ -862,26 +863,57 @@ function syncInputs(){
   const discPct = parseFloat(document.getElementById('discountPct').value) || 0;
   const basePrice = discPct > 0 ? Math.round(sel.basePrice * (1 - discPct/100)) : Math.round(sel.basePrice);
   document.getElementById('priceInput').value = basePrice;
-  document.getElementById('adrInput').value=Math.round(sel.adr);
-  // Reset occupancy slider to unit's default occupancy
+  // Rate field holds ADR in ADR mode, RevPAR (= ADR × occ) in RevPAR mode.
+  const baseRate = rateMode==='revpar' ? sel.adr*sel.occ : sel.adr;
+  const adrEl = document.getElementById('adrInput');
+  adrEl.value = Math.round(baseRate);
+  adrEl.removeAttribute('data-raw');
+  // Reset occupancy slider to unit's default occupancy and keep prevOcc in sync so the
+  // RevPAR-preserving scale-on-slide logic in onOccChange uses the right baseline.
   const occPct=Math.round(sel.occ*100);
   document.getElementById('occSlider').value=occPct;
   document.getElementById('occVal').textContent=occPct+'%';
+  prevOcc = sel.occ;
   // Update discount display
   if(discPct > 0){
     document.getElementById('discountResult').textContent = '−' + fmt(sel.basePrice - basePrice);
   } else {
     document.getElementById('discountResult').textContent = '';
   }
-  // Update scenario defaults (ADR-based)
-  document.getElementById('sc1Rate').value=Math.round(sel.adr);
-  document.getElementById('sc2Rate').value=Math.round(sel.adr*1.07);
-  document.getElementById('sc3Rate').value=Math.round(sel.adr*1.14);
+  // Update scenario defaults (in the active rate mode); clear stale data-raw from any prior unit.
+  [1,2,3].forEach((i, idx)=>{
+    const mult = [1, 1.07, 1.14][idx];
+    const el = document.getElementById('sc'+i+'Rate');
+    el.value = Math.round(baseRate*mult);
+    el.removeAttribute('data-raw');
+  });
 }
 
 function onOccChange(){
-  const v=+document.getElementById('occSlider').value;
-  document.getElementById('occVal').textContent=v+'%';
+  const newV = +document.getElementById('occSlider').value;
+  const newOcc = newV/100;
+  document.getElementById('occVal').textContent = newV+'%';
+  // In ADR mode the occupancy slider should move ADR — NOT RevPAR.
+  // Preserve RevPAR by scaling each ADR input inversely with occupancy:
+  //   newADR = oldADR × (prevOcc / newOcc), so newADR × newOcc = oldADR × prevOcc = same RevPAR.
+  // In RevPAR mode the slider is hidden, but we leave the input untouched if it ever fires.
+  if(rateMode==='adr' && prevOcc>0 && newOcc>0){
+    const ratio = prevOcc/newOcc;
+    [1,2,3].forEach(i=>{
+      const el = document.getElementById('sc'+i+'Rate');
+      const cur = +(el.getAttribute('data-raw') || el.value);
+      const next = cur * ratio;
+      el.value = Math.round(next);
+      el.setAttribute('data-raw', String(next));
+    });
+    const adrEl = document.getElementById('adrInput');
+    const curA = +(adrEl.getAttribute('data-raw') || adrEl.value);
+    const nextA = curA * ratio;
+    adrEl.value = Math.round(nextA);
+    adrEl.setAttribute('data-raw', String(nextA));
+  }
+  prevOcc = newOcc;
+  recalcScenarios();
   recalc();
 }
 
