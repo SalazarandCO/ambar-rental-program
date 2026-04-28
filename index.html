@@ -734,7 +734,6 @@ let finMode = 'finance';
 let programMode = 'rental';
 let taxBracket = 0.24;
 let rateMode = 'adr'; // 'adr' (default, uses ADR × occupancy) or 'revpar' (RevPAR entered directly)
-let prevOcc = sel.occ; // tracks previous occupancy so the ADR slider preserves RevPAR (ADR × occ) when occupancy moves
 const DPM = 365/12;
 
 // ===== i18n =====
@@ -868,12 +867,10 @@ function syncInputs(){
   const adrEl = document.getElementById('adrInput');
   adrEl.value = Math.round(baseRate);
   adrEl.removeAttribute('data-raw');
-  // Reset occupancy slider to unit's default occupancy and keep prevOcc in sync so the
-  // RevPAR-preserving scale-on-slide logic in onOccChange uses the right baseline.
+  // Reset occupancy slider to unit's default occupancy.
   const occPct=Math.round(sel.occ*100);
   document.getElementById('occSlider').value=occPct;
   document.getElementById('occVal').textContent=occPct+'%';
-  prevOcc = sel.occ;
   // Update discount display
   if(discPct > 0){
     document.getElementById('discountResult').textContent = '−' + fmt(sel.basePrice - basePrice);
@@ -890,45 +887,33 @@ function syncInputs(){
 }
 
 function onOccChange(){
-  const newV = +document.getElementById('occSlider').value;
-  const newOcc = newV/100;
-  document.getElementById('occVal').textContent = newV+'%';
-  // In ADR mode the occupancy slider should move ADR — NOT RevPAR.
-  // Preserve RevPAR by scaling each ADR input inversely with occupancy:
-  //   newADR = oldADR × (prevOcc / newOcc), so newADR × newOcc = oldADR × prevOcc = same RevPAR.
-  // In RevPAR mode the slider is hidden, but we leave the input untouched if it ever fires.
-  if(rateMode==='adr' && prevOcc>0 && newOcc>0){
-    const ratio = prevOcc/newOcc;
-    [1,2,3].forEach(i=>{
-      const el = document.getElementById('sc'+i+'Rate');
-      const cur = +(el.getAttribute('data-raw') || el.value);
-      const next = cur * ratio;
-      el.value = Math.round(next);
-      el.setAttribute('data-raw', String(next));
-    });
-    const adrEl = document.getElementById('adrInput');
-    const curA = +(adrEl.getAttribute('data-raw') || adrEl.value);
-    const nextA = curA * ratio;
-    adrEl.value = Math.round(nextA);
-    adrEl.setAttribute('data-raw', String(nextA));
-  }
-  prevOcc = newOcc;
+  const v = +document.getElementById('occSlider').value;
+  document.getElementById('occVal').textContent = v+'%';
+  // Occupancy is its own independent lever — moving it should NOT change ADR or the
+  // displayed RevPAR. The only thing it affects is Gross Revenue (= ADR × occ × 30.4167),
+  // which flows through recalc() to the section-4 NOI summary, the waterfall, and the
+  // per-card "Gross rev/mo" via recalcScenarios().
   recalcScenarios();
   recalc();
 }
 
 function recalcScenarios(){
-  const occ=+document.getElementById('occSlider').value/100;
+  const occ = +document.getElementById('occSlider').value/100;
+  const refOcc = sel.occ; // unit's default occupancy — stable reference for the RevPAR display
   [1,2,3].forEach(i=>{
-    const el=document.getElementById('sc'+i+'Rate');
+    const el = document.getElementById('sc'+i+'Rate');
     // Prefer data-raw (full precision) over .value (rounded integer for display).
-    const v=+(el.getAttribute('data-raw') || el.value);
-    // ADR mode: input is ADR → RevPAR = ADR × occ, sub-display shows RevPAR.
-    // RevPAR mode: input is RevPAR directly → sub-display shows the derived ADR (RevPAR ÷ occ).
-    const revpar  = rateMode==='revpar' ? v : v*occ;
-    const derived = rateMode==='revpar' ? (occ>0 ? v/occ : 0) : revpar;
-    document.getElementById('sc'+i+'RevPar').textContent=fmt(derived);
-    document.getElementById('sc'+i+'Rev').textContent=fmt(revpar*DPM);
+    const v = +(el.getAttribute('data-raw') || el.value);
+    // Gross revenue uses the LIVE occupancy slider — sliding occupancy moves gross.
+    //   ADR mode:    gross = ADR × occ × 30.4167
+    //   RevPAR mode: gross = RevPAR × 30.4167  (occupancy hidden, already baked in)
+    const grossRevPar = rateMode==='revpar' ? v : v*occ;
+    // The derived sub-display (RevPAR in ADR mode, ADR in RevPAR mode) is INDEPENDENT of
+    // the slider — it uses the unit's default occupancy. So moving occupancy doesn't
+    // shift the displayed RevPAR; only typing a new ADR or picking a new unit does.
+    const derived = rateMode==='revpar' ? (refOcc>0 ? v/refOcc : 0) : v*refOcc;
+    document.getElementById('sc'+i+'RevPar').textContent = fmt(derived);
+    document.getElementById('sc'+i+'Rev').textContent   = fmt(grossRevPar*DPM);
   });
 }
 
