@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMBAR Residences Orlando — Sales & Distribution Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#F36F43;--amber:#FFA84A;--amber-light:#FFD9A0;--blue:#355965;--brown:#B37D50;--cream:#F5F0E8;--cream-dark:#EDE6D8;--black:#1E1B16;--white:#fff;--g50:#FAF9F6;--g100:#F0EDE6;--g200:#E0DBD0;--g300:#C8C2B4;--g400:#9E9686;--g500:#6B6459;--g600:#4A453C}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--black);line-height:1.6;font-weight:400}
+.serif{font-family:'Cormorant Garamond',serif}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+header{background:var(--black);color:var(--white);padding:60px 0 50px}
+.logo{height:36px;margin-bottom:30px}
+.eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:16px}
+h1{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:500;line-height:1.08;margin-bottom:16px}
+h1 .it{font-style:italic;color:var(--amber-light)}
+.lede{font-size:16px;color:rgba(255,255,255,0.72);max-width:800px;font-weight:300}
+.meta-row{margin-top:28px;display:flex;flex-wrap:wrap;gap:26px;font-size:12px;color:rgba(255,255,255,0.55)}
+.meta-row b{color:var(--amber);font-weight:600;display:block;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+section{padding:48px 0;border-bottom:1px solid var(--g200)}
+.sec-num{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:10px}
+h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;font-style:italic;margin-bottom:8px}
+.sec-sub{font-size:15px;color:var(--g500);max-width:820px;margin-bottom:26px}
+h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin:28px 0 10px;color:var(--blue)}
+h4{font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g500);font-weight:700;margin:22px 0 10px}
+p{margin-bottom:13px;font-size:14.5px}
+ul{margin:0 0 14px 20px}li{margin-bottom:7px;font-size:14.5px}
+a{color:var(--orange);text-decoration:none}strong{font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin:8px 0}
+.stat{padding:24px 20px;border-right:1px solid var(--g100)}.stat:last-child{border-right:none}
+.stat .n{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:var(--orange);line-height:1}
+.stat .l{font-size:12px;color:var(--g500);margin-top:7px;line-height:1.4}
+table{width:100%;border-collapse:collapse;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin:14px 0;font-size:13.5px}
+th{background:var(--black);color:var(--white);text-align:left;padding:12px 14px;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+td{padding:12px 14px;border-bottom:1px solid var(--g100);vertical-align:top}
+tr:last-child td{border-bottom:none}tbody tr:nth-child(even){background:var(--g50)}
+.t-right{text-align:right}
+.pill{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:0.5px;padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap}
+.p1{background:var(--orange);color:#fff}.p2{background:var(--amber-light);color:var(--brown)}.p3{background:var(--g200);color:var(--g600)}
+.callout{background:var(--white);border-left:4px solid var(--amber);border-radius:0 14px 14px 0;padding:20px 24px;margin:20px 0;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.callout .k{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:8px}
+.callout.orange{border-left-color:var(--orange)}.callout.orange .k{color:var(--orange)}
+.callout.blue{border-left-color:var(--blue)}.callout.blue .k{color:var(--blue)}
+.steps{counter-reset:s;list-style:none;margin:0}
+.steps li{counter-increment:s;position:relative;padding:0 0 14px 40px;font-size:14.5px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:-2px;width:26px;height:26px;background:var(--orange);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.tag{display:inline-block;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:20px;margin-bottom:10px}
+.tag.c1{background:var(--amber-light);color:var(--brown)}.tag.c2{background:var(--light-blue,#9BB9C2);color:var(--blue)}.tag.c3{background:#E7E3D3;color:var(--olive,#5A5A37)}.tag.c4{background:var(--g200);color:var(--g600)}
+.footer{background:var(--black);color:rgba(255,255,255,0.6);padding:36px 0;font-size:12px}
+.footer a{color:var(--amber)}
+.src{font-size:12px;color:var(--g600);line-height:1.5}.src a{color:var(--blue);text-decoration:underline;word-break:break-word}
+.disc{font-size:12px;color:var(--g500);font-style:italic;margin-top:8px}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}h1{font-size:34px}h2{font-size:25px}table{font-size:12px}th,td{padding:9px}}
+@media print{body{background:#fff}section{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <img class="logo" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando">
+  <div class="eyebrow">Sales &amp; Distribution Playbook</div>
+  <h1>Selling 322 units is a distribution problem —<br><span class="it">here's the machine that does it.</span></h1>
+  <p class="lede">You have 7 of 322 sold. Direct ads can't close that gap alone. This is the channel-by-channel execution plan — exactly who to contact, what to offer, and in what order — to drive AMBAR to its construction-financing pre-sale threshold and sell-out. Every target and figure is sourced; the research swarm's full citations are in §7.</p>
+  <div class="meta-row">
+    <div><b>Project</b>AMBAR Residences Orlando · Big Key Group</div>
+    <div><b>Status</b>7 / 322 sold</div>
+    <div><b>Goal</b>Pre-sale threshold → sell-out</div>
+    <div><b>Date</b>June 2026</div>
+  </div>
+</div></header>
+
+<!-- 0 -->
+<section><div class="wrap">
+  <div class="sec-num">01 — The Number That Governs Everything</div>
+  <h2>Stop thinking "322." Think "the financing threshold."</h2>
+  <p class="sec-sub">Construction lenders fund only after a pre-sale threshold is met — historically ~70% of units under binding contract/deposit, now trending to ~50% depending on sponsor and market. That milestone, not full sell-out, is the real near-term target: it de-risks the project and unlocks the loan. Every channel below is pointed at it.</p>
+  <div class="stats">
+    <div class="stat"><div class="n">7</div><div class="l">units sold today (2% of 322)</div></div>
+    <div class="stat"><div class="n">~161</div><div class="l">units = <strong>50%</strong> pre-sale (emerging lender floor)</div></div>
+    <div class="stat"><div class="n">~225</div><div class="l">units = <strong>70%</strong> pre-sale (traditional benchmark)</div></div>
+    <div class="stat"><div class="n">154–218</div><div class="l">units to contract to hit the gate</div></div>
+  </div>
+  <div class="callout orange">
+    <div class="k">The strategic insight</div>
+    <p style="margin:0">Retail/DTC sales close one unit at a time. A <strong>bulk tranche</strong> (20–50 units in one deal) and a <strong>broker network</strong> with reserved allocations can move the threshold in months, not years. So sequence accordingly: pursue a bulk anchor deal <em>and</em> stand up the broker channel <em>first</em>; let events and ads feed both. Confirm your exact lender threshold and deadline — it sets the urgency for the bulk track.</p>
+  </div>
+</div></section>
+
+<!-- 1 -->
+<section><div class="wrap">
+  <div class="sec-num">02 — Channel Mix &amp; Unit Math</div>
+  <h2>Where the 315 remaining units come from.</h2>
+  <p class="sec-sub" style="max-width:78ch">This is a <strong>recommended allocation, not a measured split.</strong> Only the broker share is backed by hard published data; the others are reasoned planning assumptions, grounded in the evidence cited in each row. Unit counts apply the share to the <strong>315 unsold units</strong> (322 − 7).</p>
+  <table>
+    <thead><tr><th>Channel</th><th class="t-right">Recommended share</th><th class="t-right">≈ Units (of 315)</th><th>Basis &amp; evidence</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Broker / agent network</strong></td><td class="t-right">60–75%</td><td class="t-right">189–236</td><td><strong style="color:var(--olive)">Evidence-backed.</strong> 88% of U.S. buyers — and 63% of <em>new-construction</em> buyers — transact through an agent (NAR 2024). For international buyers, 72% of leads come from referrals/relationships and only 15% from online (NAR 2025). Comparable South-FL pre-construction (~52% international) is sold <em>through</em> master-broker firms (MIAMI Realtors / TRD).</td></tr>
+      <tr><td><strong>Events / roadshows</strong></td><td class="t-right">15–25%</td><td class="t-right">47–79</td><td><strong style="color:var(--brown)">Planning assumption.</strong> A budgeted, central tactic for LatAm buyers — Fortune runs a 12-month expo circuit; buyer-events out-convert broker-events (TRD). No public conversion share exists, and expo buyers often still close via a co-broking agent.</td></tr>
+      <tr><td><strong>Direct paid media / online</strong></td><td class="t-right">5–15%</td><td class="t-right">16–47</td><td><strong style="color:var(--brown)">Mixed.</strong> 51% of buyers <em>discover</em> the home online (NAR 2024) but ~88% still close with an agent, and online drives just 15% of foreign-buyer leads — primarily a feeder for the channels above, not an independent closer.</td></tr>
+      <tr><td><strong>Bulk / institutional</strong> <span class="pill p3">contingency</span></td><td class="t-right">0–10%</td><td class="t-right">0–~32</td><td><strong style="color:var(--terra)">Contingency lever, not base case.</strong> Historically a counter-cyclical clearance mechanism, not a planned primary channel (Condo Vultures). Deploy a tranche to accelerate toward the financing threshold <em>only if</em> retail/broker absorption lags.</td></tr>
+    </tbody>
+  </table>
+  <p class="disc">Ranges intentionally overlap and exceed 100% because channels feed each other (ads recruit brokers and fill events) and bulk is a swing lever, not additive. The honest takeaway: <strong>lead with brokers</strong> (the only data-supported channel), use events to amplify, treat paid media as a feeder, and hold bulk as an accelerator. Sources: NAR 2024 Profile of Home Buyers &amp; Sellers; NAR 2025 Profile of International Transactions; MIAMI Realtors New-Construction International Report (Nov 2025); The Real Deal (Sept 2025); Condo Vultures / P. Zalewski. Construction-financing pre-sale threshold (~50–70%) per The Globe &amp; Mail / Vaster — see §01.</p>
+</div></section>
+
+<!-- 2 BROKER -->
+<section><div class="wrap">
+  <div class="sec-num">03 — Channel 1 · Broker / Agent Network</div>
+  <span class="tag c1">60–75% of units · the backbone</span>
+  <h2>Recruit the brokers who already own the buyers.</h2>
+  <p class="sec-sub">The fastest path to the threshold. International master brokers in the feeder cities already hold qualified, Florida-curious buyers. Your job: sign them, arm them, and — critically — <strong>impose pricing/message discipline</strong>, because unauthorized resellers are already posting AMBAR with no control.</p>
+
+  <h3>Who to reach out to — Tier 1 (this week)</h3>
+  <table>
+    <thead><tr><th>Firm</th><th>Markets</th><th>Why first</th><th>How to reach</th></tr></thead>
+    <tbody>
+      <tr><td><strong>PFS Realty Group</strong></td><td>Bogotá, Medellín, CDMX, Guayaquil + Miami</td><td><strong>One contract = 4 feeder markets.</strong> 23-yr LatAm→Florida specialist, covers Miami + Orlando, 2,000+ LatAm families served.</td><td>pfsrealty.com · LinkedIn</td></tr>
+      <tr><td><strong>DecoNova International</strong></td><td>LatAm · Miami + Orlando</td><td>20-yr Miami firm selling the exact Orlando short-term-rental investment thesis to hemisphere buyers.</td><td>deconovaflorida.com (Brickell)</td></tr>
+      <tr><td><strong>The Aponte Group</strong></td><td>PR, Colombia, Brazil, Mexico, UK, Canada</td><td>Dedicated Orlando international-buyer practice; already lists pre-construction.</td><td>info@theapontegroup.com · (954) 787-5278</td></tr>
+      <tr><td><strong>Talent Realty</strong></td><td>Brazil (São Paulo) + Orlando</td><td>Brazil channel lead; hosts the "Miami Imóveis Expo" in São Paulo; sells Orlando from ~$350K.</td><td>imoveis.talentrealty.com</td></tr>
+      <tr><td><strong>ABIRE (Alistair Brown Intl)</strong></td><td>UK + Florida</td><td>The UK→Florida specialist with UK <em>and</em> FL offices and Kissimmee/Orlando pages + UK mortgage partners.</td><td>abire.co.uk/partner-services</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Tier 2 — high-capacity master brokers (recruit for scale)</h3>
+  <p>Pitch these as a <strong>volume/velocity product for their LatAm databases</strong>, not a luxury listing (AMBAR sits below their usual price band): <strong>ISG World / RelatedISG</strong> (master-broker mandate candidate, $12B+ sold), <strong>Fortune International</strong> (1,000+ multilingual agents), <strong>Cervera</strong> (pre-construction depth; runs Bogotá/CDMX/BA expos), <strong>ONE Sotheby's</strong> (development division + runs Canada/Brazil/Mexico seminars — also your best practical route into <strong>Canada</strong>), and the Brazil bench (<strong>Authentic USA, Vitória Realty, Casas em Miami</strong>) + <strong>360 Agencia</strong> (Medellín).</p>
+
+  <h3>The offer (commission &amp; allocation)</h3>
+  <ul>
+    <li><strong>Pay at the soft-market top end: 6–8% developer-paid</strong> to the registering outside broker. Miami developers are currently raising buy-side commissions to ~7% and cutting deposits to spur pre-sales — at 7/322 sold you compete for broker attention, so don't pay the 2–3% new-construction floor.</li>
+    <li><strong>Master-broker override 1–2%</strong> for whoever runs a country's distribution (e.g., PFS for the Andean/Mexico flow, a Miami master like ISG for the LatAm-from-Miami flow).</li>
+    <li><strong>Early-bird premium + volume bonus:</strong> highest commission and lowest price tier during the pre-sale push to the threshold, stepping down after. Add e.g. +1% after a broker's 5th unit.</li>
+    <li><strong>Reserved unit allocations</strong> (best floors/views) to top brokers — the classic motivator; prevents double-selling the same unit.</li>
+  </ul>
+
+  <h3>The control layer — stand this up before you scale (fixes the reseller chaos)</h3>
+  <ol class="steps">
+    <li><strong>Deal-registration rule:</strong> only registered brokers earn commission, and the buyer is credited to the <em>first broker to register the lead in the portal</em>. This single rule forces freelancers to register (and accept terms) to get paid.</li>
+    <li><strong>One published price list + deposit schedule.</strong> No broker may advertise a different price, discount, or "guaranteed return" claim (leaseback ≠ guaranteed return beyond year 2 — a compliance trap).</li>
+    <li><strong>Controlled co-branded kit only:</strong> approved renders, floor plans, the leaseback/Bonvoy one-pager, fixed price sheet, EN/ES/PT versions — distributed only via the portal, version-controlled so old price sheets die. (Marriott "Apartments by Bonvoy" marks have usage rules — pre-clear assets.)</li>
+    <li><strong>"AMBAR Certified Sales Partner" training</strong> = portal access = right to use the marks. Covers the condo-hotel structure, leaseback→Bonvoy transition, deposit timeline, and FL foreign-buyer closing. Prefer brokers with the NAR CIPS designation.</li>
+    <li><strong>Convert or take down</strong> the unauthorized AMBAR pages already live (tdflorida, realtyinorlando, etc.): invite them to register under the program, or issue takedowns.</li>
+  </ol>
+  <p><strong>Tooling:</strong> run the channel on <strong>Property-xRM</strong> (developer broker portal + real-time inventory/allocation + deal registration), with <strong>Brokermint</strong> or <strong>BrokerSumo</strong> for commission payout automation.</p>
+</div></section>
+
+<!-- 3 BULK -->
+<section><div class="wrap">
+  <div class="sec-num">04 — Channel 2 · Bulk / Institutional</div>
+  <span class="tag c2">Contingency lever · 0–10% base case</span>
+  <h2>One tranche can de-risk the whole project.</h2>
+  <p class="sec-sub">Selling 20–50 units to a single buyer/group is the fastest way to clear the construction-loan pre-sale covenant. The key is targeting the <strong>right</strong> bulk buyer: yield/leaseback investors who pay a modest tranche discount — not distress "vultures" who want 40–50% off.</p>
+
+  <div class="callout blue">
+    <div class="k">Your exact comp already happened in Orlando</div>
+    <p style="margin:0">The Grove Resort (Orlando, 878-unit condo-hotel, 8–10% guaranteed leaseback, ~$300K units) was sold out ahead of schedule by <strong>BTI Partners</strong>, partly to yield/1031 investors buying in blocks. That proves AMBAR's buyer pool exists at your price and structure. Lead bulk conversations with this comp.</p>
+  </div>
+
+  <h3>Who to reach out to</h3>
+  <table>
+    <thead><tr><th>Target</th><th>Type</th><th>Why / how</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Condo Hotel Center</strong> (Joel Greene)</td><td>Condo-hotel sales intermediary</td><td><strong>Closest product fit.</strong> Markets condo-hotel/fractional inventory to a 30K international list; offers developer sales services. info@condohotelcenter.com</td></tr>
+      <tr><td><strong>ISG World / RelatedISG</strong></td><td>New-dev sales, LatAm desk</td><td>Largest LatAm-facing new-dev machine; can place tranches + retail. isgworld.com</td></tr>
+      <tr><td><strong>Cervera Real Estate</strong></td><td>New-dev sales + LatAm expos</td><td>Runs Bogotá/CDMX/Buenos Aires investor events → direct line to LatAm syndicators. cervera.com</td></tr>
+      <tr><td><strong>Worldwide Development Services</strong> (Eddy Martinez)</td><td>Bulk cash deal-maker</td><td>Proven LatAm cash bulk-block transactions in FL condos.</td></tr>
+      <tr><td><strong>J.P. Morgan PB LatAm · Itaú · BTG Pactual US · Bradesco</strong></td><td>Private banks (capital routers)</td><td>Reach the private family offices you can't name directly; Bradesco already finances FL property for non-residents.</td></tr>
+      <tr><td><strong>Family Office Club / Miami Family Office</strong></td><td>MFO network</td><td>Membership + events = access to family-office deal flow. themiamifamilyoffice.com</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Deal structure &amp; economics</h3>
+  <ul>
+    <li><strong>Tranche discount: target ~8–15% off the current retail tier</strong> (justified by removing 20–50 units of sales/marketing cost). <strong>Resist the distress anchor</strong> — "Condo Vultures"-type buyers want up to 50% off; that's the wrong buyer and it poisons retail pricing.</li>
+    <li><strong>Demand hard, non-refundable deposits</strong> on the tranche so they count toward the construction-loan pre-sale covenant — that is the entire strategic point of bulk.</li>
+    <li><strong>Sell the first tranche at the lowest price tier</strong> ("first money in"), which LatAm pre-sale buyers already expect to rise by phase.</li>
+    <li><strong>Set your assignment/flip policy up front:</strong> allow assignment within the tranche so a syndicator can place units with its own investors, but cap/fee third-party flips to protect retail pricing.</li>
+  </ul>
+
+  <h3>What to prepare (the bulk pitch pack)</h3>
+  <p>Institutional Offering Memorandum (project, Marriott license terms, Big Key track record, ~$120–148M sell-out, timeline, entitlement status) · <strong>bulk price matrix</strong> (retail vs. tranche price at 20/35/50-unit breaks) · <strong>pro forma</strong> (10% leaseback yrs 1–2 as cash-on-cash, then Bonvoy program ADR/occupancy/RevPAR → 5–10 yr IRR, Grove as comp) · leaseback &amp; rental-program terms · deposit/escrow + covenant treatment · assignment policy · cross-border financing pack.</p>
+</div></section>
+
+<!-- 4 EVENTS -->
+<section><div class="wrap">
+  <div class="sec-num">05 — Channel 3 · Events / Roadshows</div>
+  <span class="tag c3">15–25% of units · high-intent closing rooms</span>
+  <h2>Put the product in the room with qualified buyers.</h2>
+  <p class="sec-sub">Expos generate leads; <strong>developer-hosted private dinners convert them.</strong> Run both: plug into the feeder-city expo calendar for reach, and host intimate hard-close dinners for reservations.</p>
+
+  <h3>2026–27 expo calendar (verify booth pricing — quoted privately)</h3>
+  <table>
+    <thead><tr><th>Event</th><th>City</th><th>Dates</th><th>Fit</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Gran Salón Inmobiliario</strong> (Corferias)</td><td>Bogotá</td><td>Aug 20–23, 2026</td><td><span class="pill p1">High</span> already runs "Invest in Florida" sessions</td></tr>
+      <tr><td><strong>Expo Real Estate Argentina</strong> (Grupo SG)</td><td>Buenos Aires</td><td>Aug 12–13, 2026</td><td><span class="pill p1">High</span> markets US product to LatAm</td></tr>
+      <tr><td><strong>Expo Real Estate México</strong> (Grupo SG)</td><td>Mexico City</td><td>Feb 2027</td><td><span class="pill p1">High</span> same org — bundle w/ Argentina</td></tr>
+      <tr><td><strong>Investir USA Expo</strong> (verify active)</td><td>São Paulo</td><td>TBA — verify</td><td><span class="pill p1">High</span> purpose-built Brazil→US property</td></tr>
+      <tr><td><strong>A Place in the Sun Live</strong></td><td>London (ExCeL)</td><td>May 2026 (2027 TBA)</td><td><span class="pill p2">High</span> UK's largest overseas-property show</td></tr>
+      <tr><td><strong>EB-5 &amp; Global Immigration Expo</strong></td><td>Miami</td><td>annual (watch 2027)</td><td><span class="pill p2">Med-High</span> US-Hispanic + migration angle</td></tr>
+      <tr><td><strong>Expoinmobiliaria</strong> (Camacol)</td><td>Medellín</td><td>Feb–Mar (2027 TBA)</td><td><span class="pill p3">Med</span> Medellín footfall</td></tr>
+      <tr><td><strong>REALTOR® QUEST</strong> (TRREB)</td><td>Toronto</td><td>May 2026 (2027 TBA)</td><td><span class="pill p3">Med</span> recruit Canadian referral agents</td></tr>
+    </tbody>
+  </table>
+  <p class="disc">Toronto &amp; London lack high-intent <em>retail</em> US-property expos → serve those two cities primarily with private dinners (below).</p>
+
+  <h3>The private investor-dinner playbook (highest conversion)</h3>
+  <ul>
+    <li><strong>Format:</strong> weeknight, 2.5–3 hrs, private dining room of a 5-star hotel (Four Seasons / St. Regis / JW Marriott — on-brand with Bonvoy). Cocktails → seated dinner → 10–12 min AMBAR deck → numbers + Q&amp;A → limited-allocation close with on-site contracts and reservation desk.</li>
+    <li><strong>Size:</strong> 20–40 pre-qualified attendees (rank by buying intent before the event).</li>
+    <li><strong>Source attendees via:</strong> partner brokers (co-host, referral fee), private banks/wealth advisors, existing-owner referrals ("bring a peer"), and EB-5/E-2 migration attorneys. Best move: host the dinner the same week as a relevant expo and skim the highest-intent visitors.</li>
+    <li><strong>Budget:</strong> ~$150–400/head; ~$20–40K all-in per city stop (venue, A/V, materials, travel, broker fees).</li>
+    <li><strong>Expect:</strong> ~3–6 reservations per well-qualified 30-person dinner. A 5–6 city roadshow ≈ 15–30+ reservations — the bulk of this channel's target.</li>
+  </ul>
+
+  <h3>Partners to contact</h3>
+  <p><strong>Grupo SG</strong> (info@gruposyg.com — bundle Argentina + México in one deal) · <strong>EB5Investors / Uglobal</strong> (info@eb5investors.com · 800-997-1228) · <strong>Corferias</strong> (Bogotá) · <strong>Talent Realty</strong> (already runs a São Paulo expo) · <strong>A Place in the Sun</strong> (London) · <strong>TRREB</strong> (Toronto agent recruiting).</p>
+</div></section>
+
+<!-- 5 DTC -->
+<section><div class="wrap">
+  <div class="sec-num">06 — Channel 4 · DTC Paid Media (the feeder)</div>
+  <span class="tag c4">5–15% · fuels the other three</span>
+  <h2>Repurpose the ad engine to feed distribution.</h2>
+  <p class="sec-sub">The Meta/Google plan we built is still valuable — but its primary job changes from "sell condos one-by-one" to <strong>powering the channels above</strong>. Same markets, same creative, redirected objectives.</p>
+  <ul>
+    <li><strong>Broker recruitment at scale</strong> — LinkedIn + Meta campaigns targeting real-estate agents in Bogotá, CDMX, São Paulo, Toronto, Miami to drive program sign-ups into the broker portal.</li>
+    <li><strong>Event fill</strong> — geo-targeted ads driving RSVPs to the expo booths and private dinners in each feeder city the weeks beforehand.</li>
+    <li><strong>Brand credibility + retargeting</strong> — the Marriott-managed story builds the trust brokers and bulk buyers reference; retarget site/landing visitors.</li>
+    <li><strong>Retail leads</strong> — the genuinely high-intent direct buyers, routed to the right master broker by geography.</li>
+  </ul>
+  <p>Keep Brazil running via your Brazil partner; layer Colombia, Mexico, Canada, UK, US-Hispanic on top (detail in the separate Paid Media Strategy at <a href="https://ambar-rentalprogram.com/adstrategy">ambar-rentalprogram.com/adstrategy</a>).</p>
+</div></section>
+
+<!-- 6 ENABLER -->
+<section><div class="wrap">
+  <div class="sec-num">07 — Cross-Cutting Enabler · The Closing Desk</div>
+  <h2>None of the channels close without this.</h2>
+  <p class="sec-sub">Every channel dies at the same friction points: "how do I pay for it?" and "how does a foreigner actually close?" Build one cross-border closing desk that serves all four channels.</p>
+
+  <div class="callout orange">
+    <div class="k">The binding constraint: AMBAR is a condo-hotel</div>
+    <p style="margin:0">Condotels are a narrow financing niche. Realistically model <strong>~35–40% down and ~7–8% rates</strong> for financed units, and route buyers to <strong>multi-program brokers</strong> who can match condo-hotel eligibility lender-by-lender: <strong>America Mortgages</strong> (strong LatAm desk), <strong>HomeAbroad</strong>, <strong>Bennett Capital</strong> and <strong>Foundation Mortgage</strong> (Miami; condotel experience). Many LatAm buyers will simply pay cash — which skips this entirely and closes faster.</p>
+  </div>
+
+  <h4>Long-lead items — start at contract, not closing</h4>
+  <ul>
+    <li><strong>ITIN</strong> (tax ID for buyers without SSN): 5 weeks–3 months. The most common timeline killer — start day one.</li>
+    <li><strong>Property-specific Power of Attorney</strong>, notarized + apostilled, for remote closing (FL allows RON / mail-away). Title insurers reject overly broad POAs — have a FL attorney draft it per-transaction.</li>
+    <li><strong>Lender condo-hotel approval</strong> — confirmed unit-by-unit.</li>
+  </ul>
+
+  <h4>Moving the money (the likeliest date-slip)</h4>
+  <ul>
+    <li><strong>Mexico</strong> — frictionless; bank wires unrestricted. Fastest closers.</li>
+    <li><strong>Colombia</strong> — legal but documentation-heavy (regulated FX market); keep clean paperwork from day one for later repatriation.</li>
+    <li><strong>Brazil</strong> — central-bank-mediated; the IOF tax code must be correct (~0.38% benchmark; wrong code = much higher). Add days–weeks.</li>
+    <li><strong>Argentina</strong> — controls largely lifted April 2025 but volatile (partial re-tightening Sept 2025). Build buffer; confirm rules at transfer time.</li>
+  </ul>
+
+  <h4>Buyer-confidence talking points</h4>
+  <p><strong>Escrow (FL Statute §718.202):</strong> the first up to 10% of price sits in protected escrow; deposits above 10% may fund construction if the contract provides — a concrete trust point for pre-construction buyers. <strong>FIRPTA is not a purchase barrier</strong> — buyers purchase from a US developer, so withholding only matters on their future resale; don't let it scare anyone off.</p>
+  <p class="disc">This is research for sales enablement, not legal or tax advice — buyers should engage a FL real estate attorney and cross-border tax counsel. Rates/terms are ballparks to verify per file.</p>
+</div></section>
+
+<!-- 7 SPRINT -->
+<section><div class="wrap">
+  <div class="sec-num">08 — The 90-Day Execution Sprint</div>
+  <h2>Exactly what to do, in order.</h2>
+  <table>
+    <thead><tr><th>When</th><th>Action</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Week 1</strong></td><td>Confirm exact lender pre-sale threshold + deadline. Lock the official price list, deposit schedule, and commission schedule (6–8% + override + early-bird). Build the controlled co-branded kit (EN/ES/PT).</td><td>Developer / sales lead</td></tr>
+      <tr><td><strong>Week 1–2</strong></td><td>Stand up the broker portal (Property-xRM) with deal registration. Draft the broker agreement + "Certified Sales Partner" terms. Spin up the closing desk: sign 2–3 foreign-national/condotel mortgage partners + a FL closing attorney.</td><td>Sales ops</td></tr>
+      <tr><td><strong>Week 2–3</strong></td><td><strong>Reach Tier-1 brokers:</strong> PFS, DecoNova, Aponte, Talent, ABIRE. Sign country master-broker mandates with reserved allocations. Convert/takedown the unauthorized AMBAR listings.</td><td>Developer / BD</td></tr>
+      <tr><td><strong>Week 2–4</strong></td><td><strong>Open the bulk track:</strong> build the institutional OM + bulk price matrix + pro forma. Approach Condo Hotel Center, ISG, Cervera, Worldwide Development Services; brief private banks (JPM PB LatAm, Itaú, BTG, Bradesco). Target one 20–50 unit anchor tranche.</td><td>Developer / capital</td></tr>
+      <tr><td><strong>Week 3–6</strong></td><td><strong>Lock events:</strong> Grupo SG package (BA Aug + CDMX Feb); booth + private dinner at Gran Salón Bogotá (Aug 20–23); verify/book Investir USA Expo (Brazil); plan Toronto + London private dinners.</td><td>Events lead</td></tr>
+      <tr><td><strong>Week 4–8</strong></td><td><strong>Redirect paid media</strong> to broker recruitment + event RSVPs + retail leads routed to master brokers. Keep Brazil running.</td><td>Marketing</td></tr>
+      <tr><td><strong>Week 6–12</strong></td><td>Run first 2–3 private dinners. Onboard + certify brokers; release allocations. Negotiate the anchor bulk tranche with hard deposits. Track everything to the threshold.</td><td>All</td></tr>
+    </tbody>
+  </table>
+  <h4>What to measure (weekly)</h4>
+  <p>Units under binding contract vs. the threshold · brokers signed &amp; certified · allocations released vs. sold · bulk pipeline (tranches in negotiation) · reservations per event · cost-per-reservation by channel · speed-to-first-contact on inbound leads. <strong>Report progress as % to the financing threshold</strong> — that's the scoreboard.</p>
+</div></section>
+
+<!-- 8 SOURCES -->
+<section style="border-bottom:none"><div class="wrap">
+  <div class="sec-num">09 — Sources</div>
+  <p class="src">
+  <strong>Brokers/commissions:</strong> pfsrealty.com · deconovaflorida.com · apontegroup.com/international-real-estate-orlando · imoveis.talentrealty.com · abire.co.uk/partner-services · isgworld.com · cervera.com/services/pre-construction-sales · peterzalewski.substack.com (Miami commissions/deposits) · brokeragentpayscale.com (new-construction co-broke) · propertyxrm.com · brokermint.com<br>
+  <strong>Bulk/institutional:</strong> btipartners.com (Grove sell-out) · condohotelcenter.com/developer-services · condovultures.com/bulk-deal · therealdeal.com (bulk discounts) · growthspotter.com (Legacy Parc $34.5M/237 units) · miamirealtors.com (49% intl new-construction) · privatebank.jpmorgan.com/latam · themiamifamilyoffice.com<br>
+  <strong>Events:</strong> gransaloninmobiliario.com · exporealestate.com.ar · exporealestatemexico.com · investirusaexpo.com · aplaceinthesun.com/exhibitions · eb5investors.com · realtorquest.trreb.ca · weconvene.com (roadshow best practice) · luxurypresence.com (event pricing)<br>
+  <strong>Financing/transaction:</strong> americamortgages.com · homeabroadinc.com/mortgages/dscr-loan-florida · bcpmortgage.com (condotel) · gustancho.com/florida-condotel-financing · floridabar.org (FIRPTA) · m.flsenate.gov/statutes/718.202 (escrow) · theglobeandmail.com (pre-sale threshold) · mexperience.com / heartmortgage.com / cato.org (money movement)
+  </p>
+  <p class="disc">Compiled June 13, 2026 by a four-track research swarm (broker, bulk, events, financing). Named firms are verified to exist; contact details are listed only where public. Discount %, conversion rates, and rate/term figures are industry estimates to validate in negotiation. Not legal or financial advice.</p>
+</div></section>
+
+<div class="footer"><div class="wrap">
+  <img src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR" style="height:24px;margin-bottom:8px"><br>
+  Sales &amp; Distribution Playbook · June 2026 · <a href="https://AMBARorlando.com">AMBARorlando.com</a>
+</div></div>
+
+</body>
+</html>

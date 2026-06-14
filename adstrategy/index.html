@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMBAR Residences Orlando — Strategy Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#F36F43;--amber:#FFA84A;--black:#1E1B16;--cream:#F5F0E8;--g400:#9E9686}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',sans-serif;background:var(--cream);display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--black);flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,0.08)}
+.bar-inner{max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:8px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px;margin-right:18px;padding:10px 0}
+.brand img{height:26px}
+.brand .t{color:rgba(255,255,255,0.5);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{appearance:none;border:none;background:transparent;color:rgba(255,255,255,0.6);font-family:inherit;font-size:13px;font-weight:600;letter-spacing:0.3px;padding:11px 16px;border-radius:9px 9px 0 0;cursor:pointer;transition:all 0.18s;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab:hover{color:#fff;background:rgba(255,255,255,0.06)}
+.tab.active{color:var(--black);background:var(--cream);border-bottom-color:var(--orange)}
+.tab .dot{color:var(--g400);font-size:9px}
+.tab.active .dot{color:var(--orange)}
+.frame-wrap{flex:1 1 auto;position:relative;background:var(--cream)}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:none;background:var(--cream)}
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:12px;letter-spacing:1.5px;text-transform:uppercase}
+@media(max-width:680px){
+  .bar-inner{min-height:0;padding:0 12px}
+  .brand{width:100%;margin:0;padding:10px 0 4px;justify-content:center}
+  .tabs{width:100%;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start}
+  .tab{padding:10px 12px;font-size:12px}
+}
+</style>
+</head>
+<body>
+  <div class="topbar"><div class="bar-inner">
+    <div class="brand">
+      <img src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando">
+      <span class="t">Strategy Hub</span>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-src="/adstrategy/strategy.html" data-hash="strategy" role="tab"><span class="dot">&#9679;</span> Paid Media Strategy</button>
+      <button class="tab" data-src="/adstrategy/playbook.html" data-hash="playbook" role="tab"><span class="dot">&#9679;</span> Sales &amp; Distribution Playbook</button>
+      <button class="tab" data-src="/adstrategy/directory.html" data-hash="directory" role="tab"><span class="dot">&#9679;</span> Broker Directory &amp; Events</button>
+    </nav>
+  </div></div>
+  <div class="frame-wrap">
+    <div class="loading" id="loading">Loading&hellip;</div>
+    <iframe id="doc" title="AMBAR strategy document" src="/adstrategy/strategy.html"></iframe>
+  </div>
+
+<script>
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var frame = document.getElementById('doc');
+  var loading = document.getElementById('loading');
+  frame.addEventListener('load', function(){ loading.style.display='none'; });
+  function activate(tab){
+    tabs.forEach(function(t){ t.classList.remove('active'); });
+    tab.classList.add('active');
+    loading.style.display='flex';
+    frame.src = tab.getAttribute('data-src');
+    history.replaceState(null,'','#'+tab.getAttribute('data-hash'));
+    document.title = 'AMBAR — ' + tab.textContent.trim();
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ activate(t); }); });
+  var h = (location.hash||'').replace('#','');
+  var match = tabs.filter(function(t){ return t.getAttribute('data-hash')===h; })[0];
+  if(match){ tabs.forEach(function(t){t.classList.remove('active');}); match.classList.add('active'); frame.src = match.getAttribute('data-src'); }
+})();
+</script>
+</body>
+</html>

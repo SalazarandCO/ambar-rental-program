@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMBAR Residences Orlando — Paid Media Strategy & Budget</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F36F43; --amber:#FFA84A; --amber-light:#FFD9A0;
+  --olive:#5A5A37; --light-green:#989874; --light-blue:#9BB9C2; --blue:#355965;
+  --brown:#B37D50; --cream:#F5F0E8; --cream-dark:#EDE6D8; --black:#1E1B16; --white:#fff;
+  --g50:#FAF9F6; --g100:#F0EDE6; --g200:#E0DBD0; --g300:#C8C2B4; --g400:#9E9686; --g500:#6B6459; --g600:#4A453C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--black);line-height:1.65;-webkit-font-smoothing:antialiased;font-weight:400;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.serif{font-family:'Cormorant Garamond',serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+header{background:var(--black);color:var(--white);padding:64px 0 56px}
+.logo{height:38px;margin-bottom:34px}
+.eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:18px}
+h1{font-family:'Cormorant Garamond',serif;font-size:50px;font-weight:500;line-height:1.08;letter-spacing:-0.5px;margin-bottom:18px}
+h1 .it{font-style:italic;color:var(--amber-light)}
+.lede{font-size:17px;color:rgba(255,255,255,0.72);max-width:790px;font-weight:300}
+.meta-row{margin-top:32px;display:flex;flex-wrap:wrap;gap:28px;font-size:12.5px;letter-spacing:0.5px;color:rgba(255,255,255,0.55)}
+.meta-row b{color:var(--amber);font-weight:600;display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+section{padding:54px 0;border-bottom:1px solid var(--g200)}
+.sec-num{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:10px}
+h2{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;font-style:italic;letter-spacing:-0.3px;margin-bottom:8px;color:var(--black)}
+.sec-sub{font-size:15.5px;color:var(--g500);max-width:820px;margin-bottom:30px}
+h3{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;margin:30px 0 12px;color:var(--blue)}
+h4{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g500);font-weight:700;margin:24px 0 10px}
+p{margin-bottom:14px;font-size:15px}
+p.note{font-size:13px;color:var(--g500);font-style:italic}
+a{color:var(--orange);text-decoration:none}
+strong{font-weight:600}
+ul{margin:0 0 16px 20px}
+li{margin-bottom:8px;font-size:15px}
+sup.fn{font-size:10px;font-weight:700;color:var(--blue);vertical-align:super;line-height:0;margin-left:1px}
+sup.fn a{color:var(--blue)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin:8px 0 6px}
+.stat{padding:26px 22px;border-right:1px solid var(--g100)}
+.stat:last-child{border-right:none}
+.stat .n{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:var(--orange);line-height:1}
+.stat .l{font-size:12.5px;color:var(--g500);margin-top:8px;line-height:1.4}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px}
+.card{background:var(--white);border-radius:16px;padding:26px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border-top:3px solid var(--orange)}
+.card.broker{border-top-color:var(--blue)}
+.card h3{margin-top:0;color:var(--black)}
+.tag{display:inline-block;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:14px}
+.tag.buy{background:var(--amber-light);color:var(--brown)}
+.tag.brk{background:var(--light-blue);color:var(--blue)}
+.citygrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:12px}
+.citycard{background:var(--white);border-radius:16px;padding:24px 26px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border-left:4px solid var(--orange)}
+.citycard .ctop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+.citycard h3{margin:0;color:var(--black);font-size:24px}
+.citycard .sub{font-size:12px;color:var(--g500);font-weight:500;margin-top:2px}
+.sig{display:grid;grid-template-columns:84px 1fr;gap:6px 12px;font-size:13.5px;margin-top:10px}
+.sig .lab{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--orange);padding-top:2px}
+.fit{margin-top:14px;padding-top:14px;border-top:1px solid var(--g100);font-size:13.5px;color:var(--black)}
+.fit b{color:var(--brown)}
+table{width:100%;border-collapse:collapse;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);margin:14px 0 8px;font-size:14px}
+th{background:var(--black);color:var(--white);text-align:left;padding:13px 16px;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:600}
+td{padding:13px 16px;border-bottom:1px solid var(--g100);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:var(--g50)}
+.t-right{text-align:right}
+.pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.5px;padding:3px 9px;border-radius:20px;text-transform:uppercase;white-space:nowrap}
+.p1{background:var(--orange);color:#fff}
+.p2{background:var(--amber-light);color:var(--brown)}
+.p3{background:var(--g200);color:var(--g600)}
+.lang{font-size:11px;color:var(--g500);font-weight:600}
+.total-row td{background:var(--cream-dark)!important;font-weight:700;border-top:2px solid var(--g300)}
+.callout{background:var(--white);border-left:4px solid var(--amber);border-radius:0 14px 14px 0;padding:22px 26px;margin:22px 0;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.callout .k{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:8px}
+.callout.brand{border-left-color:var(--orange)}
+.callout.brand .k{color:var(--orange)}
+.callout.live{border-left-color:var(--blue)}
+.callout.live .k{color:var(--blue)}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:14px}
+.why{background:var(--white);border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.why .ic{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:8px}
+.why p{font-size:13.5px;color:var(--g600);margin:0}
+.adgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.adcard{background:var(--white);border-radius:14px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border-top:3px solid var(--g300)}
+.adcard .hd{font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--blue);margin-bottom:8px}
+.adcard p{font-size:13px;color:var(--g600);margin:0}
+.flag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:#FBE3DA;color:var(--orange);margin-left:6px}
+.splitbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:14px 0 6px;font-size:12px;font-weight:700;color:#fff}
+.splitbar .m{background:var(--orange);display:flex;align-items:center;justify-content:center}
+.splitbar .g{background:var(--blue);display:flex;align-items:center;justify-content:center}
+.refs{font-size:13px;color:var(--g600);counter-reset:none}
+.refs li{margin-bottom:10px;line-height:1.5}
+.refs a{color:var(--blue);text-decoration:underline;word-break:break-word}
+.footer{background:var(--black);color:rgba(255,255,255,0.6);padding:40px 0;font-size:12.5px}
+.footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;align-items:center}
+.footer a{color:var(--amber)}
+@media(max-width:760px){
+  .stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:none}
+  .cards,.why-grid,.citygrid,.adgrid{grid-template-columns:1fr}
+  h1{font-size:36px}h2{font-size:27px}
+  table{font-size:12.5px}th,td{padding:10px}
+}
+@media print{body{background:#fff}section{page-break-inside:avoid}header{padding:40px 0}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <img class="logo" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando">
+    <div class="eyebrow">Paid Acquisition Strategy &amp; Budget</div>
+    <h1>Own near Disney.<br><span class="it">Let Marriott run it.</span></h1>
+    <p class="lede">A data-led Meta &amp; Google plan for AMBAR Residences Orlando — an <em>Apartments by Marriott Bonvoy</em> branded residence. Every market, number, and budget decision in this document is sourced and justified — no assumptions. Figures are drawn from named industry reports plus live pulls from the Meta Ad Library, Google Keyword Planner, and Meta Ads Manager (June 13, 2026). Sources are numbered throughout and listed in §11.</p>
+    <div class="meta-row">
+      <div><b>Prepared for</b>AMBAR Residences Orlando</div>
+      <div><b>Channels</b>Meta &amp; Google · EN + ES</div>
+      <div><b>Horizon</b>90-day pilot → scale</div>
+      <div><b>Data</b>Sourced · Jun 2026</div>
+    </div>
+  </div>
+</header>
+
+<!-- 1. THESIS -->
+<section><div class="wrap">
+  <div class="sec-num">01 — The Strategy in One Idea</div>
+  <h2>Sell the brand and the hands-off income — then follow the people who already come, buy, and can fly in.</h2>
+  <p class="sec-sub">The product is the message: a furnished residence five miles from Walt Disney World, professionally managed by Marriott, earning rental income while the owner keeps up to 30 days of personal use. The data then dictates <em>where</em> to spend — only the cities where three independent signals overlap: <strong>(1)</strong> proven Florida purchase intent, <strong>(2)</strong> heavy Orlando tourist flow, and <strong>(3)</strong> nonstop MCO flights.</p>
+
+  <div class="callout live">
+    <div class="k">Where we are today — and what comes next</div>
+    <p style="margin:0">AMBAR's paid engine is already running in <strong>Brazil</strong>, driven by a dedicated Brazil marketing partner — confirmed live in the Meta Ad Library, where the active "Ambar Orlando" creative is Portuguese.<sup class="fn"><a href="#r7">[7]</a></sup> That's Phase&nbsp;1, and it's working. <strong>This plan is about what to layer on next:</strong> activating the other markets the data identifies as highest-intent — Colombia, Mexico, Canada, the UK, and U.S. Hispanic — which AMBAR's own channels have not yet reached. Brazil keeps running in parallel; everything here is additive.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">$10.4B</div><div class="l">International buyer volume in Florida, 12 mo. ending Jul 2025 — up <strong>46%</strong> YoY<sup class="fn"><a href="#r1">[1]</a></sup></div></div>
+    <div class="stat"><div class="n">14%</div><div class="l">of all FL foreign-buyer purchases land in Orlando–Kissimmee–Sanford (#2 metro)<sup class="fn"><a href="#r4">[4]</a></sup></div></div>
+    <div class="stat"><div class="n">~1 in 10</div><div class="l">Orlando-area home sales in 2025 went to an international buyer<sup class="fn"><a href="#r2">[2]</a></sup></div></div>
+    <div class="stat"><div class="n">62%</div><div class="l">of foreign buyers in FL pay <strong>all cash</strong> — short cycle, low financing friction<sup class="fn"><a href="#r4">[4]</a></sup></div></div>
+  </div>
+
+  <div class="why-grid">
+    <div class="why"><div class="ic">Signal 1 · Intent</div><p>Where foreign capital actually closes on Florida homes — NAR &amp; Florida Realtors $-volume by country.<sup class="fn"><a href="#r3">[3]</a></sup><sup class="fn"><a href="#r4">[4]</a></sup></p></div>
+    <div class="why"><div class="ic">Signal 2 · Demand</div><p>Where Orlando's 6.5M international tourists originate — Visit Orlando feeder data.<sup class="fn"><a href="#r5">[5]</a></sup></p></div>
+    <div class="why"><div class="ic">Signal 3 · Access</div><p>Which metros have nonstop MCO service — the visit that precedes 93% of foreign purchases.<sup class="fn"><a href="#r4">[4]</a></sup><sup class="fn"><a href="#r6">[6]</a></sup></p></div>
+  </div>
+</div></section>
+
+<!-- 2. WHAT'S LIVE -->
+<section><div class="wrap">
+  <div class="sec-num">02 — What's Running Today <span style="color:var(--blue)">· live Meta Ad Library audit<sup class="fn"><a href="#r7">[7]</a></sup></span></div>
+  <h2>The Brazil engine is live. Here's what it tells us.</h2>
+  <p class="sec-sub">Pulled live from Meta's Ad Library, June 13, 2026. AMBAR advertises through the page <strong>"Ambar Orlando."</strong> Phase 1 (Brazil, Portuguese) is active and performing — and the creative also hands us the proof points to reuse as we expand.</p>
+
+  <div class="adgrid">
+    <div class="adcard"><div class="hd">Phase 1 · live now</div><p><strong>Brazil, Portuguese</strong>, via your Brazil partner. The active "Ambar Orlando" set is PT creative — the engine is started. The next markets (ES + EN) are the additive layers this plan funds.</p></div>
+    <div class="adcard"><div class="hd">Live offer &amp; price</div><p>From the ads: unit at <strong>$375K</strong>, <strong>$37,500 down</strong> (10%), deposit now / installments start 2027. "Dollar income," furnished, hotel-style.<sup class="fn"><a href="#r7">[7]</a></sup></p></div>
+    <div class="adcard"><div class="hd">Hero proof point</div><p>"<strong>80% of units sold in 90 days</strong>" + Marriott Bonvoy partnership + proximity (8 km / ~5 min to Disney, Universal, SeaWorld).<sup class="fn"><a href="#r7">[7]</a></sup></p></div>
+  </div>
+
+  <div class="callout brand">
+    <div class="k">What the audit surfaced — worth acting on</div>
+    <p style="margin:0"><strong>A reseller is already selling AMBAR in Spanish.</strong> A separate advertiser, "Tu Inversion en Florida," runs Spanish ads promoting AMBAR <em>alongside competing brands</em> (Domus, Ritz-Carlton).<sup class="fn"><a href="#r7">[7]</a></sup> Spanish-speaking demand for AMBAR already exists — but it's being captured by a third party who also sells rivals. That's the case for an owned broker program (Audience B) and AMBAR-run Spanish ads in the markets §3 identifies.</p>
+  </div>
+  <p class="note">Scope note: Meta publishes spend/reach only for political &amp; social-issue ads, not real-estate ads — so this audit reads creative, language, geography, run-dates, and number of variants, not dollar spend. Competitor ad spend at the dollar level is not available to anyone for this ad category.<sup class="fn"><a href="#r7">[7]</a></sup></p>
+</div></section>
+
+<!-- 3. WHERE & WHY -->
+<section><div class="wrap">
+  <div class="sec-num">03 — Where We Advertise &amp; Why</div>
+  <h2>The target map — with the reasoning for every city.</h2>
+  <p class="sec-sub"><strong>Decision rule (why these and not others):</strong> a market qualifies only if it clears all three signals — purchase intent, tourism demand, and nonstop flight access. Cities are ranked by the strength of that evidence, then by fit with a Marriott-managed rental product. Sources are footnoted on each claim.</p>
+
+  <h4>Tier 1 — International Core <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--g400)">(the additive layers — not yet on AMBAR's own channels)</span></h4>
+  <div class="citygrid">
+    <div class="citycard">
+      <div class="ctop"><div><h3>Bogotá &amp; Medellín</h3><div class="sub">Colombia · Spanish</div></div><span class="pill p1">Highest</span></div>
+      <div class="sig">
+        <div class="lab">Intent</div><div class="val"><strong>77% of all Colombian U.S. buyers choose Florida</strong> — highest FL concentration of any nationality; #3 country for FL investment ($0.98B).<sup class="fn"><a href="#r4">[4]</a></sup></div>
+        <div class="lab">Tourism</div><div class="val">Orlando's <strong>fastest-growing</strong> feeder — 343K visitors, +13.6% in 2024.<sup class="fn"><a href="#r5">[5]</a></sup></div>
+        <div class="lab">Access</div><div class="val">Year-round nonstop to MCO on Avianca + LATAM (Bogotá); seasonal Medellín.<sup class="fn"><a href="#r6">[6]</a></sup></div>
+      </div>
+      <div class="fit"><b>Fit:</b> 47% of Colombian buyers purchase purely for rental income<sup class="fn"><a href="#r4">[4]</a></sup> — exactly AMBAR's "own it, Marriott runs it" model.</div>
+    </div>
+    <div class="citycard">
+      <div class="ctop"><div><h3>Mexico City</h3><div class="sub">+ Monterrey / Guadalajara · Spanish</div></div><span class="pill p1">Highest</span></div>
+      <div class="sig">
+        <div class="lab">Intent</div><div class="val"><strong>Top-3 country of origin</strong>: 11% of all U.S. foreign-buyer purchases and <strong>$2.8B</strong> in U.S. residential volume — third only to China &amp; Canada.<sup class="fn"><a href="#r3">[3]</a></sup></div>
+        <div class="lab">Tourism</div><div class="val">438K Orlando visitors in 2024.<sup class="fn"><a href="#r5">[5]</a></sup></div>
+        <div class="lab">Access</div><div class="val">Year-round nonstop to MCO on Aeroméxico (Mexico City; seasonal GDL/MTY).<sup class="fn"><a href="#r6">[6]</a></sup></div>
+      </div>
+      <div class="fit"><b>Fit:</b> large HNW base seeking dollar-denominated, brand-safe assets — the Marriott name carries weight in Mexico's luxury market.</div>
+    </div>
+    <div class="citycard">
+      <div class="ctop"><div><h3>Toronto &amp; Ontario</h3><div class="sub">Canada · English</div></div><span class="pill p1">Highest</span></div>
+      <div class="sig">
+        <div class="lab">Intent</div><div class="val"><strong>#1 country for FL investment ($2.1B)</strong>; 41% of Canadian U.S. purchases are in FL.<sup class="fn"><a href="#r4">[4]</a></sup> Nationally #1 by buyer share (13%) and $5.9B volume.<sup class="fn"><a href="#r3">[3]</a></sup></div>
+        <div class="lab">Tourism</div><div class="val"><strong>#1 feeder</strong> — 1.29M visitors in 2024 (record).<sup class="fn"><a href="#r5">[5]</a></sup></div>
+        <div class="lab">Access</div><div class="val">Multiple nonstop Canadian hubs to MCO.<sup class="fn"><a href="#r6">[6]</a></sup></div>
+      </div>
+      <div class="fit"><b>Fit:</b> 52% of Canadian buyers want a vacation home<sup class="fn"><a href="#r4">[4]</a></sup> — the "30 nights + Marriott-managed rental" model is built for snowbirds.</div>
+    </div>
+    <div class="citycard">
+      <div class="ctop"><div><h3>London</h3><div class="sub">United Kingdom · English</div></div><span class="pill p1">High</span></div>
+      <div class="sig">
+        <div class="lab">Intent</div><div class="val">43% of UK buyers intend vacation-home use;<sup class="fn"><a href="#r4">[4]</a></sup> a dedicated UK Orlando-property specialist already operates here — demand is proven.</div>
+        <div class="lab">Tourism</div><div class="val"><strong>#2 feeder</strong> — 908K visitors; decades-deep Disney/Orlando affinity.<sup class="fn"><a href="#r5">[5]</a></sup></div>
+        <div class="lab">Access</div><div class="val">~26 nonstop MCO flights/week — Virgin Atlantic (LHR, 14) + British Airways (LGW, 12).<sup class="fn"><a href="#r6">[6]</a></sup></div>
+      </div>
+      <div class="fit"><b>Fit:</b> brand trust + hands-off management decisive at 4,000 miles. Note: Brits search "villas," not "condos" (see §6) — build the UK keyword set natively.</div>
+    </div>
+  </div>
+
+  <div class="callout brand">
+    <div class="k">Brazil — Phase 1, already in motion</div>
+    <p style="margin:0">Brazil is the right place to have started: <strong>#2 country for FL investment ($1.5B)</strong>,<sup class="fn"><a href="#r4">[4]</a></sup> Orlando's <strong>#3 feeder (697K visitors)</strong>,<sup class="fn"><a href="#r5">[5]</a></sup> with daily nonstop GRU–MCO service.<sup class="fn"><a href="#r6">[6]</a></sup> It's live and running through your Brazil marketing partner. Nothing in this plan slows that down — the four markets above are the next layers to add on top of the running engine.</p>
+  </div>
+
+  <h4>Tier 2 — U.S. Hispanic &amp; Domestic Feeders <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--g400)">(lowest-friction, fastest-closing — and the biggest live search volume, see §6)</span></h4>
+  <p><strong>Why include U.S.-based buyers:</strong> they reuse the Spanish creative, carry no currency / visa / financing friction, and — per the live Keyword Planner pull (§6) — generate by far the largest search volume of any market. In Orlando, 36% of international purchases already come from Latin America/Caribbean buyers, many U.S.-resident.<sup class="fn"><a href="#r2">[2]</a></sup></p>
+  <table>
+    <thead><tr><th>Market</th><th>Lang</th><th>Why this market</th><th class="t-right">Role</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Miami / South FL</strong></td><td class="lang">ES/EN</td><td>LatAm diaspora &amp; in-state move-up buyers; densest pool of bilingual referring brokers.</td><td class="t-right"><span class="pill p2">Core</span></td></tr>
+      <tr><td><strong>New York / NJ</strong></td><td class="lang">ES/EN</td><td>Top domestic MCO origin;<sup class="fn"><a href="#r9">[9]</a></sup> large Dominican, Colombian &amp; Puerto Rican populations with FL second-home culture.</td><td class="t-right"><span class="pill p2">Core</span></td></tr>
+      <tr><td><strong>Puerto Rico (San Juan)</strong></td><td class="lang">ES</td><td>U.S. citizens, Spanish-first, nonstop to MCO, strong FL migration.</td><td class="t-right"><span class="pill p2">Core</span></td></tr>
+      <tr><td><strong>Atlanta</strong></td><td class="lang">EN/ES</td><td>ATL–MCO is the busiest air route in the U.S.;<sup class="fn"><a href="#r9">[9]</a></sup> fast-growing affluent Latino population.</td><td class="t-right"><span class="pill p3">Expand</span></td></tr>
+      <tr><td><strong>Houston / Dallas</strong></td><td class="lang">ES/EN</td><td>Large affluent Mexican-American base; natural extension of the Mexico creative.</td><td class="t-right"><span class="pill p3">Expand</span></td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<!-- 4. TWO AUDIENCES -->
+<section><div class="wrap">
+  <div class="sec-num">04 — The Two Audiences</div>
+  <h2>One project, two very different funnels.</h2>
+  <p class="sec-sub">Buyers and brokers need different objectives, creative, platforms, and KPIs. <strong>Why separate them:</strong> a shared campaign forces one optimization target and lets the cheaper action (e.g. broker sign-ups) starve the higher-value one (buyer leads). Splitting them protects budget and learning on each.</p>
+  <div class="cards">
+    <div class="card">
+      <span class="tag buy">Audience A · International Investors</span>
+      <h3>Demand generation → qualified lead</h3>
+      <p><strong>Who:</strong> Affluent, largely cash-ready adults 35–65 — investors seeking hands-off rental income (Latin America) and second-/vacation-home buyers (Canada, UK) who value brand names.</p>
+      <p><strong>The hook:</strong> the <em>Apartments by Marriott Bonvoy</em> rental program — a furnished residence near Disney that Marriott operates and markets, generating income with no landlord work, plus Bonvoy owner perks and 30 personal nights/year. Sell <strong>trust, turnkey income, and a globally recognized brand.</strong></p>
+      <h4>Channels</h4>
+      <ul>
+        <li><strong>Meta (Advantage+ / prospecting):</strong> the demand engine abroad (see §6 — search is thin there). Lookalikes off inquiry &amp; WhatsApp leads.</li>
+        <li><strong>Meta retargeting:</strong> landing-page visitors, video viewers, IG engagers.</li>
+        <li><strong>Google Search:</strong> intent capture — strongest in the U.S. (EN + ES) and on brand terms.</li>
+        <li><strong>YouTube / PMax:</strong> visual brand + cross-channel retargeting.</li>
+      </ul>
+      <p><strong>Lead event:</strong> inquiry / brochure request / WhatsApp. <strong>KPI:</strong> cost per qualified lead → cost per reservation.</p>
+    </div>
+    <div class="card broker">
+      <span class="tag brk">Audience B · Brokers &amp; Realtors</span>
+      <h3>Referral-channel recruitment</h3>
+      <p><strong>Who:</strong> Bilingual agents &amp; brokerages who already own the buyer relationships — Bogotá, CDMX, Toronto, Miami, San Juan. The live audit proves this channel is already active (and currently shared with competitors).<sup class="fn"><a href="#r7">[7]</a></sup></p>
+      <p><strong>The hook:</strong> sell a <em>Marriott-branded</em> product clients trust, plus a co-broke commission and a done-for-you kit (deck, renders, brand assets, WhatsApp scripts).</p>
+      <h4>Channels</h4>
+      <ul>
+        <li><strong>LinkedIn:</strong> precise job-title targeting (Realtor, Broker, Agent).</li>
+        <li><strong>Meta:</strong> real-estate interest/behavior audiences; cheap retargeting.</li>
+        <li><strong>Google Search:</strong> "Orlando new construction referral," "programa de referidos Orlando."</li>
+      </ul>
+      <p><strong>KPI:</strong> cost per registered broker → buyers sourced per broker.</p>
+    </div>
+  </div>
+  <p class="note">Meta restricts granular targeting on housing ads (Special Ad Category) for the buyer campaigns — we work within it via geography + broad creative + lookalikes; LinkedIn carries precise role targeting for brokers.</p>
+</div></section>
+
+<!-- 5. BUDGET -->
+<section><div class="wrap">
+  <div class="sec-num">05 — The Budget <span style="color:var(--g400);text-transform:none;letter-spacing:0;font-weight:400">· every split justified</span></div>
+  <h2>What to spend, where it goes, and why.</h2>
+  <p class="sec-sub">This budget funds the <strong>expansion markets</strong> (Colombia, Mexico, Canada, UK, U.S. Hispanic + brokers). Brazil continues in parallel through your Brazil partner. Figures are monthly media; add ~15–20% for management + creative.</p>
+  <div class="callout"><div class="k">What's grounded vs. recommended</div><p style="margin:0">The budget below is a <strong>recommended plan, not a measured spend.</strong> Externally grounded: the Google CPCs (live Keyword Planner, §6), Meta's documented learning-phase threshold, and published real-estate cost-per-lead benchmarks. The tier size, line-item splits and lead/cost targets are <strong>planning assumptions</strong> — refined against AMBAR's own actuals once campaigns run.</p></div>
+
+  <h4>Why $15,000 as the recommended tier</h4>
+  <p>Meta's <strong>learning phase</strong> needs roughly <strong>50 optimization events per ad set per week</strong> to stabilize and optimize reliably (Meta Business Help Center) — so spend must be concentrated enough per market to reach that, not spread thin across many geos. Sizing the rest is a planning assumption: at a blended <strong>~$45–55 per qualified lead</strong> (the midpoint band of the §9 targets) — deliberately above the ~$17–28 raw real-estate Facebook lead-ad benchmark (WordStream / LocaliQ 2024–25) because an AMBAR lead is a vetted $375K cross-border buyer, not a form-fill — $15K/mo implies <strong>~270–330 qualified leads/mo</strong>, enough for most ad sets to optimize while covering the market map. Treat $15K as a recommended <em>starting</em> tier, not a derived requirement: $8K tests 2–3 markets, $30K scales once cost-per-reservation is proven.</p>
+
+  <table>
+    <thead><tr><th>Tier</th><th>Monthly media</th><th>What it buys</th><th class="t-right">Markets live</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Lean / Test</strong></td><td>$8,000</td><td>Validate creative &amp; cost-per-lead before committing</td><td class="t-right">2–3</td></tr>
+      <tr><td><strong>Recommended / Growth</strong> <span class="pill p1">Start here</span></td><td><strong>$15,000</strong></td><td>Full Tier-1 + U.S. Hispanic, both audiences, room to optimize</td><td class="t-right">6–8</td></tr>
+      <tr><td><strong>Aggressive / Scale</strong></td><td>$30,000</td><td>Heavy retargeting + deeper coverage once economics prove out</td><td class="t-right">All</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Recommended allocation — two phases</h3>
+  <div class="callout brand"><div class="k">Why this changed — reweighting toward brokers</div><p style="margin:0">The companion <strong>Sales &amp; Distribution Playbook</strong> shows <strong>brokers drive 60–75% of units</strong>, yet a single buyer-heavy plan pointed only ~16% of media at brokers. So the plan is now phased. The nuance — and why we don't simply move all the money to broker ads: <strong>ad dollars don't sign brokers; business development, the commission/allocation offer, the deal-registration portal and broker events do</strong> (NAR: 72% of foreign-buyer leads come through referrals/relationships, only 15% online). Media's broker job is narrow but real — <strong>recruit agents at scale, fill broker/investor events, and manufacture buyer leads to route to brokers as ammunition.</strong> Buyer ads aren't "retail vs. broker": the demand they create is what makes the broker channel worth joining.</p></div>
+
+  <h4>Phase 1 — Launch (~first 90 days): build the broker channel</h4>
+  <p class="note" style="margin-top:0">Tilted to <strong>recruiting brokers and filling events</strong>, with enough buyer demand to seed a starter lead pool brokers can sell against. Hold here until the master-broker network is signed and the portal is live. <em>Rationale: this is the window where the 60–75% channel gets built; broker + event spend rises to ~40%.</em></p>
+  <table>
+    <thead><tr><th>Line</th><th>Focus</th><th>Platform</th><th class="t-right">Monthly</th><th class="t-right">Share</th></tr></thead>
+    <tbody>
+      <tr><td>Broker recruitment — agents in feeder cities</td><td>Brokers</td><td>LinkedIn + Meta</td><td class="t-right">$4,000</td><td class="t-right">27%</td></tr>
+      <tr><td>Broker intent capture</td><td>Brokers</td><td>Google Search</td><td class="t-right">$500</td><td class="t-right">3%</td></tr>
+      <tr><td>Event fill — broker + investor events</td><td>Events</td><td>Meta + Google</td><td class="t-right">$1,500</td><td class="t-right">10%</td></tr>
+      <tr><td>Buyer demand — seed the lead pool</td><td>Buyers</td><td>Meta</td><td class="t-right">$4,000</td><td class="t-right">27%</td></tr>
+      <tr><td>Buyer retargeting</td><td>Buyers</td><td>Meta</td><td class="t-right">$1,000</td><td class="t-right">7%</td></tr>
+      <tr><td>High-intent search (US, EN+ES)</td><td>Buyers</td><td>Google Search</td><td class="t-right">$2,500</td><td class="t-right">16%</td></tr>
+      <tr><td>Reserve (creative / new geos)</td><td>—</td><td>Flexible</td><td class="t-right">$1,500</td><td class="t-right">10%</td></tr>
+      <tr class="total-row"><td>Total media · Brokers+Events ≈ 40% / Buyers ≈ 50%</td><td></td><td></td><td class="t-right">$15,000</td><td class="t-right">100%</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Phase 2 — Scale (network signed): feed the brokers</h4>
+  <p class="note" style="margin-top:0">Once brokers are onboarded, media flips to <strong>demand generation</strong> — the highest-value use of spend is now supplying the signed network with leads and co-branded demand it can convert. <em>Rationale: with the channel built, ad money is most productive manufacturing the demand brokers close, not re-recruiting.</em></p>
+  <table>
+    <thead><tr><th>Line</th><th>Focus</th><th>Platform</th><th class="t-right">Monthly</th><th class="t-right">Share</th></tr></thead>
+    <tbody>
+      <tr><td>Prospecting — feeder geos</td><td>Buyers</td><td>Meta</td><td class="t-right">$5,500</td><td class="t-right">37%</td></tr>
+      <tr><td>Retargeting (landing page / video)</td><td>Buyers</td><td>Meta</td><td class="t-right">$1,500</td><td class="t-right">10%</td></tr>
+      <tr><td>High-intent search (EN + ES, US-weighted)</td><td>Buyers</td><td>Google Search</td><td class="t-right">$3,500</td><td class="t-right">23%</td></tr>
+      <tr><td>Lifestyle + retargeting</td><td>Buyers</td><td>YouTube / PMax</td><td class="t-right">$1,000</td><td class="t-right">7%</td></tr>
+      <tr><td>Broker recruitment (sustain)</td><td>Brokers</td><td>LinkedIn + Meta</td><td class="t-right">$2,000</td><td class="t-right">13%</td></tr>
+      <tr><td>Broker intent capture</td><td>Brokers</td><td>Google Search</td><td class="t-right">$500</td><td class="t-right">3%</td></tr>
+      <tr><td>Test reserve (creative, new geos)</td><td>—</td><td>Flexible</td><td class="t-right">$1,000</td><td class="t-right">7%</td></tr>
+      <tr class="total-row"><td>Total media · Buyers 77% / Brokers 16% / Reserve 7%</td><td></td><td></td><td class="t-right">$15,000</td><td class="t-right">100%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><div class="k">The bigger broker lever sits outside this media budget</div><p style="margin:0">Signing PFS, ISG or DecoNova is not an ad buy. The dominant broker-acquisition investment is <strong>non-media</strong>: BD to sign master brokers, the co-broke commission &amp; allocation offer, the deal-registration portal, and broker caravans/events (detailed in the Sales &amp; Distribution Playbook). Budget those separately — this $15K plan handles only the media layer that <em>supports</em> that work.</p></div>
+
+  <div class="callout"><div class="k">Ring-fence an "Investor / STR intent" ad group inside Google Search</div><p style="margin:0">Carve ~<strong>$500–1,000/mo</strong> of the Google Search line into a dedicated ad group on the high-intent income/STR/condo-hotel cluster from §6 ("condo hotel orlando," "short term rental orlando for sale," "investment property near Disney," etc.), with an agent-aware landing path ("Buying for a client? Register for co-broke"). <em>Rationale: §6's live pull shows these exact terms are low-volume but the single highest-intent search we can buy — and they capture the broker-shopping-for-a-client moment without funding a separate, near-empty "broker recruitment" search campaign.</em></p></div>
+
+  <h4>Why the Meta / Google split is 58 / 42 (buyer budget)</h4>
+  <div class="splitbar"><div class="m" style="width:58%">META 58%</div><div class="g" style="width:42%">GOOGLE 42%</div></div>
+  <p>This split is derived from the live data, not a rule of thumb:</p>
+  <ul>
+    <li><strong>Google spend is capped by existing search volume — and the live pull shows that volume is limited.</strong><sup class="fn"><a href="#r8">[8]</a></sup> International in-country purchase terms run just 10–100 searches/mo (Colombia, UK on US-style terms); even U.S. head terms top out at 1K–10K/mo. You cannot deploy large Search budget against queries that don't exist. Search is <em>intent capture</em> — it can only buy demand that's already there.</li>
+    <li><strong>Meta is demand generation — uncapped by search volume.</strong> A pre-construction branded residence is a discovery purchase: international buyers aren't typing "pre-construction condo Orlando," they have to be <em>shown</em> it. Meta reaches a live-confirmed 6–23M real-estate-investing adults per international expansion market (see §7) regardless of search behavior, and is the <em>only</em> meaningful lever in the thin-search international geos.</li>
+    <li><strong>The buyer journey is top-funnel-led:</strong> 93% of international buyers visit Florida before purchasing<sup class="fn"><a href="#r4">[4]</a></sup> — inspiration and consideration (Meta video/lifestyle) precede any search. AMBAR's active program already leans almost entirely on Meta — its own creative claims "80% sold in 90 days."<sup class="fn"><a href="#r7">[7]</a></sup></li>
+    <li><strong>Why Google still earns a strong 42% (not less):</strong> U.S. Hispanic + English search volume is genuinely large and growing ("apartamentos en orlando florida" 10K–100K/mo; "casas en venta en orlando" +900% in 3 months) and clicks are cheap (mostly $1–5 top-of-page).<sup class="fn"><a href="#r8">[8]</a></sup> That high-intent, low-cost capture — plus brand-defense search (people who saw the Meta ad then Google "Ambar Orlando") — is too efficient to under-fund.</li>
+  </ul>
+  <p class="note">The 58/42 ratio itself is a <strong>starting judgment, not a measured optimum</strong> — anchored to the live search data above (thin international search caps how much Google can absorb) and to the general industry pattern that new-development lead-gen leans social. Google holds a robust 42% because the live Keyword Planner data shows real, cheap U.S. search demand. The phase tables above run slightly more Meta-heavy than 58/42 — the Phase 2 buyer lines sit near 61/39 — because early demand-gen leans social; the mix converges toward 58/42 as cheap U.S. Search scales. We rebalance monthly toward whichever channel delivers the lower cost-per-reservation.</p>
+
+  <h4>Why the audience &amp; geo splits</h4>
+  <p><strong>Steady-state (Phase 2) split — Buyers 77% / Brokers 16% / Reserve 7%:</strong> buyers are the revenue event; brokers are high-leverage (one broker → many buyers) but, in <em>media</em> terms, a recruit-at-scale spend rather than where most broker sign-ups actually originate. <strong>In Phase 1 this flips to ~40% broker recruitment + events</strong> while the channel is being built (rationale above). <strong>Geo (within buyers): Tier-1 international ~60% / U.S. Hispanic ~35% / reserve ~5%</strong> — international skews higher because intent is strongest there and AMBAR isn't yet present, while U.S. Hispanic earns a third for being the cheapest, highest-volume, fastest-closing pool (§6). Brazil sits outside this budget, with the partner.</p>
+</div></section>
+
+<!-- 6. SEARCH DEMAND (REAL) -->
+<section><div class="wrap">
+  <div class="sec-num">06 — Search Demand &amp; Cost <span style="color:var(--blue)">· live Google Keyword Planner<sup class="fn"><a href="#r8">[8]</a></sup></span></div>
+  <h2>Where the searches actually are — and what clicks cost.</h2>
+  <p class="sec-sub">Pulled live from Keyword Planner (the client Google Ads account, period Jun 2025–May 2026, captured Jun 13 2026). Volumes appear as Google's ranges because the account isn't actively spending yet — directionally reliable, exact once a campaign runs. The pattern directly drives the §5 channel split.</p>
+
+  <table>
+    <thead><tr><th>Market · Lang</th><th>Keyword</th><th class="t-right">Avg monthly searches</th><th class="t-right">Top-of-page bid</th><th>Read</th></tr></thead>
+    <tbody>
+      <tr><td><strong>U.S. · Spanish</strong></td><td>apartamentos en orlando florida</td><td class="t-right"><strong>10K – 100K</strong></td><td class="t-right">$0.90–$2.26</td><td>Huge (skews rental)</td></tr>
+      <tr><td>U.S. · Spanish</td><td>casas en venta en orlando</td><td class="t-right">100 – 1K <span class="pill p1" style="font-size:8px">+900% 3-mo</span></td><td class="t-right">$0.12–$2.79</td><td>Buyer intent, surging</td></tr>
+      <tr><td><strong>U.S. · English</strong></td><td>orlando real estate</td><td class="t-right">1K – 10K</td><td class="t-right">$0.06–$8.00</td><td>Strong</td></tr>
+      <tr><td>U.S. · English</td><td>condos for sale orlando</td><td class="t-right">1K – 10K</td><td class="t-right">$0.08–$2.41</td><td>Strong, on-product</td></tr>
+      <tr><td>U.S. · English</td><td>orlando investment property</td><td class="t-right">100 – 1K</td><td class="t-right">$0.28–$5.00</td><td>High-intent</td></tr>
+      <tr><td><strong>Colombia · Spanish</strong></td><td>comprar casa en orlando / invertir en orlando</td><td class="t-right">10 – 100</td><td class="t-right">$0.42–$13.00</td><td>Thin in-country</td></tr>
+      <tr><td>Colombia · Spanish</td><td>casas en venta en orlando</td><td class="t-right">10 – 100</td><td class="t-right">$0.45–$6.32</td><td>Thin in-country</td></tr>
+      <tr><td><strong>UK · English</strong></td><td>orlando real estate / condos for sale orlando</td><td class="t-right">10 – 100</td><td class="t-right">$0.04–$1.69</td><td>Thin on US terms*</td></tr>
+    </tbody>
+  </table>
+  <p class="note">*UK returns 10–100 on U.S.-style terms but <strong>1,537 related keyword ideas</strong><sup class="fn"><a href="#r8">[8]</a></sup> — Brits search "orlando villas," "Disney villas," "Florida holiday home," not "condos." UK search exists under different vocabulary; the UK keyword set must be built natively.</p>
+
+  <div class="callout live">
+    <div class="k">What this proves — and how it sets the channel split</div>
+    <p style="margin:0"><strong>Search demand is concentrated in the U.S.</strong>, both languages; <strong>in-country international search is thin (10–100/mo).</strong> So Meta must lead abroad (create demand where no one is searching yet), and Google Search concentrates on the U.S. Hispanic + English markets plus brand terms everywhere. Clicks are cheap ($1–5 top-of-page), so Search is highly efficient where the volume exists. This is the evidence behind the 58/42 split in §5.</p>
+  </div>
+
+  <h4 style="margin-top:40px">The low-hanging fruit: one high-intent "buy now" capture list</h4>
+  <p class="note" style="margin-top:0">Pulled from the data above into a single list so it reads as <em>one decision</em>, not scattered evidence. These are the searches where the person already wants precisely what AMBAR is — an income-producing / short-term-rental / condo-hotel investment near Disney. They are the <strong>cheapest, highest-intent clicks we can buy</strong>, and we should capture <em>every</em> one. <strong>Honest caveat — read this:</strong> each term is <strong>low-volume</strong> (mostly 10–100 to 1K/mo), so this is a "miss nothing" bucket, <em>not</em> a scale engine. Total reservations from it will be modest; the volume still comes from Meta demand-gen (§5) and brokers. We ring-fence it because it's too cheap and too well-matched to leave uncovered — not because it's large.</p>
+  <table>
+    <thead><tr><th>Search term (US, EN + ES)</th><th class="t-right">Avg monthly searches</th><th class="t-right">Top-of-page bid</th><th>Why it's a match</th></tr></thead>
+    <tbody>
+      <tr><td>condo hotel orlando</td><td class="t-right">100 – 1K</td><td class="t-right">~$1–5</td><td>AMBAR's exact product type</td></tr>
+      <tr><td>condo resorts in orlando</td><td class="t-right">100 – 1K</td><td class="t-right">~$1–5</td><td>Resort-condo investor</td></tr>
+      <tr><td>vista cay condos orlando</td><td class="t-right">100 – 1K</td><td class="t-right">~$1–5</td><td>Shopping a direct condo-hotel comp</td></tr>
+      <tr><td>orlando investment property</td><td class="t-right">100 – 1K</td><td class="t-right">$0.28–$5.00</td><td>Investor intent, on-thesis</td></tr>
+      <tr><td>condos for sale orlando</td><td class="t-right">1K – 10K</td><td class="t-right">$0.08–$2.41</td><td>Largest pool here; on-product</td></tr>
+      <tr><td>short term rental orlando for sale</td><td class="t-right">10 – 100</td><td class="t-right">Low comp</td><td>STR investor — purest intent</td></tr>
+      <tr><td>investment property near disney</td><td class="t-right">10 – 100</td><td class="t-right">~$1–5</td><td>Location + thesis match</td></tr>
+      <tr><td>condo hotel orlando for sale</td><td class="t-right">10 – 100</td><td class="t-right">Low comp</td><td>Bottom-funnel, ready to act</td></tr>
+    </tbody>
+  </table>
+  <div class="callout live">
+    <div class="k">What to do with this list</div>
+    <p style="margin:0">Run it as <strong>one ring-fenced "Investor / STR intent" ad group</strong> inside the buyer Google Search line — ~<strong>$500–1,000/mo</strong> (see §5) — pointed at an agent-aware landing path ("Buying for a client? Register for co-broke"). It captures the serious investor <em>and</em> the broker shopping for a client in the same motion (a broker types the same terms a buyer does). <em>Rationale: because volume is low, the cost of full coverage is small and the intent quality is the highest on the board — so we buy the whole cluster rather than cherry-pick, and we don't build a separate, near-empty "broker recruitment" search campaign.</em></p>
+  </div>
+
+  <h4 style="margin-top:40px">Why this is capture, not a "broker recruitment" channel</h4>
+  <p class="note" style="margin-top:0">A broker shopping for a client types the <em>same</em> high-intent terms a serious investor does — there is no separate "broker" search to buy. The live pull also surfaced <strong>~82 related long-tail ideas</strong> around this cluster, almost all 10–100 to 100–1K/mo.<sup class="fn"><a href="#r8">[8]</a></sup> So the list above already <em>is</em> the broker-on-Google opportunity.</p>
+  <div class="callout live">
+    <div class="k">What this means for the broker channel</div>
+    <p style="margin:0"><strong>There is no budget-worthy standalone "broker" search market</strong> — and Meta has no precise real-estate-agent audience either. So we don't build a separate broker campaign on either platform; we cover the income/STR/condo-hotel cluster above (which catches brokers <em>and</em> investors in one motion), and we recruit brokers <strong>as people</strong> — via LinkedIn, BD outreach and events (§5, and the Sales &amp; Distribution Playbook). <em>Rationale: on Google, broker demand shows up as client-need capture, not recruitment; the recruitment lever is human, not media.</em></p>
+  </div>
+</div></section>
+
+<!-- 7. META AUDIENCE -->
+<section><div class="wrap">
+  <div class="sec-num">07 — Meta Audience Sizing <span style="color:var(--blue)">· live Meta Ads Manager pull<sup class="fn"><a href="#r10">[10]</a></sup></span></div>
+  <h2>Reachable audience by market — real figures, not estimates.</h2>
+  <p class="sec-sub">Pulled live from your Meta Ads Manager (client Meta Ads account), June 13, 2026, using one consistent recipe so the markets are comparable: <strong>adults 30–65+, interest = "Real estate investing," Advantage+ off.</strong> Figures are Meta's own "estimated audience size" for that recipe — country-level reachable pool (key metros noted). U.S. Hispanic adds a Spanish-language (all variants) narrowing.</p>
+  <table>
+    <thead><tr><th>Market (key metros)</th><th class="t-right">Reachable audience<sup class="fn"><a href="#r10">[10]</a></sup></th><th>Recipe / notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mexico</strong> (CDMX, MTY, GDL)</td><td class="t-right"><strong>19.3M – 22.7M</strong></td><td>Largest Spanish-language pool; 30–65+, real-estate investing</td></tr>
+      <tr><td><strong>United Kingdom</strong> (London)</td><td class="t-right">7.8M – 9.2M</td><td>30–65+, real-estate investing</td></tr>
+      <tr><td><strong>Colombia</strong> (Bogotá, Medellín)</td><td class="t-right">7.8M – 9.1M</td><td>30–65+, real-estate investing</td></tr>
+      <tr><td><strong>U.S. Hispanic</strong> (Miami/NY/PR/ATL/TX)</td><td class="t-right">7.7M – 9.0M</td><td>U.S. + Spanish (All) language, 30–65+, real-estate investing</td></tr>
+      <tr><td><strong>Canada</strong> (Toronto, Ontario)</td><td class="t-right">6.3M – 7.4M</td><td>30–65+, real-estate investing</td></tr>
+      <tr><td><strong>Brazil</strong> (São Paulo, Rio) — Phase 1</td><td class="t-right">31.3M – 36.9M</td><td>Already running via Brazil partner; large pool</td></tr>
+      <tr><td style="color:var(--g500)">U.S. total (reference)</td><td class="t-right" style="color:var(--g500)">33.7M – 39.7M</td><td style="color:var(--g500)">All-U.S. baseline before Spanish narrowing</td></tr>
+    </tbody>
+  </table>
+  <p class="note">These are live-pulled Meta figures, not planning estimates. The recipe deliberately uses one broad interest ("Real estate investing") for clean cross-market comparison; the actual launch audiences will layer additional interests/behaviors and lookalikes, and (for the buyer campaigns) run under Meta's Housing Special Ad Category, which broadens targeting. No audience was saved to the account — figures were read from a discarded draft.</p>
+</div></section>
+
+<!-- 8. COMPETITORS -->
+<section><div class="wrap">
+  <div class="sec-num">08 — Competitor &amp; Channel Landscape</div>
+  <h2>Who else is buying these audiences.</h2>
+  <p class="sec-sub">The Orlando international-buyer space is actively contested — validating the markets and showing where to differentiate. Players observed live in the Meta Ad Library and via search.<sup class="fn"><a href="#r7">[7]</a></sup></p>
+  <table>
+    <thead><tr><th>Player</th><th>Markets / language</th><th>Angle</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Tu Inversion en Florida</strong> <span class="flag">live vs. AMBAR</span></td><td>LatAm · Spanish</td><td>Reseller running AMBAR <em>alongside</em> Domus &amp; Ritz-Carlton — splitting AMBAR's Spanish audience with rivals</td></tr>
+      <tr><td><strong>DecoNova International</strong></td><td>LatAm · Spanish-first</td><td>Orlando + Miami + Riviera Maya; broad MLS resale</td></tr>
+      <tr><td><strong>Aponte Group</strong></td><td>LatAm · Spanish/English</td><td>Explicitly "Orlando real estate for Latin American buyers"</td></tr>
+      <tr><td><strong>ABIRE</strong></td><td>UK · English</td><td>Dedicated UK vacation/investment-home specialist — confirms UK demand</td></tr>
+      <tr><td><strong>Jerry Barker / Sacks Realty</strong></td><td>U.S./Intl · English</td><td>Disney-area vacation villas &amp; resale</td></tr>
+      <tr><td><strong>SEO domain cluster</strong></td><td>LatAm · Spanish</td><td>comprarenorlando / invertirenorlando / casasenorlando — heavy ES search competition</td></tr>
+    </tbody>
+  </table>
+  <div class="callout brand">
+    <div class="k">AMBAR's wedge</div>
+    <p style="margin:0">Competitors sell <em>unbranded resale</em> the buyer must manage themselves, with generic "invest in Orlando" copy. AMBAR is a single new-construction, <strong>Marriott-managed branded residence</strong> — a trusted brand running the asset for the owner, which no one else in this set can claim. Lead with Marriott, and bring the reseller's Spanish demand in-house through an owned broker program.</p>
+  </div>
+</div></section>
+
+<!-- 9. KPIS -->
+<section><div class="wrap">
+  <div class="sec-num">09 — Measurement</div>
+  <h2>What we hold the spend accountable to.</h2>
+  <table>
+    <thead><tr><th>Funnel stage</th><th>Metric</th><th class="t-right">Pilot target</th></tr></thead>
+    <tbody>
+      <tr><td>Reach</td><td>CPM / qualified reach in feeder geos</td><td class="t-right">Benchmark mo. 1</td></tr>
+      <tr><td>Engagement</td><td>Landing-page sessions · video 50% views</td><td class="t-right">Track + optimize</td></tr>
+      <tr><td>Lead</td><td>Cost per qualified lead (inquiry / brochure / WhatsApp)</td><td class="t-right">$25–60 Meta · $40–90 Search</td></tr>
+      <tr><td>Sales-qualified</td><td>Cost per appointment / sales conversation</td><td class="t-right">$150–400</td></tr>
+      <tr><td>Conversion</td><td><strong>Cost per reservation / deposit</strong></td><td class="t-right">The North Star</td></tr>
+      <tr><td>Broker</td><td>Cost per registered broker → buyers/broker</td><td class="t-right">Track LTV</td></tr>
+    </tbody>
+  </table>
+  <p>Report weekly the first month (fast creative iteration), then bi-weekly. Shift budget toward the lowest cost-per-reservation market/creative every cycle. <span class="note">Lead/appointment targets are planning benchmarks anchored to published real-estate paid-social/search CPLs (WordStream / LocaliQ 2024–25 — raw real-estate Facebook lead CPL ~$17–28, Google ~$20–66) and set higher here for vetted, high-intent buyers — to be replaced by AMBAR's actual figures after the first 30 days.</span></p>
+</div></section>
+
+<!-- 10. NEXT STEPS -->
+<section><div class="wrap">
+  <div class="sec-num">10 — Next Steps</div>
+  <h2>How we launch in 30 days.</h2>
+  <p class="note" style="margin-top:0">This launch builds the <strong>Phase 1 structure from §5</strong> — weighted to broker recruitment and events, with a buyer-demand seed — <em>not</em> a buyer-first retail push. <em>Rationale: the Sales &amp; Distribution Playbook shows brokers drive 60–75% of units, so the first 90 days exist to stand up that channel; media's job is to recruit brokers, fill events, and manufacture the buyer demand brokers close.</em></p>
+  <ul>
+    <li><strong>Now:</strong> confirm the Phase 1 budget tier (§5) and coordinate creative with the Brazil partner.</li>
+    <li><strong>Week 1 — Foundations:</strong> campaign landing page <em>including the agent-aware path</em> ("Buying for a client? Register for co-broke"); Meta Pixel + Google tags + conversion events; lead event + CRM/WhatsApp capture; broker deal-registration form live.</li>
+    <li><strong>Week 1–2 — Build:</strong> full Keyword Planner pull (incl. native UK villa terms); <strong>stand up the ring-fenced "Investor / STR intent" ad group on the §6 capture list</strong> (cheap, always-on, day one); finalize geo/audience structure (market sizes confirmed live in §7); <strong>open broker recruitment as a human channel</strong> — LinkedIn + BD outreach to the master brokers named in the Sales &amp; Distribution Playbook (recruitment is people + offer, not a search campaign — §6).</li>
+    <li><strong>Week 2–3 — Creative:</strong> EN + ES brand/lifestyle assets leading with the Marriott-managed program; broker-opportunity creative (commission + allocation offer); lead-flow QA.</li>
+    <li><strong>Week 3 — Soft launch:</strong> 2–3 expansion markets at the Lean tier to validate cost-per-lead; capture-list ad group running from the start.</li>
+    <li><strong>Week 4 — Scale (still Phase 1):</strong> move to the $15K tier across Tier-1 + U.S. Hispanic alongside the running Brazil engine. <strong>Flip toward Phase 2 (feed the brokers)</strong> only once the master-broker network is signed and the deal-registration portal is live.</li>
+  </ul>
+  <div class="callout">
+    <div class="k">Decisions to confirm</div>
+    <p style="margin:0">(1) Phase 1 budget tier. (2) Broker offer — co-broke commission % + allocation + kit. (3) CRM/WhatsApp lead destination + who owns the deal-registration portal. (4) Which owner-economics figures may appear publicly in creative. (5) Coordination point with the Brazil partner so creative &amp; lead-handling stay consistent.</p>
+  </div>
+</div></section>
+
+<!-- 11. SOURCES -->
+<section style="border-bottom:none"><div class="wrap">
+  <div class="sec-num">11 — Sources &amp; Notes</div>
+  <h2>Where every number came from.</h2>
+  <ol class="refs">
+    <li id="r1"><strong>[1] Florida Realtors / Homes.com (2025)</strong> — International buyer dollar volume in Florida reached $10.4B in the 12 months ending July 2025, up 46% YoY; FL = #1 U.S. destination. <a href="https://www.homes.com/news/florida-is-the-no-1-destination-as-international-buyers-in-reversal-ramp-up-purchases/225950186/">homes.com</a> · <a href="https://www.floridarealtors.org/tools-research/reports/international-home-buyers-sellers-profile-florida">floridarealtors.org</a></li>
+    <li id="r2"><strong>[2] Orlando Business Journal, via Hoodline (Mar 2026)</strong> — ~1 in 10 Orlando-area home sales in 2025 went to international buyers; 36% of Orlando-Kissimmee-Sanford international purchases came from Latin America/Caribbean. <a href="https://hoodline.com/2026/03/foreign-cash-crowd-snaps-up-orlando-homes/">hoodline.com</a></li>
+    <li id="r3"><strong>[3] NAR, 2024 Profile of International Transactions in U.S. Residential Real Estate</strong> (Apr 2023–Mar 2024) — country shares (Canada 13%; China &amp; Mexico 11% each; India 10%); U.S. dollar volume (China $7.5B, Canada $5.9B, India $4.1B, Mexico $2.8B, Colombia $0.7B); overall foreign median price $475K (China $697.9K / India $625K highest). <a href="https://www.nar.realtor/sites/default/files/documents/2024-international-transactions-in-us-residential-real-estate-report-07-17-2024.pdf">nar.realtor (PDF)</a></li>
+    <li id="r4"><strong>[4] Florida Realtors, 2023 Profile of International Residential Transactions in Florida</strong> (compiled by HomeAbroad) — FL investment by country (Canada $2.1B, Brazil $1.5B, Colombia $0.98B, Peru $0.54B, Mexico $0.52B); 77% of Colombian U.S. buyers and 41% of Canadian U.S. buyers choose FL; Orlando-Kissimmee-Sanford = 14% of FL foreign purchases; FL international median price $416K; 62% all cash; 93% visited FL before buying; Colombians 47% rental-only; Canadians 52% vacation-home. <a href="https://homeabroadinc.com/real-estate/foreign-real-estate-investment-florida-stats/">homeabroadinc.com</a></li>
+    <li id="r5"><strong>[5] Visit Orlando — "Orlando Welcomed 75.3 Million Visitors in 2024"</strong> — 6.5M international visitors; top-5 feeders: Canada 1,290,300; UK 907,900; Brazil 697,200; Mexico 438,000; Colombia 343,000 (+13.6%). <a href="https://www.visitorlando.org/media/press-releases/post/orlando-welcomed-753-million-visitors-in-2024/">visitorlando.org</a></li>
+    <li id="r6"><strong>[6] Airline schedules — FlightsFrom.com / Aviation A2Z / carrier sites (2025–26)</strong> — MCO nonstop: Avianca + LATAM (Bogotá year-round; Medellín seasonal); Aeroméxico (Mexico City year-round; Guadalajara/Monterrey seasonal); Virgin Atlantic (LHR, 14/wk) + British Airways (LGW, 12/wk); daily GRU (São Paulo)–MCO on LATAM. <a href="https://www.flightsfrom.com/MCO-LHR">flightsfrom.com</a> · <a href="https://aviationa2z.com/index.php/2026/02/10/british-airways-resuming-777-flights-to-orlando/">aviationa2z.com</a></li>
+    <li id="r7"><strong>[7] Meta Ad Library — live audit, pulled June 13, 2026</strong> — "Ambar Orlando" active ads (Portuguese-dominant; offer $375K / $37.5K down / installments from 2027; "80% sold in 90 days"; Marriott Bonvoy); reseller page "Tu Inversion en Florida" promoting AMBAR with Domus &amp; Ritz-Carlton. Spend/reach not disclosed for real-estate ads. <a href="https://www.facebook.com/ads/library/">facebook.com/ads/library</a></li>
+    <li id="r8"><strong>[8] Google Keyword Planner — live pull, the client Google Ads account, June 13, 2026</strong> (period Jun 2025–May 2026) — search volumes &amp; top-of-page bids by market/language as cited in §6; volumes shown as Google ranges (account pre-spend). <a href="https://ads.google.com/aw/keywordplanner/">ads.google.com/aw/keywordplanner</a></li>
+    <li id="r9"><strong>[9] OAG / Business Wire (Dec 2024)</strong> — ATL–MCO was the busiest domestic air route in the U.S.; MCO handled 57.2M passengers in 2024; top domestic origins include Atlanta, New York, Chicago, Boston, Dallas, Detroit. <a href="https://www.businesswire.com/news/home/20241217421820/en/">businesswire.com</a></li>
+    <li id="r10"><strong>[10] Meta Ads Manager — live audience pull, the client Meta Ads account, June 13, 2026</strong> — "estimated audience size" per market for a fixed recipe (adults 30–65+, interest "Real estate investing," Advantage+ off; U.S. Hispanic adds Spanish-All language). Read from a discarded draft saved audience; nothing was saved or published. Figures as cited in §7. <a href="https://adsmanager.facebook.com/adsmanager/audiences">adsmanager.facebook.com/adsmanager/audiences</a></li>
+  </ol>
+  <p class="note">Market demand (§6) and audience sizes (§7) are live-pulled. The §5 budget is a <strong>recommended plan</strong>: grounded by live Google CPCs (§6), Meta's learning-phase threshold and published real-estate CPL benchmarks (WordStream/LocaliQ 2024–25), with tier size, splits and lead/cost targets as planning assumptions — to be refined against AMBAR's first 30 days of actuals.</p>
+</div></section>
+
+<div class="footer"><div class="wrap">
+  <div>
+    <img src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR" style="height:26px;margin-bottom:10px"><br>
+    Paid Media Strategy · June 2026 · <a href="https://AMBARorlando.com">AMBARorlando.com</a>
+  </div>
+  <div style="max-width:460px;text-align:right;font-size:11px;line-height:1.5">
+    Sourced edition. Live data pulled Jun 13, 2026 from Meta Ad Library &amp; Google Keyword Planner; market data from NAR, Florida Realtors, Visit Orlando, OAG. Full citations in §11.
+  </div>
+</div></div>
+
+</body>
+</html>
