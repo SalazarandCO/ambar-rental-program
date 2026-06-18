@@ -1085,10 +1085,10 @@ function recalc(){
 
   document.getElementById('resultsGrid').innerHTML=`
     <div class="result-box"><div class="rb-label">${t('totalEquity')}</div><div class="rb-value">${fmt(cashInvested)}</div><div class="rb-sub">${t('dpPlusCash')}</div></div>
-    <div class="result-box"><div class="rb-label">${t('monthlyNOI')}</div><div class="rb-value">${fmt(noi)}</div><div class="rb-sub">${fmt(annNOI)} / ${lang==='es'?'año':'year'}</div></div>
+    <div class="result-box"><div class="rb-label">${t('monthlyNOI')}</div><div class="rb-value">${fmt(noi)}</div><div class="rb-sub" style="color:var(--black)">${fmt(annNOI)} / ${lang==='es'?'año':'year'}</div></div>
     <div class="result-box"><div class="rb-label">${t('cashFlowMo')}</div><div class="rb-value" style="color:${cashFlow>=0?'var(--olive)':'var(--orange)'}">${cashFlow>=0?'+':''}${fmt(cashFlow)}</div><div class="rb-sub">${cashFlow>=0?t('posFlow'):''}</div></div>
     <div class="result-box"><div class="rb-label">${t('capRate')}</div><div class="rb-qual">${t('capRateQual')}</div><div class="rb-value">${(capRate*100).toFixed(1)}%</div><div class="rb-sub">${t('capRateSub')}</div></div>
-    <div class="result-box"><div class="rb-label">${t('levCashReturn')}</div><div class="rb-value">${fmt(annCF+y1Principal)}</div><div class="rb-sub">${t('levCashReturnSub')}</div></div>
+    <div class="result-box"><div class="rb-label">${t('levCashReturn')}</div><div class="rb-value">${fmt((annCF+y1Principal)/12)}</div><div class="rb-sub" style="color:var(--black)">${fmt(annCF+y1Principal)} / ${lang==='es'?'año':'year'}</div></div>
     <div class="result-box dark"><div class="rb-label">${t('annualReturn')}</div><div class="rb-qual">${t('roeQual')}</div><div class="rb-value">${(irrOnEquity*100).toFixed(1)}%</div><div class="rb-sub">${t('onEquity')}</div></div>`;
 
   // ===== SECTION 7 — PROJECTION =====
