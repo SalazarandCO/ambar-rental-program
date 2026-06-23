@@ -238,49 +238,104 @@ footer a{color:var(--amber);text-decoration:none}
 
 /* ===== PRINT / PDF STYLES ===== */
 @media print {
-  @page { size: A4 portrait; margin: 8mm; }
+  @page { size: A4 portrait; margin: 12mm 11mm 14mm; }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-  html { width: 100% !important; }
-  body { background: white !important; margin: 0 !important; padding: 0 !important; width: 100% !important; min-width: 0 !important; max-width: none !important; font-size: 11px !important; }
-  /* Force ALL containers to fill available width */
-  header, .sub-header { width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
-  .header-inner, .sub-header-inner { max-width: none !important; width: 100% !important; margin: 0 !important; padding: 0 8px !important; box-sizing: border-box !important; }
-  .main { max-width: none !important; width: 100% !important; margin: 0 !important; padding: 10px 0 0 !important; box-sizing: border-box !important; }
-  .section { max-width: none !important; width: 100% !important; box-shadow: none !important; border: 1px solid #ddd !important; margin-bottom: 10px !important; break-inside: avoid; box-sizing: border-box !important; border-radius: 8px !important; }
-  .section-header { padding: 12px 14px 8px !important; }
-  .section-body { padding: 12px 14px !important; width: 100% !important; box-sizing: border-box !important; }
-  header { padding: 8px 0 6px !important; }
-  .sub-header { padding: 0 0 8px !important; }
-  .logo-img { height: 29px !important; margin-top: 8px !important; }
-  .section-num { width: 22px !important; height: 22px !important; font-size: 10px !important; }
-  .section-title { font-size: 16px !important; }
-  .section-summary-value { font-size: 18px !important; }
-  .section-summary-label { font-size: 8px !important; }
-  .unit-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 5px !important; width: 100% !important; }
-  .unit-card { padding: 6px !important; border-width: 1px !important; border-radius: 6px !important; }
-  .uc-type { font-size: 9px !important; letter-spacing: 1px !important; }
-  .uc-id { font-size: 8px !important; }
-  .uc-sqft { font-size: 8px !important; }
-  .uc-check { width: 16px !important; height: 16px !important; top: 4px !important; right: 4px !important; }
-  .proj-inputs-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 6px !important; width: 100% !important; }
-  .proj-summary-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 6px !important; width: 100% !important; }
-  .input-group label { font-size: 8px !important; }
-  .input-group select, .input-group input { font-size: 10px !important; padding: 5px 6px !important; }
-  .sum-box { padding: 8px !important; border-radius: 8px !important; }
-  .sum-val { font-size: 15px !important; }
-  .sum-label { font-size: 7px !important; }
-  .ptable { font-size: 9px !important; width: 100% !important; }
-  .ptable th, .ptable td { padding: 4px 3px !important; }
-  .form-row { padding: 6px 0 !important; }
-  .form-row-label { font-size: 11px !important; }
-  .form-row-value { font-size: 12px !important; }
-  .wf-row { padding: 4px 0 !important; }
-  .sc-grid { gap: 6px !important; }
-  .sc-card { padding: 8px !important; }
-  .badges { gap: 4px !important; }
-  .badge { padding: 3px 8px !important; font-size: 9px !important; }
-  #shareFab, #shareToast, #loginOverlay, #discountToggle, #discountPanel, .share-fab, .share-toast, .login-overlay, .lang-toggle, .no-print, .drawer-handle, .program-drawer { display: none !important; }
+  html, body { background:#fff !important; margin:0 !important; padding:0 !important; width:100% !important; min-width:0 !important; max-width:none !important; }
+  body { font-size:10.5px !important; color:#1a1a1a !important; }
+
+  /* Hide all live web chrome — the print cover supplies the branding */
+  header, .sub-header, .program-drawer, footer,
+  #shareFab, #shareToast, #loginOverlay, .share-fab, .share-toast, .login-overlay,
+  .lang-toggle, .no-print, .drawer-handle,
+  .rate-toggle, .toggle-group, #toggleTaxBtn, .discount-toggle, .discount-panel { display:none !important; }
+
+  /* Hide interactive controls; render their values as plain text */
+  input[type="range"], .slider, .slider-track { display:none !important; }
+  input { border:none !important; background:transparent !important; box-shadow:none !important; padding:0 !important; margin:0 !important; color:#1a1a1a !important; font-weight:700 !important; -webkit-appearance:none !important; appearance:none !important; width:auto !important; min-width:0 !important; text-align:left !important; }
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none !important; margin:0 !important; }
+
+  /* Remove the duplicate down-payment headline (repeated in the box below) */
+  .section-summary:has(#installmentAmt) { display:none !important; }
+
+  /* Full width, flat document cards */
+  .main { max-width:none !important; width:100% !important; margin:0 !important; padding:0 !important; box-sizing:border-box !important; }
+  .section { max-width:none !important; width:100% !important; box-shadow:none !important; border:1px solid #E0DBD0 !important; border-radius:10px !important; margin:0 0 9px !important; break-inside:auto; box-sizing:border-box !important; background:#fff !important; }
+  .section-header { padding:10px 14px 8px !important; border-bottom:1px solid #F0EDE6 !important; break-after:avoid !important; break-inside:avoid !important; }
+  .section-body { padding:11px 14px 13px !important; width:100% !important; box-sizing:border-box !important; }
+  .section-num { width:20px !important; height:20px !important; font-size:10px !important; background:#5A5A37 !important; }
+  .section-title { font-size:14px !important; }
+  .section-subtitle { font-size:10px !important; }
+  .section-summary-value { font-size:16px !important; color:#F36F43 !important; }
+  .section-summary-label { font-size:7.5px !important; }
+
+  /* Keep logical blocks from splitting across pages */
+  .sum-box, .scenario-card, .returns-col, .result-box, .waterfall-row, .waterfall-net,
+  .returns-split, .proj-summary-grid > *, tr, .disclaimer { break-inside:avoid !important; }
+  thead { display:table-header-group; }
+
+  /* Start the results & projection on a fresh page so nothing splits mid-card */
+  #secProfit, #secProjection { break-before:page !important; }
+
+  /* Tables */
+  .ptable { font-size:9px !important; width:100% !important; border-collapse:collapse !important; }
+  .ptable th, .ptable td { padding:5px 4px !important; }
+  .ptable tbody tr:nth-child(even) { background:#F2EEE4 !important; }
+  /* Bottom-align assumption-grid values so a wrapping label (esp. ES) doesn't break the baseline */
+  .proj-inputs-grid > div { display:flex !important; flex-direction:column !important; }
+  .proj-inputs-grid > div .slider-label { flex:1 0 auto; display:block; }
+
+  /* Grids */
+  .unit-grid { grid-template-columns:repeat(4,1fr) !important; gap:5px !important; width:100% !important; }
+  .unit-card { padding:7px !important; border-width:1px !important; border-radius:6px !important; }
+  .uc-type { font-size:9px !important; letter-spacing:1px !important; }
+  .uc-id, .uc-sqft { font-size:8px !important; }
+  .uc-check { width:16px !important; height:16px !important; top:4px !important; right:4px !important; }
+  .proj-inputs-grid { grid-template-columns:repeat(4,1fr) !important; gap:8px !important; width:100% !important; }
+  .proj-summary-grid { grid-template-columns:repeat(4,1fr) !important; gap:6px !important; width:100% !important; }
+  .scenario-grid { gap:6px !important; }
+  .sum-box { padding:9px !important; border-radius:8px !important; }
+  .sum-val { font-size:15px !important; }
+  .sum-label { font-size:7px !important; }
+  .badges { gap:4px !important; }
+  .badge { padding:3px 8px !important; font-size:9px !important; }
+
+  /* Reveal print-only elements */
+  #printCover { display:flex !important; }
+  #printFooter { display:flex !important; }
+  .price-edit { display:none !important; }
+  .price-print { display:inline !important; font-size:18px !important; font-weight:700 !important; color:#1a1a1a !important; }
 }
+/* Print-only elements are hidden on screen */
+#printCover, #printFooter, .price-print { display:none; }
+#printCover { flex-direction:column; min-height:255mm; padding-bottom:10mm; break-after:page; color:#1a1a1a; font-family:'Inter',sans-serif; }
+.pc-top { background:#000; border-radius:12px; padding:20px 26px; display:flex; align-items:center; justify-content:space-between; }
+.pc-logo-img { height:34px; }
+.pc-wordmark { display:block; font-weight:600; font-size:30px; letter-spacing:10px; color:#F5F0E8; }
+.pc-wordmark-sub { display:block; font-size:9px; letter-spacing:4px; color:rgba(255,255,255,.55); margin-top:5px; }
+.pc-doc { text-align:right; }
+.pc-doc-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:21px; color:#FFD9A0; }
+.pc-doc-sub { font-size:8.5px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.5); margin-top:3px; }
+.pc-hero { margin-top:30px; padding:0 4px; }
+.pc-unit { font-size:13px; letter-spacing:3px; text-transform:uppercase; color:#5A5A37; font-weight:600; }
+.pc-sqft { font-size:11px; color:#9E9686; margin-top:4px; }
+.pc-price { font-size:48px; font-weight:700; color:#F36F43; margin-top:16px; line-height:1; }
+.pc-price-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#9E9686; margin-top:5px; }
+.pc-program { display:inline-block; margin-top:16px; background:#F5F0E8; border:1px solid #E0DBD0; border-radius:30px; padding:5px 15px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#5A5A37; font-weight:600; }
+.pc-mid { margin:auto 0; }
+.pc-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:34px; }
+.pc-kpi { border:1px solid #E0DBD0; border-radius:12px; padding:18px 12px; text-align:center; background:#FAF9F6; }
+.pc-kpi.dark { background:linear-gradient(135deg,#1a1a1a,#000); border-color:#000; }
+.pc-kpi-val { font-size:23px; font-weight:700; color:#F36F43; }
+.pc-kpi.dark .pc-kpi-val { color:#FFD9A0; }
+.pc-kpi-label { font-size:8px; letter-spacing:1.1px; text-transform:uppercase; color:#6B6459; margin-top:7px; line-height:1.35; min-height:2.3em; display:flex; align-items:center; justify-content:center; text-align:center; }
+.pc-kpi.dark .pc-kpi-label { color:rgba(255,255,255,.6); }
+.pc-meta { padding-top:30px; }
+.pc-prepared { display:flex; justify-content:space-between; align-items:flex-end; font-size:10px; color:#6B6459; border-top:1px solid #E0DBD0; padding-top:14px; gap:20px; }
+.pc-prepared b { color:#1a1a1a; font-weight:600; }
+.pc-disc { font-size:8px; color:#9E9686; line-height:1.55; margin-top:12px; }
+#printFooter { position:fixed; bottom:0; left:0; right:0; height:7mm; align-items:center; justify-content:space-between; padding:4px 1mm 0; font-size:8px; letter-spacing:.4px; color:#9E9686; border-top:1px solid #E0DBD0; background:#fff; }
+#printFooter b { color:#5A5A37; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+#printFooter .pf-mid { color:#9E9686; text-transform:uppercase; letter-spacing:1px; }
 .tax-tip{position:relative;display:inline-flex;align-items:center;gap:5px;cursor:help}
 .tax-tip .tip-i{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--g200);color:var(--g500);font-size:9px;font-weight:700;font-style:italic;flex-shrink:0;line-height:1}
 .tax-tip .tip-box{position:absolute;left:0;bottom:calc(100% + 8px);width:260px;background:#1a1a1a;color:#fff;font-size:11px;line-height:1.55;padding:10px 12px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;font-weight:400;box-shadow:0 4px 16px rgba(0,0,0,.25)}
@@ -327,6 +382,44 @@ footer a{color:var(--amber);text-decoration:none}
   <span data-i18n="downloadPDF">Download PDF</span>
 </button>
 <div class="share-toast" id="shareToast"></div>
+
+<!-- ===== PRINT-ONLY INVESTOR COVER (hidden on screen) ===== -->
+<div id="printCover">
+  <div class="pc-top">
+    <div class="pc-brand">
+      <img class="pc-logo-img" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando" onerror="this.style.display='none';var w=document.getElementById('pcLogoText');if(w)w.style.display='block'">
+      <div class="pc-logo-text" id="pcLogoText" style="display:none"><span class="pc-wordmark">AMBAR</span><span class="pc-wordmark-sub">RESIDENCES ORLANDO</span></div>
+    </div>
+    <div class="pc-doc">
+      <div class="pc-doc-title" id="pcDocTitle">Investment Summary</div>
+      <div class="pc-doc-sub" id="pcDocSub">Orlando, Florida · Delivery Q3 2028</div>
+    </div>
+  </div>
+  <div class="pc-mid">
+  <div class="pc-hero">
+    <div class="pc-unit" id="pcUnit">1 Bedroom · A1</div>
+    <div class="pc-sqft" id="pcSqft">656 ft²</div>
+    <div class="pc-price" id="pcPrice">$459,344</div>
+    <div class="pc-price-label" id="pcPriceLabel">Purchase Price</div>
+    <div class="pc-program" id="pcProgram">Rental Program</div>
+  </div>
+  <div class="pc-kpis">
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcNoi">$2,962/mo</div><div class="pc-kpi-label" id="pcNoiLabel">Net Income / Month</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcCap">7.7%</div><div class="pc-kpi-label" id="pcCapLabel">Cap Rate</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcRoe">14.2%</div><div class="pc-kpi-label" id="pcRoeLabel">Annual Return · Financed</div></div>
+    <div class="pc-kpi dark"><div class="pc-kpi-val" id="pcWealth">$613,624</div><div class="pc-kpi-label" id="pcWealthLabel">5-Year Total Wealth</div></div>
+  </div>
+  </div>
+  <div class="pc-meta">
+    <div class="pc-prepared">
+      <div><span id="pcPreparedLabel">Prepared for</span>: <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></div>
+      <div><span id="pcDateLabel">Date</span>: <b id="pcDate"></b></div>
+    </div>
+    <div class="pc-disc" id="pcDisc">Estimated projections based on the assumptions entered. Not a guarantee of returns. Consult your financial advisor before making investment decisions.</div>
+  </div>
+</div>
+<!-- ===== PRINT-ONLY RUNNING FOOTER ===== -->
+<div id="printFooter"><b>AMBAR Residences Orlando</b><span class="pf-mid" id="pfMid">322 Residences · Marriott Bonvoy Managed</span><span>AMBARorlando.com</span></div>
 
 <header>
   <div class="header-inner">
@@ -385,8 +478,9 @@ footer a{color:var(--amber);text-decoration:none}
           <div style="font-size:11px;color:var(--g400);margin-top:2px" data-i18n="unitPriceSub">Adjust based on your negotiated price</div>
         </div>
         <div style="display:flex;align-items:center;gap:4px">
-          <span style="font-size:18px;font-weight:600;color:var(--g400)">$</span>
-          <input class="num-input" type="number" id="priceInput" value="459344" min="100000" max="2000000" step="1000" onchange="recalc()" style="width:120px;font-size:18px;font-weight:700;padding:8px 12px">
+          <span class="price-edit" style="font-size:18px;font-weight:600;color:var(--g400)">$</span>
+          <input class="num-input price-edit" type="number" id="priceInput" value="459344" min="100000" max="2000000" step="1000" onchange="recalc()" style="width:120px;font-size:18px;font-weight:700;padding:8px 12px">
+          <span class="price-print" id="priceInputPrint">$459,344</span>
         </div>
       </div>
       <div class="discount-toggle" id="discountToggle" onclick="toggleDiscount()">
@@ -571,7 +665,7 @@ footer a{color:var(--amber);text-decoration:none}
 </div>
 
 <!-- ========== 5. PROFITABILITY ========== -->
-<div class="section">
+<div class="section" id="secProfit">
   <div class="section-header">
     <div class="section-header-left">
       <div class="section-num">5</div>
@@ -599,7 +693,7 @@ footer a{color:var(--amber);text-decoration:none}
 </div>
 
 <!-- ========== 6. PROJECTION ========== -->
-<div class="section">
+<div class="section" id="secProjection">
   <div class="section-header">
     <div class="section-header-left">
       <div class="section-num">6</div>
@@ -752,6 +846,20 @@ const I = {
   es:{heroTitle:'Simulador del Programa de Alquiler',s1Title:'Tipos de Unidad y Precios',s1Sub:'Elige una unidad para simular la inversión',s2Title:'Enganche',s2Sub:'',s3Title:'Financiamiento Bancario',s3Sub:'Cómo se pagará el saldo al cierre',s4Title:'Costos Fijos de Propiedad',s4Sub:'Gastos mensuales del propietario, sin importar la ocupación',s5Title:'Proyección de Ingresos — Programa Marriott',s5Sub:'Tarifa promedio de alquiler, ocupación y distribución neta al propietario',s6Title:'Rentabilidad y Retornos',s6Sub:'El resultado final de la inversión',s7Title:'Supuestos de Proyección',s7Sub:'Apreciación, crecimiento de ingresos y horizonte de análisis',unitPrice:'Precio de la Unidad',unitPriceSub:'Ajuste según su precio negociado',totalDP:'% Enganche Total',numInstallments:'Número de Cuotas',perInstallment:'por cuota',totalDPLabel:'Total Pagado en Construcción',balanceClosing:'Saldo al Cierre',eachInstLabel:'Cada Cuota',payCash:'Pagar en efectivo al cierre',financeClosing:'Financiar al cierre',pctFinanced:'% Financiado',pctFinSub:'Del saldo al cierre',annualInterest:'Interés Anual',annIntSub:'Bancos de EE.UU. financian extranjeros',term:'Plazo',termSub:'Amortización estándar',years:'años',monthlyPMT:'Pago Mensual — PMT',pmtSub:'Capital + interés al banco por mes',monthlyInterest:'Interés Mensual',monthlyInterestSub:'Porción deducible de impuestos · prom. mensual (año 1)',principalPortion:'Capital',totalPmt:'Pago Total — PMT',financedBal:'Saldo Financiado',finBalSub:'Monto entrando a financiamiento',paymentMo:'pago/mes',monthlyFixed:'total fijo mensual',aveRentalRate:'Tarifa Promedio de Alquiler por Día',aveRateSub:'Tarifa diaria promedio del resort — gestionado profesionalmente',occupancy:'Ocupación',occRate:'Tasa de Ocupación',occSub:'Promedio anual — Orlando demanda todo el año',conservative:'Conservador',base:'Base',optimistic:'Optimista',grossRevMo:'Ingreso bruto/mes',revenueWaterfall:'Distribución de Ingresos — Programa Marriott Bonvoy',grossMonthly:'Ingreso Mensual Bruto',rateOccDays:'Tarifa × Ocupación × 30.4 días/mes',marriottFee:'Marriott — 10%',marriottDesc:'Plataforma Marriott, distribución global, estándares de marca',hotelOps:'Operaciones del Hotel — 40%',hotelOpsDesc:'Recepción, limpieza, mantenimiento, operaciones diarias',ownerRev:'Ingreso del Propietario — 50%',ownerRevDesc:'Tu parte antes de costos variables',ffeRes:'Reserva FF&E — 4%',ffeDesc:'Reserva de mobiliario y equipamiento',otaCard:'Comisión OTA / Tarjeta',otaDesc:'Plataformas de reserva + procesamiento de tarjetas',fixedCosts:'Costos Fijos de Propiedad',fixedDesc:'HOA + Servicios + Seguro + Impuesto',ownerNet:'Ingreso Neto Mensual del Propietario',netIncomeMo:'ingreso neto/mes',monthlyNOI:'Ingreso Neto Mensual',monthlyNOISub:'NOI · después de todos los costos',cashFlowMo:'Flujo de Caja / Mes',cashFlowSub:'Flujo neto después del pago bancario',annualReturn:'Retorno Anual sobre Capital',roeQual:'con financiamiento',annualReturnSub:'TIR · tasa interna de retorno',annualNOI:'Ingreso Neto Anual',annualNOISub:'NOI · después de todos los costos',cashFlowYr:'Flujo de Caja / Año',cashFlowYrSub:'Flujo neto después del pago bancario',capRate:'Tasa de Capitalización',capRateQual:'sin financiamiento',capRateSub:'NOI anual ÷ precio de compra',irrAnnual:'TIR Anual',irrSub:'Retorno anual sobre capital invertido',payback:'Período de Recuperación',paybackSub:'Meses hasta que NOI cubra el capital',levCashReturn:'Retorno de Caja Apalancado',levCashReturnSub:'Flujo de caja + amortización de capital / año',totalEquity:'Capital Total Invertido',totalEquitySub:'Enganche + efectivo al cierre',purchasePrice:'Precio de Compra',purchasePriceSub:'Al contado · precio total',noFinHead:'Compra al Contado',noFinSub:'Al contado · la propiedad por sí sola',finHead:'Con Financiamiento',finSub:'Apalancado · capital invertido',horizon:'Horizonte',appreciation:'Apreciación',incomeGrowth:'Crecimiento de Ingresos',costInflation:'Inflación de Costos',priceToday:'Precio Hoy',estAppreciation:'Apreciación Est.',accIncome:'Flujo de Caja Acumulado',totalWealth:'Patrimonio Total',year:'Año',propValue:'Valor Propiedad',annIncome:'Flujo de Caja Anual',cumCash:'Flujo Acumulado',equity:'Patrimonio',totalReturn:'Retorno Total',disclaimer:'Este simulador proporciona proyecciones estimadas basadas en los supuestos ingresados. Los resultados pueden variar según condiciones del mercado, ocupación, gastos operativos y otros factores. No es garantía de retornos. Consulte con su asesor financiero.',badgeDelivery:'Entrega Q3 2028',badgeUnits:'322 Residencias',badgeManaged:'Gestionado por Marriott',hoa:'HOA',hoaDesc:'Mantenimiento de áreas comunes, piscina, gym, seguridad',utilities:'Servicios',utilitiesDesc:'Electricidad, agua y gas estimados',insurance:'Seguro',insuranceDesc:'Seguro de propiedad — daños, incendio, responsabilidad',propertyTax:'Impuesto Predial',propertyTaxDesc:'Condado de Osceola, Florida — impuesto anual ÷ 12',yieldOnGross:'rendimiento sobre ingreso bruto',posFlow:'Flujo positivo: ingreso > pago',finScenario:'Escenario financiado',onEquity:'Flujo de caja + amortización de capital',yrsRecover:'para recuperar capital invertido',dpPlusCash:'Enganche + efectivo al cierre',downloadPDF:'Descargar PDF',pdfGenerating:'Generando PDF\u2026',pdfReady:'PDF descargado!',pdfFail:'No se pudo generar el PDF',bonvoyDiscount:'Descuento Bonvoy',discountLabel:'Descuento',s8Title:'Beneficios Fiscales',s8Sub:'Deducciones fiscales estimadas y ahorros por ser propietario',y1TaxSavings:'ahorro fiscal año 1',taxBracketLbl:'Tramo Fiscal',taxBracketSub:'Seleccione su tasa marginal federal',deductionCol:'Deducción',year1Col:'Año 1 (con segregación)',years2PlusCol:'Años 2+ (continuo)',costSegRow:'Segregación de costos + depreciación acelerada',costSegRowSub:'22–33% de la base reclasificada, bono 100% primer año (referencia condo-hotel)',slDepRow:'Depreciación lineal',slDepRowSub:'No residencial (39 años) — uso transitorio < 30 días',mortIntRow:'Intereses hipotecarios',mortIntRowSub:'Intereses sobre saldo financiado',propTaxRow:'Impuestos a la propiedad',propTaxRowSub:'Condado de Osceola, Florida',opExpRow:'Gastos operativos',opExpRowSub:'HOA / seguro / servicios anuales',hotelFeesRow:'Tarifas del programa hotelero',hotelFeesRowSub:'Marca + operación + FF&E + OTA/tarjeta (anual) (neteado en Sección 4)',totalDeductionsRow:'Deducciones totales',taxSavingsRow:'Ahorro fiscal',returnY1Card:'Retorno Total Año 1',returnOngoingCard:'Retorno Continuo Años 2+',cashFlowRow:'Flujo de caja',appreciationRow:'Apreciación',principalRow:'Amortización de capital',totalReturnRow:'Retorno total',roicRow:'Retorno sobre capital invertido',taxDisclaimer:'Estimaciones fiscales basadas en ratio edificio/tierra 80/20 y normas vigentes del IRS incluyendo depreciación bono 100% (OBBBA, julio 2025). El rango de segregación de costos refleja 22–33% de la base reclasificada según estándares de ingeniería del IRS. Florida no tiene impuesto estatal sobre la renta. Esto no constituye asesoría fiscal — consulte a un CPA calificado antes de tomar decisiones de inversión.',ongoingDeclining:'(decreciente)',tipCostSeg:'Un estudio de segregación de costos descompone su unidad en componentes: gabinetes, electrodomésticos, pisos, iluminación, muebles. Estos se deprecian en 5-7 años en vez de 39. Con la depreciación bono del 100% (permanente bajo OBBBA 2025), puede deducir el monto total en el año 1. El rango 22-33% se basa en 8,000+ estudios de ingeniería para unidades condo-hotel.',tipSlDep:'El valor restante del edificio (después de la segregación) se deprecia uniformemente en 39 años. Debido a que el programa Marriott opera con estadías promedio menores a 30 días, el IRS clasifica esto como propiedad no residencial (transitoria) — requiriendo 39 años en vez de los 27.5 años para alquileres residenciales.',tipMortInt:'La porción de interés de su pago mensual es totalmente deducible contra ingresos de alquiler. A diferencia de residencias principales (limitadas a préstamos de $750K), las propiedades de inversión no tienen límite. La deducción es mayor en el año 1 y disminuye gradualmente.',tipPropTax:'Los impuestos anuales pagados al Condado de Osceola son totalmente deducibles como gasto operativo del alquiler. A diferencia de residencias personales (sujetas al límite SALT de $10K-$40K), los impuestos de propiedades de inversión no tienen límite de deducción.',tipOpExp:'Todos los costos de mantener y operar su unidad son deducibles: HOA cubre mantenimiento de áreas comunes, piscina, gimnasio y seguridad. El seguro cubre daños y responsabilidad. Los servicios incluyen electricidad, agua y gas.',tipHotelFees:'Los cargos del programa Marriott Bonvoy son gastos comerciales deducibles: Franquicia (10%) cubre marketing global y la plataforma Bonvoy. Operaciones (40%) cubre recepción, limpieza y gestión. Reserva FF&E (4%) financia reemplazo de muebles. OTA/tarjeta cubre plataformas de reserva y procesamiento de tarjetas. Nota: estas tarifas ya están restadas de sus ingresos en la Sección 4.',tipWfMarriott:'Plataforma Marriott y distribución global — canales de reserva Bonvoy, marketing global en 140+ países y estándares de marca. Se calcula como porcentaje de los ingresos brutos por habitación.',tipWfHotelOps:'Recepción, limpieza, mantenimiento y costos operativos diarios del hotel — servicios públicos, suministros y personal asignados a su unidad. Se calcula como porcentaje de los ingresos brutos.',tipWfFfe:'Fondo de reserva para Muebles, Accesorios y Equipamiento. Requerido por Marriott para cubrir el reemplazo periódico de muebles, alfombras, electrodomésticos y acabados. Estándar de la industria para hoteles de marca.',tipWfOta:'Comisiones de agencias de viajes en línea (Booking.com, Expedia, etc.) y tarifas de procesamiento de tarjetas de crédito en las reservas. Se calcula como porcentaje de los ingresos brutos.',tipWfFixed:'Costos mensuales que el propietario paga independientemente de la ocupación: HOA/cuotas de condominio, impuesto predial, seguro y servicios no cubiertos por operaciones del hotel. Son fijos — no cambian con los ingresos.',tipWfOwnerNet:'Su resultado final — lo que queda después de deducir todos los costos operativos del hotel y los costos fijos de propiedad de los ingresos brutos. Este es su flujo de caja mensual antes del servicio de deuda.',tipFixedHoa:'HOA / Cuota de Condominio',tipFixedUtil:'Servicios Públicos',tipOtaCommission:'Comisión OTA',tipOtaCC:'Procesamiento de Tarjeta',tipTotal:'Total',strNoteTitle:'Tratamiento no-pasivo de alquiler a corto plazo (IRC §469)',strNote:'Debido a que la estadía promedio es menor a 7 días, esta propiedad puede calificar para tratamiento no-pasivo — permitiendo que las pérdidas compensen ingresos W-2 y de negocios activos. Se requiere participación material (500+ horas/año). La depreciación base de 39 años también permite la deducción bajo Sección 179. Consulte un CPA calificado.',rentalProgram:'Programa de Alquiler',leasebackProgram:'Leaseback Glow',lbDrawerSub:'(Retorno Garantizado 10%)',lbGuaranteed:'10% Leaseback Garantizado',lbAnnual:'Anual',lbQuarterly:'Trimestral',lbMonthlyEquiv:'Equivalente mensual',lbBasedOn:'Basado en precio de compra',lbGuaranteedIncome:'Ingreso Mensual Garantizado',lbGuaranteedDesc:'Precio de compra × 10% ÷ 12',lbFfeRes:'Reserva FF&E',lbFfeDesc:'Reserva de mobiliario y equipamiento',lbOwnerNet:'Ingreso Neto Mensual del Propietario (Leaseback)',lbNetIncomeMo:'neto leaseback/mes',lbNote:'Pagado trimestralmente. El programa de leaseback cubre los primeros 2 años de propiedad. Después del Año 2, la unidad transiciona al Programa de Alquiler Marriott Bonvoy.',lbS5Title:'Ingresos — Programa de Leaseback Glow',lbS5Sub:'Retorno anual garantizado del 10% sobre el precio de compra por 2 años',lbTag:'Leaseback',rentalTag:'Alquiler',lbOwnerCosts:'Costos del Propietario',lbHotelFeesNote:'Las tarifas del programa hotelero (marca, operaciones, OTA) son absorbidas por el operador durante el leaseback'}
 };
 function t(k){return I[lang][k]||k}
+// ===== PRINT COVER HELPERS =====
+function setTxt(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+function moSfx(){return lang==='es'?'/mes':'/mo';}
+const COVER_I18N={
+  en:{docTitle:'Investment Summary',docSub:'Orlando, Florida · Delivery Q3 2028',priceLabel:'Purchase Price',noiLabel:'Net Income / Month',capLabel:'Cap Rate',roeLabel:'Annual Return · Financed',preparedLabel:'Prepared for',dateLabel:'Date',disc:'Estimated projections based on the assumptions entered. Not a guarantee of returns. Consult your financial advisor before making investment decisions.',pfMid:'322 Residences · Marriott Bonvoy Managed',guests:'guests'},
+  es:{docTitle:'Resumen de Inversión',docSub:'Orlando, Florida · Entrega Q3 2028',priceLabel:'Precio de Compra',noiLabel:'Ingreso Neto / Mes',capLabel:'Tasa de Capitalización',roeLabel:'Retorno Anual · Financiado',preparedLabel:'Preparado para',dateLabel:'Fecha',disc:'Proyecciones estimadas según los supuestos ingresados. No es garantía de retornos. Consulte con su asesor financiero antes de invertir.',pfMid:'322 Residencias · Gestionado por Marriott Bonvoy',guests:'huéspedes'}};
+function applyCoverI18n(){
+  var c=COVER_I18N[lang]||COVER_I18N.en;
+  setTxt('pcDocTitle',c.docTitle);setTxt('pcDocSub',c.docSub);setTxt('pcPriceLabel',c.priceLabel);
+  setTxt('pcNoiLabel',c.noiLabel);setTxt('pcCapLabel',c.capLabel);
+  setTxt('pcPreparedLabel',c.preparedLabel);setTxt('pcDateLabel',c.dateLabel);setTxt('pcDisc',c.disc);setTxt('pfMid',c.pfMid);
+  // pcWealthLabel and pcRoeLabel are set in recalc() (year-aware + finMode-aware)
+  try{ setTxt('pcDate', new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'})); }catch(e){}
+}
 function setLang(l){
   lang=l;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===l.toUpperCase()));
@@ -988,7 +1096,7 @@ function recalc(){
   document.getElementById('principalDisplay').textContent=fmt(monthlyPrincipal);
   document.getElementById('pmtDisplay').textContent=fmt(monthlyPMT);
   document.getElementById('finBalDisplay').textContent=fmt(loanAmt);
-  document.getElementById('pmtSummary').textContent=finMode==='finance'?fmt(monthlyPMT)+'/mo':'—';
+  document.getElementById('pmtSummary').textContent=finMode==='finance'?fmt(monthlyPMT)+moSfx():'—';
 
   // ===== REVENUE — shared calculations =====
   const gross=revPAR*DPM;
@@ -1025,7 +1133,7 @@ function recalc(){
   // Section 4 toggle visibility
   document.querySelector('[data-i18n="s5Title"]').textContent=programMode==='leaseback'?t('lbS5Title'):t('s5Title');
   document.querySelector('[data-i18n="s5Sub"]').textContent=programMode==='leaseback'?t('lbS5Sub'):t('s5Sub');
-  document.getElementById('noiSummary').textContent=fmt(noi)+'/mo';
+  document.getElementById('noiSummary').textContent=fmt(noi)+moSfx();
   document.querySelector('[data-i18n="netIncomeMo"]').textContent=programMode==='leaseback'?t('lbNetIncomeMo'):t('netIncomeMo');
 
   // ===== SECTION 5 — WATERFALL =====
@@ -1147,6 +1255,23 @@ function recalc(){
     <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('estAppreciation')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(estVal)}</div><div style="font-size:10px;color:var(--olive)">+${fmt(estVal-price)}</div></div>
     <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('accIncome')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(last.cumCF||0)}</div></div>
     <div style="background:var(--header-bg);border-radius:10px;padding:14px;text-align:center;color:white"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--amber-light)">${t('totalWealth')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(estVal+(last.cumCF||0))}</div></div>`;
+
+  // ===== PRINT COVER — fed from the same live values (single source of truth) =====
+  setTxt('pcUnit',(lang==='es'?sel.type.es:sel.type.en)+' · '+sel.id);
+  setTxt('pcSqft',displayArea(sel.sqft)+'  ·  '+sel.guests+' '+((COVER_I18N[lang]||COVER_I18N.en).guests));
+  setTxt('pcPrice',fmt(price));
+  setTxt('priceInputPrint',fmt(price));
+  setTxt('pcProgram',programMode==='leaseback'?t('leasebackProgram'):t('rentalProgram'));
+  setTxt('pcNoi',fmt(noi)+moSfx());
+  setTxt('pcCap',(capRate*100).toFixed(1)+'%');
+  setTxt('pcRoe',(irrOnEquity*100).toFixed(1)+'%');
+  setTxt('pcWealth',fmt(estVal+(last.cumCF||0)));
+  applyCoverI18n();
+  // Year-aware wealth label + finMode-aware return label (set after applyCoverI18n so they win)
+  setTxt('pcWealthLabel', lang==='es' ? ('Patrimonio Total a '+hzYrs+' Años') : (hzYrs+'-Year Total Wealth'));
+  setTxt('pcRoeLabel', finMode==='finance'
+    ? (lang==='es'?'Retorno Anual · Financiado':'Annual Return · Financed')
+    : (lang==='es'?'Retorno Anual':'Annual Return'));
 
   let th=`<thead><tr><th>${t('year')}</th>${programMode==='leaseback'?'<th></th>':''}
     <th>${t('propValue')}</th><th>${t('annIncome')}</th><th>${t('cumCash')}</th><th>${t('equity')}</th><th>${t('totalReturn')}</th></tr></thead>`;
@@ -1276,7 +1401,10 @@ if(sessionStorage.getItem('ambar_auth')==='1'){
 // ===== SHARE LINK =====
 function downloadPDF(){
   showToast(t('pdfGenerating'));
-  // Use browser native print — handles layout perfectly, no html2canvas issues
+  // Refresh the print cover from current inputs, then use native print (perfect layout, no html2canvas)
+  try{ recalc(); }catch(e){}
+  setTxt('pcDate', new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'}));
+  applyCoverI18n();
   // Set document title temporarily for the PDF filename
   var origTitle = document.title;
   document.title = 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10);
