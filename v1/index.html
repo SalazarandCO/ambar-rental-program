@@ -247,13 +247,15 @@ footer a{color:var(--amber);text-decoration:none}
   header, .sub-header, .program-drawer, footer,
   #shareFab, #shareToast, #loginOverlay, .share-fab, .share-toast, .login-overlay,
   .lang-toggle, .no-print, .drawer-handle,
-  .rate-toggle, .discount-toggle, .discount-panel { display:none !important; }
+  .rate-toggle, .toggle-group, #toggleTaxBtn, .discount-toggle, .discount-panel { display:none !important; }
 
   /* Hide interactive controls; render their values as plain text */
   input[type="range"], .slider, .slider-track { display:none !important; }
   input { border:none !important; background:transparent !important; box-shadow:none !important; padding:0 !important; margin:0 !important; color:#1a1a1a !important; font-weight:700 !important; -webkit-appearance:none !important; appearance:none !important; width:auto !important; min-width:0 !important; text-align:left !important; }
   input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none !important; margin:0 !important; }
 
+  /* Remove the duplicate down-payment headline (repeated in the box below) */
+  .section-summary:has(#installmentAmt) { display:none !important; }
 
   /* Full width, flat document cards */
   .main { max-width:none !important; width:100% !important; margin:0 !important; padding:0 !important; box-sizing:border-box !important; }
@@ -272,7 +274,7 @@ footer a{color:var(--amber);text-decoration:none}
   thead { display:table-header-group; }
 
   /* Start the results & projection on a fresh page so nothing splits mid-card */
-  #secProfit { break-before:page !important; }
+  #secProfit, #secProjection { break-before:page !important; }
 
   /* Tables */
   .ptable { font-size:9px !important; width:100% !important; border-collapse:collapse !important; }
@@ -320,7 +322,7 @@ footer a{color:var(--amber);text-decoration:none}
 .pc-price-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#9E9686; margin-top:5px; }
 .pc-program { display:inline-block; margin-top:16px; background:#F5F0E8; border:1px solid #E0DBD0; border-radius:30px; padding:5px 15px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#5A5A37; font-weight:600; }
 .pc-mid { margin:auto 0; }
-.pc-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:34px; }
+.pc-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:34px; }
 .pc-kpi { border:1px solid #E0DBD0; border-radius:12px; padding:18px 12px; text-align:center; background:#FAF9F6; }
 .pc-kpi.dark { background:linear-gradient(135deg,#1a1a1a,#000); border-color:#000; }
 .pc-kpi-val { font-size:23px; font-weight:700; color:#F36F43; }
@@ -403,8 +405,9 @@ footer a{color:var(--amber);text-decoration:none}
   </div>
   <div class="pc-kpis">
     <div class="pc-kpi"><div class="pc-kpi-val" id="pcNoi">$2,962/mo</div><div class="pc-kpi-label" id="pcNoiLabel">Net Income / Month</div></div>
-    <div class="pc-kpi"><div class="pc-kpi-val" id="pcAnn">$35,544</div><div class="pc-kpi-label" id="pcAnnLabel">Annual Net Income</div></div>
-    <div class="pc-kpi dark"><div class="pc-kpi-val" id="pcCap">7.7%</div><div class="pc-kpi-label" id="pcCapLabel">Cap Rate</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcCap">7.7%</div><div class="pc-kpi-label" id="pcCapLabel">Cap Rate</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcRoe">14.2%</div><div class="pc-kpi-label" id="pcRoeLabel">Annual Return · Financed</div></div>
+    <div class="pc-kpi dark"><div class="pc-kpi-val" id="pcWealth">$613,624</div><div class="pc-kpi-label" id="pcWealthLabel">5-Year Total Wealth</div></div>
   </div>
   </div>
   <div class="pc-meta">
@@ -495,11 +498,106 @@ footer a{color:var(--amber);text-decoration:none}
   </div>
 </div>
 
-<!-- ========== 4. REVENUE PROJECTION ========== -->
+<!-- ========== 2. DOWN PAYMENT ========== -->
 <div class="section">
   <div class="section-header">
     <div class="section-header-left">
       <div class="section-num">2</div>
+      <div>
+        <div class="section-title" data-i18n="s2Title">Down Payment</div>
+        <div class="section-subtitle" data-i18n="s2Sub"></div>
+      </div>
+    </div>
+    <div class="section-summary">
+      <div class="section-summary-value" id="installmentAmt">$131,970</div>
+      <div class="section-summary-label" data-i18n="totalDPLabel">Total Paid During Construction</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="slider-group">
+      <div class="slider-header">
+        <span class="slider-label" data-i18n="totalDP">% Total Down Payment</span>
+        <span class="slider-value" id="dpVal">30%</span>
+      </div>
+      <input type="range" id="downPayment" min="20" max="100" value="30" step="5" oninput="recalc()">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;text-align:center">
+      <div style="background:var(--g50);border-radius:10px;padding:14px">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500" data-i18n="totalDPLabel">Total Paid During Construction</div>
+        <div style="font-size:18px;font-weight:700;margin-top:4px" id="totalDPAmt">$131,970</div>
+      </div>
+      <div style="background:var(--g50);border-radius:10px;padding:14px">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500" data-i18n="balanceClosing">Balance at Closing</div>
+        <div style="font-size:18px;font-weight:700;margin-top:4px" id="balanceAmt">$307,930</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 3. BANK FINANCING ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title" data-i18n="s3Title">Bank Financing</div>
+        <div class="section-subtitle" data-i18n="s3Sub">How the closing balance will be paid</div>
+      </div>
+    </div>
+    <div class="section-summary">
+      <div class="section-summary-value" id="pmtSummary">$1,560/mo</div>
+      <div class="section-summary-label" data-i18n="paymentMo">payment/mo</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="toggle-group" style="margin-bottom:20px">
+      <button class="toggle-btn" id="btnCash" onclick="setFinMode('cash')" data-i18n="payCash">Pay cash at closing</button>
+      <button class="toggle-btn active" id="btnFinance" onclick="setFinMode('finance')" data-i18n="financeClosing">Finance at closing</button>
+    </div>
+    <div id="finInputs">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div class="slider-label" data-i18n="annualInterest">Annual Interest</div>
+          <div style="font-size:11px;color:var(--g400);margin:2px 0 6px" data-i18n="annIntSub">US banks finance foreigners</div>
+          <input class="num-input" type="number" id="interestRate" value="5" min="0" max="15" step="0.25" onchange="recalc()"> <span style="font-size:13px;color:var(--g400)">%</span>
+        </div>
+        <div>
+          <div class="slider-label" data-i18n="term">Term</div>
+          <div style="font-size:11px;color:var(--g400);margin:2px 0 6px" data-i18n="termSub">Standard amortization</div>
+          <input class="num-input" type="number" id="loanTerm" value="30" min="5" max="30" step="5" onchange="recalc()"> <span style="font-size:13px;color:var(--g400)" data-i18n="years">years</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px">
+        <div style="background:var(--header-bg);border-radius:12px;padding:20px;color:white">
+          <div style="font-size:11px;color:var(--amber-light)" data-i18n="monthlyInterest">Monthly Interest</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px" data-i18n="monthlyInterestSub">Tax-deductible portion · monthly avg (year 1)</div>
+          <div style="font-size:40px;font-weight:700;margin-top:8px" id="interestDisplay">$1,283</div>
+          <div style="display:flex;gap:24px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.12)">
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4)" data-i18n="principalPortion">Principal</div>
+              <div style="font-size:16px;font-weight:600;margin-top:2px" id="principalDisplay">$870</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4)" data-i18n="totalPmt">Total Payment — PMT</div>
+              <div style="font-size:16px;font-weight:600;margin-top:2px" id="pmtDisplay">$2,153</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--g50);border-radius:12px;padding:20px">
+          <div style="font-size:11px;color:var(--g400)" data-i18n="financedBal">Financed Balance</div>
+          <div style="font-size:10px;color:var(--g300);margin-top:2px" data-i18n="finBalSub">Amount entering bank financing</div>
+          <div style="font-size:40px;font-weight:700;margin-top:8px" id="finBalDisplay">$307,930</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 4. REVENUE PROJECTION ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">4</div>
       <div>
         <div class="section-title" data-i18n="s5Title">Revenue Projection — Rental Program</div>
         <div class="section-subtitle" data-i18n="s5Sub">Average rental rate, occupancy and net distribution to owner</div>
@@ -566,11 +664,11 @@ footer a{color:var(--amber);text-decoration:none}
   </div>
 </div>
 
-<!-- ========== 3. PROFITABILITY ========== -->
+<!-- ========== 5. PROFITABILITY ========== -->
 <div class="section" id="secProfit">
   <div class="section-header">
     <div class="section-header-left">
-      <div class="section-num">3</div>
+      <div class="section-num">5</div>
       <div>
         <div class="section-title" data-i18n="s6Title">Profitability & Returns</div>
         <div class="section-subtitle" data-i18n="s6Sub">The final investment result</div>
@@ -578,8 +676,117 @@ footer a{color:var(--amber);text-decoration:none}
     </div>
   </div>
   <div class="section-body">
-    <div class="results-grid" id="resultsGrid"></div>
+    <div class="returns-split">
+      <div class="returns-col">
+        <div class="returns-col-head" data-i18n="noFinHead">Cash Purchase</div>
+        <div class="returns-col-sub" data-i18n="noFinSub">All-cash · the property on its own</div>
+        <div class="results-grid" id="resultsGridNoFin"></div>
+      </div>
+      <div class="returns-divider"></div>
+      <div class="returns-col">
+        <div class="returns-col-head" data-i18n="finHead">With Financing</div>
+        <div class="returns-col-sub" data-i18n="finSub">Leveraged · your cash invested</div>
+        <div class="results-grid" id="resultsGridFin"></div>
+      </div>
+    </div>
   </div>
+</div>
+
+<!-- ========== 6. PROJECTION ========== -->
+<div class="section" id="secProjection">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">6</div>
+      <div>
+        <div class="section-title" data-i18n="s7Title">Projection Assumptions</div>
+        <div class="section-subtitle" data-i18n="s7Sub">Appreciation, income growth and analysis horizon</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="proj-inputs-grid">
+      <div>
+        <div class="slider-label" data-i18n="horizon">Horizon</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="horizon" value="5" min="1" max="30" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)" data-i18n="years">years</span>
+        </div>
+      </div>
+      <div>
+        <div class="slider-label" data-i18n="appreciation">Appreciation</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="appreciation" value="3" min="0" max="10" step="0.5" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)">% p.a.</span>
+        </div>
+      </div>
+      <div>
+        <div class="slider-label" data-i18n="incomeGrowth">Income Growth</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="incGrowth" value="3" min="0" max="10" step="0.5" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)">% p.a.</span>
+        </div>
+      </div>
+      <div>
+        <div class="slider-label" data-i18n="costInflation">Cost Inflation</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="costInflation" value="3" min="0" max="10" step="0.5" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)">% p.a.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--g100)">
+      <div style="font-size:11px;color:var(--g400);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:4px" id="projResultLabel">Projection Result — 5 years</div>
+      <div class="proj-summary-grid" id="projSummaryCards"></div>
+    </div>
+
+    <div style="margin-top:20px;overflow-x:auto">
+      <table class="ptable" id="projTable"></table>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;justify-content:center;margin:20px 0">
+  <button class="toggle-btn" id="toggleTaxBtn" onclick="toggleTaxSection()" style="padding:10px 28px;font-size:14px;border-radius:8px;border:1px solid var(--g200);background:var(--cream);color:var(--black);cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;font-weight:500;transition:all 0.3s ease">
+    <span data-i18n="s8Title">Tax Benefits</span>
+    <span id="toggleTaxArrow" style="transition:transform 0.3s ease">▼</span>
+  </button>
+</div>
+
+<div id="taxSection" style="max-height:0;overflow:hidden;opacity:0;transition:max-height 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease">
+<!-- ========== 7. TAX BENEFITS ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">7</div>
+      <div>
+        <div class="section-title" data-i18n="s8Title">Tax Benefits</div>
+        <div class="section-subtitle" data-i18n="s8Sub">Estimated tax deductions and savings from ownership</div>
+      </div>
+    </div>
+    <div class="section-summary">
+      <div class="section-summary-value" id="taxY1Summary" style="font-size:18px">$0</div>
+      <div class="section-summary-label" data-i18n="y1TaxSavings">year 1 tax savings</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap">
+      <div>
+        <div class="slider-label" data-i18n="taxBracketLbl">Tax Bracket</div>
+        <div style="font-size:11px;color:var(--g400);margin-top:2px" data-i18n="taxBracketSub">Select your federal marginal rate</div>
+      </div>
+      <div class="toggle-group" style="max-width:260px">
+        <button class="toggle-btn tax-bracket-btn active" data-rate="0.24" onclick="setTaxBracket(0.24)">24%</button>
+        <button class="toggle-btn tax-bracket-btn" data-rate="0.32" onclick="setTaxBracket(0.32)">32%</button>
+        <button class="toggle-btn tax-bracket-btn" data-rate="0.37" onclick="setTaxBracket(0.37)">37%</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="ptable" id="taxTable"></table></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px" id="taxReturnCards"></div>
+    <div class="disclaimer" style="margin-top:20px" data-i18n="taxDisclaimer">Tax estimates based on 80/20 building-to-land ratio and current IRS rules including 100% bonus depreciation (OBBBA, July 2025). Cost segregation range reflects 22–33% of basis reclassified per IRS engineering standards. Florida has no state income tax. This is not tax advice — consult a qualified CPA before making investment decisions.</div>
+  </div>
+</div>
+
 </div>
 
 <!-- DISCLAIMER -->
@@ -627,7 +834,9 @@ const FFE_FIXED={S1:303,A1:368,A2:419,A3:470,A4:475,B1:563,B2:527,C1:621};
 
 let sel = UNITS[1];
 let lang = 'en';
+let finMode = 'finance';
 let programMode = 'rental';
+let taxBracket = 0.24;
 let rateMode = 'adr'; // 'adr' (default, uses ADR × occupancy) or 'revpar' (RevPAR entered directly)
 const DPM = 365/12;
 
@@ -641,13 +850,14 @@ function t(k){return I[lang][k]||k}
 function setTxt(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 function moSfx(){return lang==='es'?'/mes':'/mo';}
 const COVER_I18N={
-  en:{docTitle:'Investment Summary',docSub:'Orlando, Florida · Delivery Q3 2028',priceLabel:'Purchase Price',noiLabel:'Net Income / Month',capLabel:'Cap Rate',annLabel:'Annual Net Income',roeLabel:'Annual Return · Financed',preparedLabel:'Prepared for',dateLabel:'Date',disc:'Estimated projections based on the assumptions entered. Not a guarantee of returns. Consult your financial advisor before making investment decisions.',pfMid:'322 Residences · Marriott Bonvoy Managed',guests:'guests'},
-  es:{docTitle:'Resumen de Inversión',docSub:'Orlando, Florida · Entrega Q3 2028',priceLabel:'Precio de Compra',noiLabel:'Ingreso Neto / Mes',capLabel:'Tasa de Capitalización',annLabel:'Ingreso Neto Anual',roeLabel:'Retorno Anual · Financiado',preparedLabel:'Preparado para',dateLabel:'Fecha',disc:'Proyecciones estimadas según los supuestos ingresados. No es garantía de retornos. Consulte con su asesor financiero antes de invertir.',pfMid:'322 Residencias · Gestionado por Marriott Bonvoy',guests:'huéspedes'}};
+  en:{docTitle:'Investment Summary',docSub:'Orlando, Florida · Delivery Q3 2028',priceLabel:'Purchase Price',noiLabel:'Net Income / Month',capLabel:'Cap Rate',roeLabel:'Annual Return · Financed',preparedLabel:'Prepared for',dateLabel:'Date',disc:'Estimated projections based on the assumptions entered. Not a guarantee of returns. Consult your financial advisor before making investment decisions.',pfMid:'322 Residences · Marriott Bonvoy Managed',guests:'guests'},
+  es:{docTitle:'Resumen de Inversión',docSub:'Orlando, Florida · Entrega Q3 2028',priceLabel:'Precio de Compra',noiLabel:'Ingreso Neto / Mes',capLabel:'Tasa de Capitalización',roeLabel:'Retorno Anual · Financiado',preparedLabel:'Preparado para',dateLabel:'Fecha',disc:'Proyecciones estimadas según los supuestos ingresados. No es garantía de retornos. Consulte con su asesor financiero antes de invertir.',pfMid:'322 Residencias · Gestionado por Marriott Bonvoy',guests:'huéspedes'}};
 function applyCoverI18n(){
   var c=COVER_I18N[lang]||COVER_I18N.en;
   setTxt('pcDocTitle',c.docTitle);setTxt('pcDocSub',c.docSub);setTxt('pcPriceLabel',c.priceLabel);
-  setTxt('pcNoiLabel',c.noiLabel);setTxt('pcCapLabel',c.capLabel);setTxt('pcAnnLabel',c.annLabel);
+  setTxt('pcNoiLabel',c.noiLabel);setTxt('pcCapLabel',c.capLabel);
   setTxt('pcPreparedLabel',c.preparedLabel);setTxt('pcDateLabel',c.dateLabel);setTxt('pcDisc',c.disc);setTxt('pfMid',c.pfMid);
+  // pcWealthLabel and pcRoeLabel are set in recalc() (year-aware + finMode-aware)
   try{ setTxt('pcDate', new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'})); }catch(e){}
 }
 function setLang(l){
@@ -655,6 +865,13 @@ function setLang(l){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===l.toUpperCase()));
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(I[lang][k])el.textContent=I[lang][k]});
   renderUnits();recalc();
+}
+function setFinMode(m){
+  finMode=m;
+  document.getElementById('btnCash').classList.toggle('active',m==='cash');
+  document.getElementById('btnFinance').classList.toggle('active',m==='finance');
+  document.getElementById('finInputs').style.display=m==='finance'?'block':'none';
+  recalc();
 }
 
 // Toggle between ADR input mode (user enters ADR, occupancy slider visible, gross = ADR × occ × 30.4)
@@ -712,6 +929,31 @@ function setProgramMode(m){
   document.getElementById('lbHeaderBadge').classList.toggle('visible',m==='leaseback');
   // Close drawer after selection
   document.getElementById('programDrawer').classList.remove('open');
+  recalc();
+}
+function toggleTaxSection(){
+  const sec=document.getElementById('taxSection');
+  const arrow=document.getElementById('toggleTaxArrow');
+  const btn=document.getElementById('toggleTaxBtn');
+  if(sec.style.maxHeight==='0px'||sec.style.maxHeight===''){
+    sec.style.maxHeight=sec.scrollHeight+'px';
+    sec.style.opacity='1';
+    arrow.style.transform='rotate(180deg)';
+    btn.style.background='var(--black)';
+    btn.style.color='white';
+    btn.style.borderColor='var(--black)';
+  } else {
+    sec.style.maxHeight='0px';
+    sec.style.opacity='0';
+    arrow.style.transform='rotate(0deg)';
+    btn.style.background='var(--cream)';
+    btn.style.color='var(--black)';
+    btn.style.borderColor='var(--g200)';
+  }
+}
+function setTaxBracket(r){
+  taxBracket=r;
+  document.querySelectorAll('.tax-bracket-btn').forEach(b=>b.classList.toggle('active',Math.abs(parseFloat(b.dataset.rate)-r)<1e-9));
   recalc();
 }
 
@@ -819,6 +1061,43 @@ function recalc(){
   // In ADR mode, adrInput holds ADR → RevPAR = ADR × occupancy.
   // In RevPAR mode, adrInput holds RevPAR directly (occupancy already baked in).
   const revPAR = rateMode==='revpar' ? adr : adr*occ;
+  const dpPct=+document.getElementById('downPayment').value/100;
+  const finPct=1; // financing always covers 100% of the closing balance
+  const ir=+document.getElementById('interestRate').value/100;
+  const termYrs=+document.getElementById('loanTerm').value;
+  const hzYrs=+document.getElementById('horizon').value;
+  const appRate=+document.getElementById('appreciation').value/100;
+  const incGr=+document.getElementById('incGrowth').value/100;
+  const costInf=+document.getElementById('costInflation').value/100;
+
+  // Price / DP
+  const dpTotal=price*dpPct;
+  const balance=price-dpTotal;
+  document.getElementById('dpVal').textContent=Math.round(dpPct*100)+'%';
+  document.getElementById('totalDPAmt').textContent=fmt(dpTotal);
+  document.getElementById('balanceAmt').textContent=fmt(balance);
+  document.getElementById('installmentAmt').textContent=fmt(dpTotal);
+
+  // Financing
+  let loanAmt=0,monthlyPMT=0,monthlyInterest=0,monthlyPrincipal=0;
+  let y1Interest=0,y1Principal=0,y2Interest=0,y2Principal=0;
+  if(finMode==='finance'){
+    loanAmt=balance*finPct;
+    const mr=ir/12,np=termYrs*12;
+    monthlyPMT=mr>0?loanAmt*(mr*Math.pow(1+mr,np))/(Math.pow(1+mr,np)-1):loanAmt/np;
+    // Amortize 24 months → year-1 and year-2 interest/principal totals.
+    let rem=loanAmt;for(let m=0;m<24;m++){const ip=rem*mr;const pp=monthlyPMT-ip;if(m<12){y1Interest+=ip;y1Principal+=pp}else{y2Interest+=ip;y2Principal+=pp}rem-=pp;}
+    // Card shows the year-1 MONTHLY AVERAGE so monthly×12 reconciles with the annual figures
+    // (interest in tax section, principal in Leveraged Cash Return / ROE).
+    monthlyInterest=y1Interest/12;
+    monthlyPrincipal=y1Principal/12;
+  }
+  document.getElementById('interestDisplay').textContent=fmt(monthlyInterest);
+  document.getElementById('principalDisplay').textContent=fmt(monthlyPrincipal);
+  document.getElementById('pmtDisplay').textContent=fmt(monthlyPMT);
+  document.getElementById('finBalDisplay').textContent=fmt(loanAmt);
+  document.getElementById('pmtSummary').textContent=finMode==='finance'?fmt(monthlyPMT)+moSfx():'—';
+
   // ===== REVENUE — shared calculations =====
   const gross=revPAR*DPM;
   const marriott=gross*e.marriottPct;
@@ -827,7 +1106,7 @@ function recalc(){
   const ffe=gross*e.ffePct;
   const otaCC=gross*(e.otaPct+e.ccPct);
   const fixedCosts=e.hoa+e.util+e.ins+e.tax;
-  const cashInvested=price;
+  const cashInvested=finMode==='finance'?dpTotal+(balance-loanAmt):price;
   const fmtRange=(a,b)=>fmt(a)+' – '+fmt(b);
   const fmtPctRange=(a,b)=>a.toFixed(1)+'% – '+b.toFixed(1)+'%';
   const lightRow=(lbl,val)=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:var(--g500)">${lbl}</span><span style="color:var(--black);font-weight:600;font-variant-numeric:tabular-nums">${val}</span></div>`;
@@ -843,9 +1122,13 @@ function recalc(){
   // Rental-specific values
   const rentalNoi=ownerRev-ffe-otaCC-fixedCosts;
 
-  // Choose active NOI based on mode (all-cash purchase — no debt service)
+  // Choose active NOI based on mode
   const noi=programMode==='leaseback'?lbNoi:rentalNoi;
-  const annNOI=noi*12;
+  const cashFlow=noi-monthlyPMT;
+  const annNOI=noi*12, annCF=cashFlow*12;
+
+  // Rental program annual NOI (needed for projection years 3+ in leaseback)
+  const rentalAnnNOI=rentalNoi*12;
 
   // Section 4 toggle visibility
   document.querySelector('[data-i18n="s5Title"]').textContent=programMode==='leaseback'?t('lbS5Title'):t('s5Title');
@@ -919,23 +1202,178 @@ function recalc(){
     document.getElementById('waterfallBody').innerHTML=wfHTML;
   }
 
-  // ===== PROFITABILITY — cash purchase =====
+  // ===== SECTION 6 — RESULTS =====
   const capRate=annNOI/price;
-  document.getElementById('resultsGrid').innerHTML=`
+  const irrOnEquity=(annCF+y1Principal)/cashInvested; // cash flow + year-1 principal paydown (equity built)
+  const paybackMonths=cashFlow>0?Math.ceil(cashInvested/cashFlow):999;
+
+  document.getElementById('resultsGridNoFin').innerHTML=`
     <div class="result-box"><div class="rb-label">${t('purchasePrice')}</div><div class="rb-value">${fmt(price)}</div><div class="rb-sub">${t('purchasePriceSub')}</div></div>
-    <div class="result-box"><div class="rb-label">${t('monthlyNOI')}</div><div class="rb-value">${fmt(noi)}</div><div class="rb-sub" style="color:var(--black)">${fmt(annNOI)} / ${lang==='es'?'a\u00f1o':'year'}</div></div>
-    <div class="result-box dark"><div class="rb-label">${t('capRate')}</div><div class="rb-value">${(capRate*100).toFixed(1)}%</div><div class="rb-sub">${t('capRateSub')}</div></div>`;
+    <div class="result-box"><div class="rb-label">${t('monthlyNOI')}</div><div class="rb-value">${fmt(noi)}</div><div class="rb-sub" style="color:var(--black)">${fmt(annNOI)} / ${lang==='es'?'año':'year'}</div></div>
+    <div class="result-box"><div class="rb-label">${t('capRate')}</div><div class="rb-value">${(capRate*100).toFixed(1)}%</div><div class="rb-sub">${t('capRateSub')}</div></div>`;
+  document.getElementById('resultsGridFin').innerHTML=`
+    <div class="result-box"><div class="rb-label">${t('totalEquity')}</div><div class="rb-value">${fmt(cashInvested)}</div><div class="rb-sub">${t('dpPlusCash')}</div></div>
+    <div class="result-box"><div class="rb-label">${t('levCashReturn')}</div><div class="rb-value">${fmt((annCF+y1Principal)/12)}</div><div class="rb-sub" style="color:var(--black)">${fmt(annCF+y1Principal)} / ${lang==='es'?'año':'year'}</div></div>
+    <div class="result-box dark"><div class="rb-label">${t('annualReturn')}</div><div class="rb-value">${(irrOnEquity*100).toFixed(1)}%</div><div class="rb-sub">${t('onEquity')}</div></div>`;
+
+  // ===== SECTION 7 — PROJECTION =====
+  document.getElementById('projResultLabel').textContent=(lang==='es'?'Resultado de Proyección — ':'Projection Result — ')+hzYrs+' '+(lang==='es'?'años':'years');
+
+  const baseFixedAnn=fixedCosts*12;
+  const lbOwnerCostsAnn=lbOwnerCosts*12;
+  let cumCF=0,remLoan=loanAmt;
+  const proj=[];
+  for(let yr=1;yr<=hzYrs;yr++){
+    const pv=price*Math.pow(1+appRate,yr);
+    let yrNOI;
+    let isLb=false;
+    if(programMode==='leaseback'&&yr<=2){
+      // Leaseback: flat 10% guaranteed, owner costs inflate
+      const yrLbOwnerCosts=lbOwnerCostsAnn*Math.pow(1+costInf,yr-1);
+      yrNOI=lbGrossAnn-yrLbOwnerCosts;
+      isLb=true;
+    } else {
+      // Rental program (or leaseback years 3+)
+      const rentalYr=programMode==='leaseback'?yr-2:yr;
+      const yrGrossIncome=rentalAnnNOI*Math.pow(1+incGr,rentalYr-1);
+      const yrInflatedFixedCosts=baseFixedAnn*(Math.pow(1+costInf,yr-1)-1);
+      yrNOI=yrGrossIncome-yrInflatedFixedCosts;
+    }
+    const yrMort=monthlyPMT*12;
+    const yrCF=yrNOI-yrMort;
+    cumCF+=yrCF;
+    if(finMode==='finance'&&remLoan>0){const mr=ir/12;for(let m=0;m<12;m++){const ip=remLoan*mr;remLoan=Math.max(0,remLoan-(monthlyPMT-ip))}}
+    const eq=pv-remLoan;
+    const tr=((eq+cumCF-cashInvested)/cashInvested*100);
+    proj.push({yr,pv,yrNOI:yrCF,cumCF,eq,tr,isLb});
+  }
+
+  const last=proj[proj.length-1]||{};
+  const estVal=price*Math.pow(1+appRate,hzYrs);
+  document.getElementById('projSummaryCards').innerHTML=`
+    <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('priceToday')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(price)}</div></div>
+    <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('estAppreciation')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(estVal)}</div><div style="font-size:10px;color:var(--olive)">+${fmt(estVal-price)}</div></div>
+    <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('accIncome')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(last.cumCF||0)}</div></div>
+    <div style="background:var(--header-bg);border-radius:10px;padding:14px;text-align:center;color:white"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--amber-light)">${t('totalWealth')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(estVal+(last.cumCF||0))}</div></div>`;
 
   // ===== PRINT COVER — fed from the same live values (single source of truth) =====
-  setTxt('pcUnit',(lang==='es'?sel.type.es:sel.type.en)+' \u00b7 '+sel.id);
-  setTxt('pcSqft',displayArea(sel.sqft)+'  \u00b7  '+sel.guests+' '+((COVER_I18N[lang]||COVER_I18N.en).guests));
+  setTxt('pcUnit',(lang==='es'?sel.type.es:sel.type.en)+' · '+sel.id);
+  setTxt('pcSqft',displayArea(sel.sqft)+'  ·  '+sel.guests+' '+((COVER_I18N[lang]||COVER_I18N.en).guests));
   setTxt('pcPrice',fmt(price));
   setTxt('priceInputPrint',fmt(price));
   setTxt('pcProgram',programMode==='leaseback'?t('leasebackProgram'):t('rentalProgram'));
   setTxt('pcNoi',fmt(noi)+moSfx());
-  setTxt('pcAnn',fmt(annNOI));
   setTxt('pcCap',(capRate*100).toFixed(1)+'%');
+  setTxt('pcRoe',(irrOnEquity*100).toFixed(1)+'%');
+  setTxt('pcWealth',fmt(estVal+(last.cumCF||0)));
   applyCoverI18n();
+  // Year-aware wealth label + finMode-aware return label (set after applyCoverI18n so they win)
+  setTxt('pcWealthLabel', lang==='es' ? ('Patrimonio Total a '+hzYrs+' Años') : (hzYrs+'-Year Total Wealth'));
+  setTxt('pcRoeLabel', finMode==='finance'
+    ? (lang==='es'?'Retorno Anual · Financiado':'Annual Return · Financed')
+    : (lang==='es'?'Retorno Anual':'Annual Return'));
+
+  let th=`<thead><tr><th>${t('year')}</th>${programMode==='leaseback'?'<th></th>':''}
+    <th>${t('propValue')}</th><th>${t('annIncome')}</th><th>${t('cumCash')}</th><th>${t('equity')}</th><th>${t('totalReturn')}</th></tr></thead>`;
+  let tb='<tbody>'+proj.map(p=>{
+    const badge=programMode==='leaseback'?(p.isLb?`<span class="lb-badge">${t('lbTag')}</span>`:`<span class="lb-badge" style="background:rgba(90,90,55,0.1);color:var(--olive)">${t('rentalTag')}</span>`):'';
+    return `<tr${p.isLb?' style="background:rgba(255,168,74,0.04)"':''}>
+      <td>${p.yr}</td>${programMode==='leaseback'?'<td>'+badge+'</td>':''}
+      <td>${fmtK(p.pv)}</td><td>${fmt(p.yrNOI)}</td><td>${fmt(p.cumCF)}</td><td>${fmtK(p.eq)}</td>
+      <td style="color:${p.tr>=0?'var(--olive)':'var(--orange)'};font-weight:600">${p.tr.toFixed(1)}%</td></tr>`;
+  }).join('')+'</tbody>';
+  document.getElementById('projTable').innerHTML=th+tb;
+
+  // ===== TAX BENEFITS (Section 8) =====
+  const depreciableBasis=price*0.80;
+  const bonusLow=depreciableBasis*0.22;
+  const bonusHigh=depreciableBasis*0.33;
+  const slAfterLow=(depreciableBasis-bonusLow)/39;
+  const slAfterHigh=(depreciableBasis-bonusHigh)/39;
+  const y1DepScenLow=bonusLow+slAfterLow;
+  const y1DepScenHigh=bonusHigh+slAfterHigh;
+  const ongDepLow=slAfterHigh;
+  const ongDepHigh=slAfterLow;
+
+
+  // Property taxes, HOA / utilities / insurance, hotel fees, and (for leaseback) FF&E
+  // reserve are ALL already netted out of owner NOI in Section 4 — they reduce the
+  // taxable rental income at the source. Showing them again as separate tax deductions
+  // here would double-count, so the only operating-side deduction kept is mortgage
+  // interest (which is a financing cost, not an operating expense).
+  const commonY1 = y1Interest;
+  const commonOng = y2Interest;
+
+  const y1TotalLow=y1DepScenLow+commonY1;
+  const y1TotalHigh=y1DepScenHigh+commonY1;
+  const ongTotalLow=ongDepLow+commonOng;
+  const ongTotalHigh=ongDepHigh+commonOng;
+
+  const y1SavLow=y1TotalLow*taxBracket;
+  const y1SavHigh=y1TotalHigh*taxBracket;
+  const ongSavLow=ongTotalLow*taxBracket;
+  const ongSavHigh=ongTotalHigh*taxBracket;
+
+  document.getElementById('taxY1Summary').textContent=fmtRange(y1SavLow,y1SavHigh);
+
+  // Operating-cost rows (property tax, HOA/util/insurance, hotel fees, leaseback FF&E)
+  // are intentionally omitted — they're already deducted from rental income in Section 4
+  // and would double-count if shown here. Both modes share the same row set now.
+  const taxRows=[
+    {l:t('costSegRow'),d:t('costSegRowSub'),tip:t('tipCostSeg'),y1:fmtRange(bonusLow,bonusHigh),on:'—'},
+    {l:t('slDepRow'),d:t('slDepRowSub'),tip:t('tipSlDep'),y1:fmtRange(slAfterLow,slAfterHigh),on:fmtRange(ongDepLow,ongDepHigh)},
+    {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')}
+  ];
+  let taxHTML=`<thead><tr><th>${t('deductionCol')}</th><th>${t('year1Col')}</th><th>${t('years2PlusCol')}</th></tr></thead><tbody>`;
+  taxHTML+=taxRows.map(r=>`<tr><td><div class="tax-tip" style="font-weight:500;color:var(--olive)">${r.l}<span class="tip-i">i</span><div class="tip-box">${r.tip}</div></div><div style="font-size:10px;color:var(--g400);font-weight:400;margin-top:2px">${r.d}</div></td><td style="color:var(--orange);font-weight:600">${r.y1}</td><td>${r.on}</td></tr>`).join('');
+  taxHTML+=`<tr style="border-top:2px solid var(--black)"><td style="font-weight:700;color:var(--black)">${t('totalDeductionsRow')}</td><td style="font-weight:700;color:var(--black)">${fmtRange(y1TotalLow,y1TotalHigh)}</td><td style="font-weight:700;color:var(--black)">${fmtRange(ongTotalLow,ongTotalHigh)}</td></tr>`;
+  taxHTML+=`<tr style="background:rgba(243,111,67,0.06)"><td style="font-weight:700;color:var(--orange)">${t('taxSavingsRow')} · ${(taxBracket*100).toFixed(0)}%</td><td style="font-weight:700;color:var(--orange)">${fmtRange(y1SavLow,y1SavHigh)}</td><td style="font-weight:700;color:var(--orange)">${fmtRange(ongSavLow,ongSavHigh)}</td></tr></tbody>`;
+  document.getElementById('taxTable')['inner'+'HTML']=taxHTML;
+
+  const appreciationY1=price*appRate;
+  const y1RetLow=annCF+y1SavLow+appreciationY1+y1Principal;
+  const y1RetHigh=annCF+y1SavHigh+appreciationY1+y1Principal;
+  // Year-2 cash flow — must reconcile with projection table year 2:
+  // NOI grows with income growth, fixed costs inflate one year, mortgage stays flat.
+  const annCFy2=programMode==='leaseback'
+    ? (lbGrossAnn - lbOwnerCostsAnn*(1+costInf) - monthlyPMT*12)
+    : (rentalAnnNOI*(1+incGr) - baseFixedAnn*costInf - monthlyPMT*12);
+  const appreciationY2=price*Math.pow(1+appRate,2)-price*(1+appRate);
+  const ongRetLow=annCFy2+ongSavLow+appreciationY2+y2Principal;
+  const ongRetHigh=annCFy2+ongSavHigh+appreciationY2+y2Principal;
+  const y1RoicLow=cashInvested>0?y1RetLow/cashInvested*100:0;
+  const y1RoicHigh=cashInvested>0?y1RetHigh/cashInvested*100:0;
+  const ongRoicLow=cashInvested>0?ongRetLow/cashInvested*100:0;
+  const ongRoicHigh=cashInvested>0?ongRetHigh/cashInvested*100:0;
+
+  document.getElementById('taxReturnCards')['inner'+'HTML']=`
+    <div class="result-box" style="text-align:left;padding:20px">
+      <div class="rb-label" style="margin-bottom:10px">${t('returnY1Card')}${programMode==='leaseback'?' <span class="lb-badge" style="font-size:8px">'+t('lbTag')+'</span>':''}</div>
+      ${lightRow(t('cashFlowRow'),fmt(annCF))}
+      ${lightRow(t('taxSavingsRow'),fmtRange(y1SavLow,y1SavHigh))}
+      ${lightRow(t('appreciationRow'),fmt(appreciationY1))}
+      ${lightRow(t('principalRow'),fmt(y1Principal))}
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0 4px;border-top:1px solid var(--g200);margin-top:6px;font-weight:700"><span>${t('totalReturnRow')}</span><span style="color:var(--orange);font-variant-numeric:tabular-nums">${fmtRange(y1RetLow,y1RetHigh)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span style="color:var(--g500)">${t('roicRow')}</span><span style="color:var(--orange);font-weight:700">${fmtPctRange(y1RoicLow,y1RoicHigh)}</span></div>
+    </div>
+    <div class="result-box dark" style="text-align:left;padding:20px">
+      <div class="rb-label" style="margin-bottom:10px">${t('returnOngoingCard')}${programMode==='leaseback'?' <span class="lb-badge lb-badge-dark" style="font-size:8px">'+t('lbTag')+'</span>':''}</div>
+      ${darkRow(t('cashFlowRow'),fmt(annCFy2))}
+      ${darkRow(t('taxSavingsRow'),fmtRange(ongSavLow,ongSavHigh))}
+      ${darkRow(t('appreciationRow'),fmt(appreciationY2))}
+      ${darkRow(t('principalRow'),fmt(y2Principal))}
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0 4px;border-top:1px solid rgba(255,255,255,0.2);margin-top:6px;font-weight:700;color:white"><span>${t('totalReturnRow')}</span><span style="color:var(--amber-light);font-variant-numeric:tabular-nums">${fmtRange(ongRetLow,ongRetHigh)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span style="color:rgba(255,255,255,0.6)">${t('roicRow')}</span><span style="color:var(--amber-light);font-weight:700">${fmtPctRange(ongRoicLow,ongRoicHigh)}</span></div>
+    </div>
+    <div style="grid-column:1/-1;background:rgba(128,128,0,0.07);border:1px solid rgba(128,128,0,0.25);border-radius:10px;padding:16px 18px;margin-top:6px">
+      <div style="font-size:12px;font-weight:700;color:var(--olive);margin-bottom:6px">\u26a0 ${t('strNoteTitle')}</div>
+      <div style="font-size:11px;line-height:1.55;color:var(--g600)">${t('strNote')}</div>
+    </div>`;
+
+  const taxSec=document.getElementById('taxSection');
+  if(taxSec && taxSec.style.opacity==='1'){
+    taxSec.style.maxHeight=taxSec.scrollHeight+'px';
+  }
 
   recalcScenarios();
 }
@@ -1020,13 +1458,21 @@ function loadFromURL(){
   if(p.has('lang')) setLang(p.get('lang'));
   // Set inputs
   if(p.has('price')) document.getElementById('priceInput').value = p.get('price');
+  if(p.has('dp')) document.getElementById('downPayment').value = p.get('dp');
+  if(p.has('fm')) setFinMode(p.get('fm'));
   if(p.has('rm')) setRateMode(p.get('rm'));
+  if(p.has('ir')) document.getElementById('interestRate').value = p.get('ir');
+  if(p.has('lt')) document.getElementById('loanTerm').value = p.get('lt');
   if(p.has('adr')) document.getElementById('adrInput').value = p.get('adr');
   if(p.has('occ')){
     const v=p.get('occ');
     document.getElementById('occSlider').value=v;
     document.getElementById('occVal').textContent=Math.round(+v)+'%';
   }
+  if(p.has('hz')) document.getElementById('horizon').value = p.get('hz');
+  if(p.has('ap')) document.getElementById('appreciation').value = p.get('ap');
+  if(p.has('ig')) document.getElementById('incGrowth').value = p.get('ig');
+  if(p.has('ci')) document.getElementById('costInflation').value = p.get('ci');
   // Scenario cards
   if(p.has('s1r')) document.getElementById('sc1Rate').value = p.get('s1r');
   if(p.has('s2r')) document.getElementById('sc2Rate').value = p.get('s2r');
