@@ -340,6 +340,13 @@ footer a{color:var(--amber);text-decoration:none}
 .tax-tip .tip-box::after{content:'';position:absolute;top:100%;left:16px;border:6px solid transparent;border-top-color:#1a1a1a}
 .tax-tip:hover .tip-box{opacity:1;pointer-events:auto}
 @media print{.tax-tip .tip-i,.tax-tip .tip-box{display:none !important}}
+/* Fixed-cost itemization — PRINT/PDF ONLY (hidden on screen) */
+.pdf-itemize{display:none}
+@media print{
+  .pdf-itemize{display:block !important;margin-top:5px;padding:6px 9px;background:#FAF9F6;border:1px solid #E0DBD0;border-radius:6px;break-inside:avoid}
+  .pdf-itemize .pdfi-row{display:flex;justify-content:space-between;font-size:9px;color:#4A453C;padding:1.5px 0}
+  .pdf-itemize .pdfi-total{border-top:1px solid #E0DBD0;margin-top:2px;padding-top:3px;font-weight:700;color:#1a1a1a}
+}
 /* PROGRAM DRAWER */
 .drawer-handle{width:30px;height:3px;border-radius:2px;background:rgba(255,255,255,0.12);margin:0 auto;cursor:pointer;transition:background 0.2s}
 .drawer-handle:hover{background:rgba(255,255,255,0.35)}
@@ -898,6 +905,12 @@ function recalc(){
       tipRow(t('insurance'),fmt(e.ins)+'/mo')+
       tipRow(t('tipFixedUtil'),fmt(e.util)+'/mo')+
       tipTotalRow(t('tipTotal'),fmt(fixedCosts)+'/mo'));
+    // Print/PDF-only itemization of fixed costs (hover tooltips don't print)
+    const moS=moSfx();
+    const pdfFixedItemize='<div class="pdf-itemize">'+
+      [[t('tipFixedHoa'),e.hoa],[t('propertyTax'),e.tax],[t('insurance'),e.ins],[t('tipFixedUtil'),e.util]]
+        .map(function(p){return '<div class="pdfi-row"><span>'+p[0]+'</span><span>'+fmt(p[1])+moS+'</span></div>';}).join('')+
+      '<div class="pdfi-row pdfi-total"><span>'+t('tipTotal')+'</span><span>'+fmt(fixedCosts)+moS+'</span></div></div>';
     const otaAmt=gross*e.otaPct, ccAmt=gross*e.ccPct;
     const tipOtaHTML=t('tipWfOta')+breakdownWrap(
       tipRow(t('tipOtaCommission')+' ('+pctFmt(e.otaPct*100)+')',fmt(otaAmt)+'/mo')+
@@ -911,10 +924,10 @@ function recalc(){
       {l:'= '+t('ownerRev'),d:t('ownerRevDesc'),v:ownerRev,pos:true,bold:true},
       {l:'(-) '+t('ffeRes'),d:t('ffeDesc'),v:-ffe,tip:t('tipWfFfe')},
       {l:'(-) '+t('otaCard'),d:t('otaDesc'),v:-otaCC,tip:tipOtaHTML},
-      {l:'(-) '+t('fixedCosts'),d:t('fixedDesc'),v:-fixedCosts,tip:tipFixedHTML},
+      {l:'(-) '+t('fixedCosts'),d:t('fixedDesc'),v:-fixedCosts,tip:tipFixedHTML,printItemize:pdfFixedItemize},
     ];
     const wfTitle=r=>r.tip?`<div class="tax-tip">${r.l}<span class="tip-i">i</span><div class="tip-box">${r.tip}</div></div>`:r.l;
-    let wfHTML=wfData.map(r=>`<div class="waterfall-row"><div class="wf-label${r.pos?' income':''}" style="${r.bold?'font-weight:600':''}"><div>${wfTitle(r)}</div><div style="font-size:10px;color:var(--g300)">${r.d}</div></div><div class="wf-amount${r.v<0?' negative':''}">${r.v>=0?fmt(r.v):'('+fmt(Math.abs(r.v))+')'}</div></div>`).join('');
+    let wfHTML=wfData.map(r=>`<div class="waterfall-row"><div class="wf-label${r.pos?' income':''}" style="${r.bold?'font-weight:600':''}"><div>${wfTitle(r)}</div><div style="font-size:10px;color:var(--g300)">${r.d}</div>${r.printItemize||''}</div><div class="wf-amount${r.v<0?' negative':''}">${r.v>=0?fmt(r.v):'('+fmt(Math.abs(r.v))+')'}</div></div>`).join('');
     wfHTML+=`<div class="waterfall-net"><div class="wf-label"><div class="tax-tip">= ${t('ownerNet')}<span class="tip-i">i</span><div class="tip-box">${t('tipWfOwnerNet')}</div></div><br><span style="font-size:10px;opacity:0.7">${(rentalNoi/gross*100).toFixed(1)}% ${t('yieldOnGross')}</span></div><div class="wf-amount">${fmt(rentalNoi)}</div></div>`;
     document.getElementById('waterfallBody').innerHTML=wfHTML;
   }
