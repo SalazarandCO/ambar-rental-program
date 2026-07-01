@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMBAR Residences Orlando — Rental Program Simulator</title>
+<!-- PDF uses native window.print() with @media print CSS -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+:root {
+  --orange: #F36F43;
+  --amber: #FFA84A;
+  --amber-light: #FFD9A0;
+  --olive: #5A5A37;
+  --light-green: #989874;
+  --light-blue: #9BB9C2;
+  --blue: #355965;
+  --brown: #B37D50;
+  --cream: #F5F0E8;
+  --cream-dark: #EDE6D8;
+  --black: #1E1B16;
+  --white: #FFFFFF;
+  --g50: #FAF9F6;
+  --g100: #F0EDE6;
+  --g200: #E0DBD0;
+  --g300: #C8C2B4;
+  --g400: #9E9686;
+  --g500: #6B6459;
+  --g600: #4A453C;
+  --header-bg: #000000;
+  --card-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  --card-radius: 16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--black);line-height:1.6;-webkit-font-smoothing:antialiased}
+.serif{font-family:'Cormorant Garamond',serif}
+
+/* HEADER */
+header{background:var(--header-bg);padding:16px 0 16px}
+.header-inner{max-width:960px;margin:0 auto;padding:0 24px;display:flex;align-items:flex-end;justify-content:space-between}
+.logo-img{height:46px;margin-top:30px}
+.lang-toggle{display:flex;gap:0;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.15)}
+.lang-btn{padding:6px 14px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;background:transparent;color:rgba(255,255,255,0.5);border:none;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;font-weight:500}
+.lang-btn.active{background:var(--orange);color:var(--white)}
+
+/* RATE MODE TOGGLE (ADR / RevPAR) */
+.rate-toggle{display:inline-flex;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--g200);background:var(--white)}
+.rate-btn{padding:6px 14px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;background:transparent;color:var(--g400);border:none;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;font-weight:500}
+.rate-btn.active{background:var(--orange);color:var(--white)}
+.rate-btn:hover:not(.active){background:var(--g50);color:var(--g500)}
+
+/* SHARE BUTTON */
+.share-fab{position:fixed;bottom:24px;right:24px;z-index:900;display:flex;align-items:center;gap:8px;background:var(--orange);color:white;border:none;border-radius:40px;padding:12px 22px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.5px;cursor:pointer;box-shadow:0 4px 20px rgba(243,111,67,0.4);transition:all 0.3s}
+.share-fab:hover{background:#e05e35;box-shadow:0 6px 28px rgba(243,111,67,0.5);transform:translateY(-2px)}
+.share-fab svg{width:18px;height:18px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.share-toast{position:fixed;bottom:80px;right:24px;z-index:901;background:var(--black);color:white;padding:12px 20px;border-radius:10px;font-size:13px;font-family:'Inter',sans-serif;opacity:0;transform:translateY(8px);transition:all 0.3s;pointer-events:none}
+.share-toast.show{opacity:1;transform:translateY(0)}
+
+/* LOGIN OVERLAY */
+.login-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.login-box{text-align:center;max-width:380px;padding:40px}
+.login-box img{height:60px;margin-bottom:32px;position:relative;right:12px}
+.login-box h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;font-style:italic;color:rgba(255,255,255,0.7);margin-bottom:8px}
+.login-box p{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:28px}
+.login-input{width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.15);border-radius:10px;background:rgba(255,255,255,0.05);color:white;font-family:'Inter',sans-serif;font-size:15px;text-align:center;letter-spacing:2px;outline:none;transition:border-color 0.3s}
+.login-input:focus{border-color:var(--orange)}
+.login-input::placeholder{color:rgba(255,255,255,0.25);letter-spacing:1px}
+.login-btn{width:100%;margin-top:16px;padding:14px;background:var(--orange);color:white;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:background 0.3s}
+.login-btn:hover{background:#e05e35}
+.login-error{color:#ff6b6b;font-size:12px;margin-top:12px;min-height:18px}
+
+/* SUB-HEADER */
+.sub-header{background:#000000;padding:0 0 20px}
+.sub-header-inner{max-width:960px;margin:0 auto;padding:0 24px}
+.sub-header h1{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:rgba(255,255,255,0.6);font-style:italic;letter-spacing:0.5px}
+.badges{display:flex;gap:8px;margin-top:10px}
+.badge{padding:5px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;font-size:11px;letter-spacing:0.5px;color:rgba(255,255,255,0.7)}
+.badge.highlight{background:var(--orange);border-color:var(--orange);color:white;font-weight:600}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:24px 24px 60px}
+
+/* SECTION */
+.section{background:var(--white);border-radius:var(--card-radius);box-shadow:var(--card-shadow);margin-bottom:20px;overflow:hidden}
+.section-header{display:flex;align-items:flex-start;justify-content:space-between;padding:24px 28px 16px;border-bottom:1px solid var(--g100)}
+.section-header-left{display:flex;align-items:flex-start;gap:14px}
+.section-num{width:32px;height:32px;border-radius:50%;background:var(--olive);color:white;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;font-style:italic}
+.section-subtitle{font-size:12px;color:var(--g400);margin-top:2px}
+.section-summary{text-align:right}
+.section-summary-value{font-size:22px;font-weight:700;color:var(--orange);font-family:'Inter',sans-serif}
+.section-summary-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500}
+.section-body{padding:24px 28px}
+
+/* UNIT CARDS */
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.unit-card{border:2px solid var(--g200);border-radius:12px;padding:16px;cursor:pointer;transition:all 0.25s;position:relative}
+.unit-card:hover{border-color:var(--amber);box-shadow:0 4px 16px rgba(179,125,80,0.12)}
+.unit-card.selected{border-color:var(--amber);background:linear-gradient(135deg,#1a1a1a,#000000);color:white}
+.unit-card.selected .uc-type{color:var(--amber-light)}
+.unit-card.selected .uc-sqft{color:rgba(255,255,255,0.5)}
+.unit-card.selected .uc-check{display:flex}
+.uc-type{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--g500);font-weight:600;text-align:center}
+.uc-id{font-size:11px;font-weight:500;color:var(--g400);text-align:center;letter-spacing:1px;margin-top:2px}
+.unit-card.selected .uc-id{color:rgba(255,255,255,0.5)}
+.uc-sqft{font-size:11px;color:var(--g400);text-align:center;margin-top:4px;font-weight:400;letter-spacing:0.5px}
+.uc-check{display:none;position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--amber);align-items:center;justify-content:center}
+.uc-check svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+
+/* FORM ROWS */
+.form-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--g100)}
+.form-row:last-child{border-bottom:none}
+.form-row-label{flex:1}
+.form-row-label .label-main{font-size:13px;font-weight:500;color:var(--black)}
+.form-row-label .label-sub{font-size:11px;color:var(--g400);margin-top:1px}
+.form-row-value{font-size:16px;font-weight:600;color:var(--black);text-align:right;min-width:80px;font-variant-numeric:tabular-nums}
+.form-row-value.editable{color:var(--blue)}
+
+/* SLIDER ROW */
+.slider-group{margin:16px 0}
+.slider-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.slider-label{font-size:12px;color:var(--g500);font-weight:500;text-transform:uppercase;letter-spacing:1px}
+.slider-value{font-size:14px;font-weight:600;color:var(--orange)}
+input[type="range"]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;background:var(--g200);outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--olive);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+input[type="range"]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--olive);cursor:pointer;border:none}
+
+/* NUMBER INPUT */
+.num-input{width:70px;padding:6px 10px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-weight:600;text-align:center;font-family:'Inter',sans-serif;color:var(--black);background:var(--g50)}
+.num-input:focus{outline:none;border-color:var(--amber)}
+
+/* TOGGLE BUTTONS */
+.toggle-group{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--g200)}
+.toggle-btn{flex:1;padding:10px 16px;font-size:12px;font-weight:600;letter-spacing:0.5px;background:white;color:var(--g500);border:none;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+.toggle-btn.active{background:var(--black);color:white}
+
+/* REVENUE WATERFALL */
+.waterfall-row{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--g100);font-size:13px}
+.waterfall-row:last-child{border-bottom:none}
+.wf-label{flex:1;color:var(--g500)}
+.wf-label.income{color:var(--black);font-weight:500}
+.wf-amount{min-width:100px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums;color:var(--black)}
+.wf-amount.negative{color:var(--g400)}
+.waterfall-total{display:flex;justify-content:space-between;padding:16px 0 0;border-top:2px solid var(--black);margin-top:4px;font-size:15px;font-weight:600}
+.waterfall-net{display:flex;justify-content:space-between;background:linear-gradient(90deg,rgba(243,111,67,0.08),transparent);margin:12px -28px 0;padding:16px 28px;border-radius:0 0 16px 16px}
+.waterfall-net .wf-label{color:var(--orange);font-weight:600;font-size:14px}
+.waterfall-net .wf-amount{color:var(--orange);font-size:20px;font-weight:700;font-family:'Inter',sans-serif}
+
+/* RESULTS GRID */
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.returns-split{display:grid;grid-template-columns:1fr 1px 1fr;gap:32px;align-items:start}
+.returns-divider{background:var(--g200);align-self:stretch}
+.returns-col-head{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--olive);margin-bottom:2px}
+.returns-col-sub{font-size:11px;color:var(--g400);margin-bottom:12px}
+.returns-col .results-grid{grid-template-columns:1fr;gap:12px;margin-bottom:0}
+@media(max-width:760px){.returns-split{grid-template-columns:1fr;gap:24px}.returns-divider{display:none}}
+.result-box{background:var(--g50);border-radius:12px;padding:20px;text-align:center}
+.result-box.dark{background:linear-gradient(135deg,#1a1a1a,#000000);color:white}
+.result-box.dark .rb-label{color:var(--amber-light)}
+.result-box.dark .rb-value{color:white}
+.rb-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500;margin-bottom:6px}
+.rb-value{font-size:26px;font-weight:700;color:var(--black);font-family:'Inter',sans-serif}
+.rb-sub{font-size:11px;color:var(--g400);margin-top:4px}
+.result-box.dark .rb-sub{color:rgba(255,255,255,0.5)}
+.rb-qual{font-size:9px;letter-spacing:0.5px;text-transform:none;color:var(--g400);font-weight:400;margin:-2px 0 8px}
+.result-box.dark .rb-qual{color:rgba(255,255,255,0.55)}
+
+/* PROJECTION TABLE */
+.ptable{width:100%;border-collapse:collapse;font-size:13px}
+.ptable th{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-weight:500;text-align:right;padding:10px 12px;border-bottom:2px solid var(--g200)}
+.ptable th:first-child{text-align:left}
+.ptable td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--g100);font-variant-numeric:tabular-nums}
+.ptable td:first-child{text-align:left;font-weight:500;color:var(--olive)}
+.ptable tr:hover{background:rgba(245,240,232,0.5)}
+
+/* SCENARIO CARDS */
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.scenario-card{border:2px solid var(--g200);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all 0.25s}
+.scenario-card:hover{border-color:var(--amber);box-shadow:0 4px 12px rgba(179,125,80,0.1)}
+.scenario-card.active{border-color:var(--amber);background:rgba(255,168,74,0.08)}
+.sc-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--g400);font-weight:600;margin-bottom:8px}
+.scenario-card.active .sc-tag{color:var(--amber)}
+.sc-fields{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
+.sc-field label{font-size:9px;letter-spacing:0.5px;text-transform:uppercase;color:var(--g400);display:block;margin-bottom:2px}
+.sc-field input{width:56px;padding:4px 6px;border:1px solid var(--g200);border-radius:6px;font-size:13px;font-weight:600;text-align:center;font-family:'Inter',sans-serif}
+.sc-result{font-size:11px;color:var(--g400)}
+.sc-result strong{font-size:15px;color:var(--black);display:block}
+.sc-revpar{font-size:10px;color:var(--g400);margin:4px 0 6px;letter-spacing:0.3px}
+.sc-revpar strong{color:var(--g600);font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* DISCLAIMER */
+.disclaimer{background:var(--g50);border-left:3px solid var(--amber);padding:16px 20px;margin-top:24px;border-radius:0 8px 8px 0;font-size:11px;color:var(--g400);line-height:1.7}
+
+/* FOOTER */
+footer{background:#000000;color:rgba(255,255,255,0.4);text-align:center;padding:28px;font-size:11px;letter-spacing:0.5px}
+footer a{color:var(--amber);text-decoration:none}
+
+/* BONVOY DISCOUNT */
+.discount-toggle{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;cursor:pointer;width:28px;height:28px;border-radius:50%;background:var(--g100);user-select:none;transition:background 0.2s}
+.discount-toggle:hover{background:var(--g200)}
+.discount-toggle svg{width:16px;height:16px;stroke:var(--g400);fill:none;stroke-width:2;transition:transform 0.3s}
+.discount-toggle.open svg{transform:rotate(180deg)}
+.discount-toggle.open{background:rgba(255,168,74,0.15)}
+.discount-toggle.open svg{stroke:var(--amber)}
+.discount-panel{max-height:0;overflow:hidden;transition:max-height 0.3s ease;margin-top:0}
+.discount-panel.open{max-height:80px;margin-top:10px}
+.discount-inner{display:flex;align-items:center;gap:8px;background:rgba(255,168,74,0.08);border:1px solid rgba(255,168,74,0.2);border-radius:10px;padding:10px 16px}
+.discount-inner label{font-size:11px;color:var(--g500);font-weight:500;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap}
+.discount-inner input{width:70px;padding:6px 10px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-weight:600;text-align:center;font-family:'Inter',sans-serif;color:var(--black);background:white}
+.discount-inner input:focus{outline:none;border-color:var(--amber)}
+.discount-inner .discount-result{font-size:13px;font-weight:600;color:var(--orange);margin-left:auto}
+
+/* PROJECTION GRIDS */
+.proj-inputs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.proj-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .unit-grid{grid-template-columns:repeat(2,1fr)}
+  .results-grid{grid-template-columns:1fr}
+  .scenario-grid{grid-template-columns:1fr}
+  .section-header{flex-direction:column;gap:12px}
+  .section-summary{text-align:left}
+  .form-row{flex-wrap:wrap;gap:8px}
+  .badges{flex-wrap:wrap}
+  .proj-inputs-grid{grid-template-columns:repeat(2,1fr)}
+  .proj-summary-grid{grid-template-columns:repeat(2,1fr)}
+  .ptable{font-size:11px}
+  .ptable th,.ptable td{padding:8px 6px}
+}
+@media(max-width:480px){
+  .unit-grid{grid-template-columns:1fr}
+  .header-inner{flex-direction:column;gap:12px}
+  .proj-inputs-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .proj-summary-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+}
+
+
+/* ===== PRINT / PDF STYLES ===== */
+@media print {
+  @page { size: A4 portrait; margin: 12mm 11mm 14mm; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  html, body { background:#fff !important; margin:0 !important; padding:0 !important; width:100% !important; min-width:0 !important; max-width:none !important; }
+  body { font-size:10.5px !important; color:#1a1a1a !important; }
+
+  /* Hide all live web chrome — the print cover supplies the branding */
+  header, .sub-header, .program-drawer, footer,
+  #shareFab, #shareToast, #loginOverlay, .share-fab, .share-toast, .login-overlay,
+  .lang-toggle, .no-print, .drawer-handle,
+  .rate-toggle, .toggle-group, #toggleTaxBtn, .discount-toggle, .discount-panel { display:none !important; }
+
+  /* Hide interactive controls; render their values as plain text */
+  input[type="range"], .slider, .slider-track { display:none !important; }
+  input { border:none !important; background:transparent !important; box-shadow:none !important; padding:0 !important; margin:0 !important; color:#1a1a1a !important; font-weight:700 !important; -webkit-appearance:none !important; appearance:none !important; width:auto !important; min-width:0 !important; text-align:left !important; }
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none !important; margin:0 !important; }
+
+  /* Remove the duplicate down-payment headline (repeated in the box below) */
+  .section-summary:has(#installmentAmt) { display:none !important; }
+
+  /* Full width, flat document cards */
+  .main { max-width:none !important; width:100% !important; margin:0 !important; padding:0 !important; box-sizing:border-box !important; }
+  .section { max-width:none !important; width:100% !important; box-shadow:none !important; border:1px solid #E0DBD0 !important; border-radius:10px !important; margin:0 0 9px !important; break-inside:auto; box-sizing:border-box !important; background:#fff !important; }
+  .section-header { padding:10px 14px 8px !important; border-bottom:1px solid #F0EDE6 !important; break-after:avoid !important; break-inside:avoid !important; }
+  .section-body { padding:11px 14px 13px !important; width:100% !important; box-sizing:border-box !important; }
+  .section-num { width:20px !important; height:20px !important; font-size:10px !important; background:#5A5A37 !important; }
+  .section-title { font-size:14px !important; }
+  .section-subtitle { font-size:10px !important; }
+  .section-summary-value { font-size:16px !important; color:#F36F43 !important; }
+  .section-summary-label { font-size:7.5px !important; }
+
+  /* Keep logical blocks from splitting across pages */
+  .sum-box, .scenario-card, .returns-col, .result-box, .waterfall-row, .waterfall-net,
+  .returns-split, .proj-summary-grid > *, tr, .disclaimer { break-inside:avoid !important; }
+  thead { display:table-header-group; }
+
+  /* Start the results & projection on a fresh page so nothing splits mid-card */
+  #secProfit, #secProjection { break-before:page !important; }
+
+  /* Tables */
+  .ptable { font-size:9px !important; width:100% !important; border-collapse:collapse !important; }
+  .ptable th, .ptable td { padding:5px 4px !important; }
+  .ptable tbody tr:nth-child(even) { background:#F2EEE4 !important; }
+  /* Bottom-align assumption-grid values so a wrapping label (esp. ES) doesn't break the baseline */
+  .proj-inputs-grid > div { display:flex !important; flex-direction:column !important; }
+  .proj-inputs-grid > div .slider-label { flex:1 0 auto; display:block; }
+
+  /* Grids */
+  .unit-grid { grid-template-columns:repeat(4,1fr) !important; gap:5px !important; width:100% !important; }
+  .unit-card { padding:7px !important; border-width:1px !important; border-radius:6px !important; }
+  .uc-type { font-size:9px !important; letter-spacing:1px !important; }
+  .uc-id, .uc-sqft { font-size:8px !important; }
+  .uc-check { width:16px !important; height:16px !important; top:4px !important; right:4px !important; }
+  .proj-inputs-grid { grid-template-columns:repeat(4,1fr) !important; gap:8px !important; width:100% !important; }
+  .proj-summary-grid { grid-template-columns:repeat(4,1fr) !important; gap:6px !important; width:100% !important; }
+  .scenario-grid { gap:6px !important; }
+  .sum-box { padding:9px !important; border-radius:8px !important; }
+  .sum-val { font-size:15px !important; }
+  .sum-label { font-size:7px !important; }
+  .badges { gap:4px !important; }
+  .badge { padding:3px 8px !important; font-size:9px !important; }
+
+  /* Reveal print-only elements */
+  #printCover { display:flex !important; }
+  #printFooter { display:flex !important; }
+  .price-edit { display:none !important; }
+  .price-print { display:inline !important; font-size:18px !important; font-weight:700 !important; color:#1a1a1a !important; }
+}
+/* Print-only elements are hidden on screen */
+#printCover, #printFooter, .price-print { display:none; }
+#printCover { flex-direction:column; min-height:255mm; padding-bottom:10mm; break-after:page; color:#1a1a1a; font-family:'Inter',sans-serif; }
+.pc-top { background:#000; border-radius:12px; padding:20px 26px; display:flex; align-items:center; justify-content:space-between; }
+.pc-logo-img { height:34px; }
+.pc-wordmark { display:block; font-weight:600; font-size:30px; letter-spacing:10px; color:#F5F0E8; }
+.pc-wordmark-sub { display:block; font-size:9px; letter-spacing:4px; color:rgba(255,255,255,.55); margin-top:5px; }
+.pc-doc { text-align:right; }
+.pc-doc-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:21px; color:#FFD9A0; }
+.pc-doc-sub { font-size:8.5px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.5); margin-top:3px; }
+.pc-hero { margin-top:30px; padding:0 4px; }
+.pc-unit { font-size:13px; letter-spacing:3px; text-transform:uppercase; color:#5A5A37; font-weight:600; }
+.pc-sqft { font-size:11px; color:#9E9686; margin-top:4px; }
+.pc-price { font-size:48px; font-weight:700; color:#F36F43; margin-top:16px; line-height:1; }
+.pc-price-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#9E9686; margin-top:5px; }
+.pc-program { display:inline-block; margin-top:16px; background:#F5F0E8; border:1px solid #E0DBD0; border-radius:30px; padding:5px 15px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#5A5A37; font-weight:600; }
+.pc-mid { margin:auto 0; }
+.pc-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:34px; }
+.pc-kpi { border:1px solid #E0DBD0; border-radius:12px; padding:18px 12px; text-align:center; background:#FAF9F6; }
+.pc-kpi.dark { background:linear-gradient(135deg,#1a1a1a,#000); border-color:#000; }
+.pc-kpi-val { font-size:23px; font-weight:700; color:#F36F43; }
+.pc-kpi.dark .pc-kpi-val { color:#FFD9A0; }
+.pc-kpi-label { font-size:8px; letter-spacing:1.1px; text-transform:uppercase; color:#6B6459; margin-top:7px; line-height:1.35; min-height:2.3em; display:flex; align-items:center; justify-content:center; text-align:center; }
+.pc-kpi.dark .pc-kpi-label { color:rgba(255,255,255,.6); }
+.pc-meta { padding-top:30px; }
+.pc-prepared { display:flex; justify-content:space-between; align-items:flex-end; font-size:10px; color:#6B6459; border-top:1px solid #E0DBD0; padding-top:14px; gap:20px; }
+.pc-prepared b { color:#1a1a1a; font-weight:600; }
+.pc-disc { font-size:8px; color:#9E9686; line-height:1.55; margin-top:12px; }
+#printFooter { position:fixed; bottom:0; left:0; right:0; height:7mm; align-items:center; justify-content:space-between; padding:4px 1mm 0; font-size:8px; letter-spacing:.4px; color:#9E9686; border-top:1px solid #E0DBD0; background:#fff; }
+#printFooter b { color:#5A5A37; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+#printFooter .pf-mid { color:#9E9686; text-transform:uppercase; letter-spacing:1px; }
+.tax-tip{position:relative;display:inline-flex;align-items:center;gap:5px;cursor:help}
+.tax-tip .tip-i{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--g200);color:var(--g500);font-size:9px;font-weight:700;font-style:italic;flex-shrink:0;line-height:1}
+.tax-tip .tip-box{position:absolute;left:0;bottom:calc(100% + 8px);width:260px;background:#1a1a1a;color:#fff;font-size:11px;line-height:1.55;padding:10px 12px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;font-weight:400;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.tax-tip .tip-box::after{content:'';position:absolute;top:100%;left:16px;border:6px solid transparent;border-top-color:#1a1a1a}
+.tax-tip:hover .tip-box{opacity:1;pointer-events:auto}
+@media print{.tax-tip .tip-i,.tax-tip .tip-box{display:none !important}}
+/* PROGRAM DRAWER */
+.drawer-handle{width:30px;height:3px;border-radius:2px;background:rgba(255,255,255,0.12);margin:0 auto;cursor:pointer;transition:background 0.2s}
+.drawer-handle:hover{background:rgba(255,255,255,0.35)}
+.program-drawer{max-height:0;overflow:hidden;transition:max-height 0.25s ease,opacity 0.25s ease;opacity:0;background:var(--cream-dark);border-bottom:1px solid var(--g200);box-shadow:inset 0 -4px 12px rgba(0,0,0,0.03)}
+.program-drawer.open{max-height:80px;opacity:1}
+.drawer-inner{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;gap:10px;justify-content:center}
+.drawer-opt{flex:0 1 220px;display:flex;flex-direction:column;align-items:center;padding:10px 20px;border-radius:10px;border:2px solid var(--g200);background:var(--white);cursor:pointer;transition:all 0.2s;text-align:center}
+.drawer-opt:hover{border-color:var(--g300);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.drawer-opt.active-rental{border-color:var(--olive);background:var(--olive);color:white}
+.drawer-opt.active-rental .drawer-opt-sub{color:rgba(255,255,255,0.6)}
+.drawer-opt.active-lb{border-color:var(--amber);background:var(--amber);color:var(--black)}
+.drawer-opt.active-lb .drawer-opt-sub{color:rgba(0,0,0,0.5)}
+.drawer-opt-label{font-size:13px;font-weight:600;letter-spacing:0.3px}
+.drawer-opt-sub{font-size:10px;color:var(--g400);margin-top:1px}
+.lb-header-badge{display:none;padding:5px 14px;border:1px solid var(--amber);border-radius:20px;font-size:11px;letter-spacing:0.5px;color:var(--amber-light);background:rgba(255,168,74,0.15);font-weight:600}
+.lb-header-badge.visible{display:inline-block}
+.lb-badge{display:inline-block;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:600;padding:2px 8px;border-radius:4px;background:rgba(255,168,74,0.15);color:var(--amber);margin-left:4px;vertical-align:middle}
+.lb-badge-dark{background:rgba(255,168,74,0.25);color:var(--amber-light)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <img src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR">
+    <h2>Rental Program Simulator</h2>
+    <p>Enter access code to continue</p>
+    <input class="login-input" type="password" id="loginPassword" placeholder="Access Code" onkeydown="if(event.key==='Enter')checkLogin()">
+    <button class="login-btn" onclick="checkLogin()">ENTER</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- DOWNLOAD PDF BUTTON -->
+<button class="share-fab" id="shareFab" onclick="downloadPDF()" style="display:none">
+  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span data-i18n="downloadPDF">Download PDF</span>
+</button>
+<div class="share-toast" id="shareToast"></div>
+
+<!-- ===== PRINT-ONLY INVESTOR COVER (hidden on screen) ===== -->
+<div id="printCover">
+  <div class="pc-top">
+    <div class="pc-brand">
+      <img class="pc-logo-img" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando" onerror="this.style.display='none';var w=document.getElementById('pcLogoText');if(w)w.style.display='block'">
+      <div class="pc-logo-text" id="pcLogoText" style="display:none"><span class="pc-wordmark">AMBAR</span><span class="pc-wordmark-sub">RESIDENCES ORLANDO</span></div>
+    </div>
+    <div class="pc-doc">
+      <div class="pc-doc-title" id="pcDocTitle">Investment Summary</div>
+      <div class="pc-doc-sub" id="pcDocSub">Orlando, Florida · Delivery Q3 2028</div>
+    </div>
+  </div>
+  <div class="pc-mid">
+  <div class="pc-hero">
+    <div class="pc-unit" id="pcUnit">1 Bedroom · A1</div>
+    <div class="pc-sqft" id="pcSqft">656 ft²</div>
+    <div class="pc-price" id="pcPrice">$459,344</div>
+    <div class="pc-price-label" id="pcPriceLabel">Purchase Price</div>
+    <div class="pc-program" id="pcProgram">Rental Program</div>
+  </div>
+  <div class="pc-kpis">
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcNoi">$2,962/mo</div><div class="pc-kpi-label" id="pcNoiLabel">Net Income / Month</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcCap">7.7%</div><div class="pc-kpi-label" id="pcCapLabel">Cap Rate</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcRoe">14.2%</div><div class="pc-kpi-label" id="pcRoeLabel">Annual Return · Financed</div></div>
+    <div class="pc-kpi dark"><div class="pc-kpi-val" id="pcWealth">$613,624</div><div class="pc-kpi-label" id="pcWealthLabel">5-Year Total Wealth</div></div>
+  </div>
+  </div>
+  <div class="pc-meta">
+    <div class="pc-prepared">
+      <div><span id="pcPreparedLabel">Prepared for</span>: <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></div>
+      <div><span id="pcDateLabel">Date</span>: <b id="pcDate"></b></div>
+    </div>
+    <div class="pc-disc" id="pcDisc">Estimated projections based on the assumptions entered. Not a guarantee of returns. Consult your financial advisor before making investment decisions.</div>
+  </div>
+</div>
+<!-- ===== PRINT-ONLY RUNNING FOOTER ===== -->
+<div id="printFooter"><b>AMBAR Residences Orlando</b><span class="pf-mid" id="pfMid">322 Residences · Marriott Bonvoy Managed</span><span>AMBARorlando.com</span></div>
+
+<header>
+  <div class="header-inner">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <img class="logo-img" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando" style="cursor:pointer" onclick="toggleProgramDrawer()">
+  </div>
+</header>
+
+<div class="sub-header">
+  <div class="sub-header-inner">
+    <h1 data-i18n="heroTitle">Rental Program Simulator</h1>
+    <div class="badges">
+      <span class="badge" data-i18n="badgeUnits">322 Residences</span>
+      <span class="lb-header-badge" id="lbHeaderBadge">LEASEBACK GLOW</span>
+    </div>
+  </div>
+  <div class="drawer-handle" onclick="toggleProgramDrawer()"></div>
+</div>
+
+<!-- Program mode drawer -->
+<div class="program-drawer" id="programDrawer">
+  <div class="drawer-inner">
+    <div class="drawer-opt active-rental" id="btnRental" onclick="setProgramMode('rental')">
+      <div class="drawer-opt-label" data-i18n="rentalProgram">Rental Program</div>
+      <div class="drawer-opt-sub">(Marriott Bonvoy)</div>
+    </div>
+    <div class="drawer-opt" id="btnLeaseback" onclick="setProgramMode('leaseback')">
+      <div class="drawer-opt-label" data-i18n="leasebackProgram">Leaseback Glow</div>
+      <div class="drawer-opt-sub" data-i18n="lbDrawerSub">(Guaranteed 10%)</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ========== 1. UNIT TYPES ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title" data-i18n="s1Title">Unit Types & Prices</div>
+        <div class="section-subtitle" data-i18n="s1Sub">Choose a unit to simulate the investment</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="unit-grid" id="unitGrid"></div>
+    <div style="margin-top:20px;background:var(--g50);border-radius:12px;padding:16px 20px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="slider-label" data-i18n="unitPrice">Unit Price</div>
+          <div style="font-size:11px;color:var(--g400);margin-top:2px" data-i18n="unitPriceSub">Adjust based on your negotiated price</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span class="price-edit" style="font-size:18px;font-weight:600;color:var(--g400)">$</span>
+          <input class="num-input price-edit" type="number" id="priceInput" value="459344" min="100000" max="2000000" step="1000" onchange="recalc()" style="width:120px;font-size:18px;font-weight:700;padding:8px 12px">
+          <span class="price-print" id="priceInputPrint">$459,344</span>
+        </div>
+      </div>
+      <div class="discount-toggle" id="discountToggle" onclick="toggleDiscount()">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="discount-panel" id="discountPanel">
+        <div class="discount-inner">
+          <label data-i18n="bonvoyDiscount">Bonvoy Discount</label>
+          <input type="number" id="discountPct" value="0" min="0" max="50" step="0.5" onchange="applyDiscount()" oninput="applyDiscount()">
+          <span style="font-size:14px;font-weight:600;color:var(--g400)">%</span>
+          <div class="discount-result" id="discountResult"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 2. DOWN PAYMENT ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-title" data-i18n="s2Title">Down Payment</div>
+        <div class="section-subtitle" data-i18n="s2Sub"></div>
+      </div>
+    </div>
+    <div class="section-summary">
+      <div class="section-summary-value" id="installmentAmt">$131,970</div>
+      <div class="section-summary-label" data-i18n="totalDPLabel">Total Paid During Construction</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="slider-group">
+      <div class="slider-header">
+        <span class="slider-label" data-i18n="totalDP">% Total Down Payment</span>
+        <span class="slider-value" id="dpVal">30%</span>
+      </div>
+      <input type="range" id="downPayment" min="20" max="100" value="30" step="5" oninput="recalc()">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;text-align:center">
+      <div style="background:var(--g50);border-radius:10px;padding:14px">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500" data-i18n="totalDPLabel">Total Paid During Construction</div>
+        <div style="font-size:18px;font-weight:700;margin-top:4px" id="totalDPAmt">$131,970</div>
+      </div>
+      <div style="background:var(--g50);border-radius:10px;padding:14px">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);font-weight:500" data-i18n="balanceClosing">Balance at Closing</div>
+        <div style="font-size:18px;font-weight:700;margin-top:4px" id="balanceAmt">$307,930</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 3. BANK FINANCING ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title" data-i18n="s3Title">Bank Financing</div>
+        <div class="section-subtitle" data-i18n="s3Sub">How the closing balance will be paid</div>
+      </div>
+    </div>
+    <div class="section-summary">
+      <div class="section-summary-value" id="pmtSummary">$1,560/mo</div>
+      <div class="section-summary-label" data-i18n="paymentMo">payment/mo</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="toggle-group" style="margin-bottom:20px">
+      <button class="toggle-btn" id="btnCash" onclick="setFinMode('cash')" data-i18n="payCash">Pay cash at closing</button>
+      <button class="toggle-btn active" id="btnFinance" onclick="setFinMode('finance')" data-i18n="financeClosing">Finance at closing</button>
+    </div>
+    <div id="finInputs">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div class="slider-label" data-i18n="annualInterest">Annual Interest</div>
+          <div style="font-size:11px;color:var(--g400);margin:2px 0 6px" data-i18n="annIntSub">US banks finance foreigners</div>
+          <input class="num-input" type="number" id="interestRate" value="5" min="0" max="15" step="0.25" onchange="recalc()"> <span style="font-size:13px;color:var(--g400)">%</span>
+        </div>
+        <div>
+          <div class="slider-label" data-i18n="term">Term</div>
+          <div style="font-size:11px;color:var(--g400);margin:2px 0 6px" data-i18n="termSub">Standard amortization</div>
+          <input class="num-input" type="number" id="loanTerm" value="30" min="5" max="30" step="5" onchange="recalc()"> <span style="font-size:13px;color:var(--g400)" data-i18n="years">years</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px">
+        <div style="background:var(--header-bg);border-radius:12px;padding:20px;color:white">
+          <div style="font-size:11px;color:var(--amber-light)" data-i18n="monthlyInterest">Monthly Interest</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px" data-i18n="monthlyInterestSub">Tax-deductible portion · monthly avg (year 1)</div>
+          <div style="font-size:40px;font-weight:700;margin-top:8px" id="interestDisplay">$1,283</div>
+          <div style="display:flex;gap:24px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.12)">
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4)" data-i18n="principalPortion">Principal</div>
+              <div style="font-size:16px;font-weight:600;margin-top:2px" id="principalDisplay">$870</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4)" data-i18n="totalPmt">Total Payment — PMT</div>
+              <div style="font-size:16px;font-weight:600;margin-top:2px" id="pmtDisplay">$2,153</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--g50);border-radius:12px;padding:20px">
+          <div style="font-size:11px;color:var(--g400)" data-i18n="financedBal">Financed Balance</div>
+          <div style="font-size:10px;color:var(--g300);margin-top:2px" data-i18n="finBalSub">Amount entering bank financing</div>
+          <div style="font-size:40px;font-weight:700;margin-top:8px" id="finBalDisplay">$307,930</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 4. REVENUE PROJECTION ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">4</div>
+      <div>
+        <div class="section-title" data-i18n="s5Title">Revenue Projection — Rental Program</div>
+        <div class="section-subtitle" data-i18n="s5Sub">Average rental rate, occupancy and net distribution to owner</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end">
+      <div class="rate-toggle" id="rateToggle" role="tablist" aria-label="Rate input mode">
+        <button class="rate-btn active" id="btnADR" onclick="setRateMode('adr')" role="tab" aria-selected="true">ADR</button>
+        <button class="rate-btn" id="btnRevPAR" onclick="setRateMode('revpar')" role="tab" aria-selected="false">RevPAR</button>
+      </div>
+      <div class="section-summary">
+        <div class="section-summary-value" id="noiSummary">$2,701/mo</div>
+        <div class="section-summary-label" data-i18n="netIncomeMo">net income/mo</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-body">
+    <!-- Hidden input: selected rate (ADR in ADR mode, RevPAR in RevPAR mode) flows into recalc -->
+    <input type="hidden" id="adrInput" value="409">
+
+    <!-- Occupancy Slider -->
+    <div class="slider-group" id="occGroup">
+      <div class="slider-header">
+        <span class="slider-label" data-i18n="occupancy">Occupancy</span>
+        <span class="slider-value" id="occVal">79%</span>
+      </div>
+      <input type="range" id="occSlider" min="40" max="95" value="79" step="1" oninput="onOccChange()">
+      <div style="font-size:11px;color:var(--g400);margin-top:4px" data-i18n="occSub">Annual average — Orlando year-round demand</div>
+    </div>
+
+    <!-- Scenario Cards -->
+    <div class="scenario-grid">
+      <div class="scenario-card" id="scCard1" onclick="applyScenario(1)">
+        <div class="sc-tag" data-i18n="conservative">Conservative</div>
+        <div class="sc-fields">
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc1Rate" value="383" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
+        </div>
+        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc1RevPar">$302</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$9,202</strong></div>
+      </div>
+      <div class="scenario-card active" id="scCard2" onclick="applyScenario(2)">
+        <div class="sc-tag" data-i18n="base">Base</div>
+        <div class="sc-fields">
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc2Rate" value="409" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
+        </div>
+        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc2RevPar">$323</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$9,828</strong></div>
+      </div>
+      <div class="scenario-card" id="scCard3" onclick="applyScenario(3)">
+        <div class="sc-tag" data-i18n="optimistic">Optimistic</div>
+        <div class="sc-fields">
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc3Rate" value="436" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
+        </div>
+        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc3RevPar">$344</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc3Rev">$10,477</strong></div>
+      </div>
+    </div>
+
+    <!-- Revenue Waterfall -->
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--g100)">
+      <div style="font-size:11px;color:var(--g400);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:12px" data-i18n="revenueWaterfall">Revenue Distribution — Rental Program · Split + Variable Costs</div>
+      <div id="waterfallBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 5. PROFITABILITY ========== -->
+<div class="section" id="secProfit">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">5</div>
+      <div>
+        <div class="section-title" data-i18n="s6Title">Profitability & Returns</div>
+        <div class="section-subtitle" data-i18n="s6Sub">The final investment result</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="returns-split">
+      <div class="returns-col">
+        <div class="returns-col-head" data-i18n="noFinHead">Cash Purchase</div>
+        <div class="returns-col-sub" data-i18n="noFinSub">All-cash · the property on its own</div>
+        <div class="results-grid" id="resultsGridNoFin"></div>
+      </div>
+      <div class="returns-divider"></div>
+      <div class="returns-col">
+        <div class="returns-col-head" data-i18n="finHead">With Financing</div>
+        <div class="returns-col-sub" data-i18n="finSub">Leveraged · your cash invested</div>
+        <div class="results-grid" id="resultsGridFin"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 6. PROJECTION ========== -->
+<div class="section" id="secProjection">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">6</div>
+      <div>
+        <div class="section-title" data-i18n="s7Title">Projection Assumptions</div>
+        <div class="section-subtitle" data-i18n="s7Sub">Appreciation, income growth and analysis horizon</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="proj-inputs-grid">
+      <div>
+        <div class="slider-label" data-i18n="horizon">Horizon</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="horizon" value="5" min="1" max="30" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)" data-i18n="years">years</span>
+        </div>
+      </div>
+      <div>
+        <div class="slider-label" data-i18n="appreciation">Appreciation</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="appreciation" value="3" min="0" max="10" step="0.5" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)">% p.a.</span>
+        </div>
+      </div>
+      <div>
+        <div class="slider-label" data-i18n="incomeGrowth">Income Growth</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="incGrowth" value="3" min="0" max="10" step="0.5" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)">% p.a.</span>
+        </div>
+      </div>
+      <div>
+        <div class="slider-label" data-i18n="costInflation">Cost Inflation</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+          <input class="num-input" type="number" id="costInflation" value="3" min="0" max="10" step="0.5" onchange="recalc()">
+          <span style="font-size:12px;color:var(--g400)">% p.a.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--g100)">
+      <div style="font-size:11px;color:var(--g400);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:4px" id="projResultLabel">Projection Result — 5 years</div>
+      <div class="proj-summary-grid" id="projSummaryCards"></div>
+    </div>
+
+    <div style="margin-top:20px;overflow-x:auto">
+      <table class="ptable" id="projTable"></table>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;justify-content:center;margin:20px 0">
+  <button class="toggle-btn" id="toggleTaxBtn" onclick="toggleTaxSection()" style="padding:10px 28px;font-size:14px;border-radius:8px;border:1px solid var(--g200);background:var(--cream);color:var(--black);cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;font-weight:500;transition:all 0.3s ease">
+    <span data-i18n="s8Title">Tax Benefits</span>
+    <span id="toggleTaxArrow" style="transition:transform 0.3s ease">▼</span>
+  </button>
+</div>
+
+<div id="taxSection" style="max-height:0;overflow:hidden;opacity:0;transition:max-height 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease">
+<!-- ========== 7. TAX BENEFITS ========== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-num">7</div>
+      <div>
+        <div class="section-title" data-i18n="s8Title">Tax Benefits</div>
+        <div class="section-subtitle" data-i18n="s8Sub">Estimated tax deductions and savings from ownership</div>
+      </div>
+    </div>
+    <div class="section-summary">
+      <div class="section-summary-value" id="taxY1Summary" style="font-size:18px">$0</div>
+      <div class="section-summary-label" data-i18n="y1TaxSavings">year 1 tax savings</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap">
+      <div>
+        <div class="slider-label" data-i18n="taxBracketLbl">Tax Bracket</div>
+        <div style="font-size:11px;color:var(--g400);margin-top:2px" data-i18n="taxBracketSub">Select your federal marginal rate</div>
+      </div>
+      <div class="toggle-group" style="max-width:260px">
+        <button class="toggle-btn tax-bracket-btn active" data-rate="0.24" onclick="setTaxBracket(0.24)">24%</button>
+        <button class="toggle-btn tax-bracket-btn" data-rate="0.32" onclick="setTaxBracket(0.32)">32%</button>
+        <button class="toggle-btn tax-bracket-btn" data-rate="0.37" onclick="setTaxBracket(0.37)">37%</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="ptable" id="taxTable"></table></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px" id="taxReturnCards"></div>
+    <div class="disclaimer" style="margin-top:20px" data-i18n="taxDisclaimer">Tax estimates based on 80/20 building-to-land ratio and current IRS rules including 100% bonus depreciation (OBBBA, July 2025). Cost segregation range reflects 22–33% of basis reclassified per IRS engineering standards. Florida has no state income tax. This is not tax advice — consult a qualified CPA before making investment decisions.</div>
+  </div>
+</div>
+
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer" data-i18n="disclaimer">This simulator provides estimated projections based on the assumptions entered. Actual results may vary based on market conditions, occupancy rates, operating expenses, and other factors. This is not a guarantee of returns. Consult with your financial advisor before making investment decisions.</div>
+
+</div>
+
+<footer>
+  <img src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR" style="height:30px;margin-bottom:8px"><br>
+  <a href="https://AMBARorlando.com" target="_blank">AMBARorlando.com</a>
+</footer>
+
+<script>
+// ===== UNIT DATA (adr = true Average Daily Rate; occ = default occupancy; RevPAR = adr × occ) =====
+// NOTE: adr values chosen so that adr × round(occ*100)/100 ≈ legacy RevPAR — preserves default gross.
+const UNITS = [
+  { id:'S1', name:'S1', type:{en:'Studio',es:'Estudio'}, basePrice:380614, occ:0.7945, adr:315.63,
+    sqft:533, guests:4,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:439.00,ffePct:0.04,util:69.74,ins:81.95,tax:286.95}},
+  { id:'A1', name:'A1', type:{en:'1 Bedroom',es:'1 Habitación'}, basePrice:459344, occ:0.7945, adr:382.62,
+    sqft:656, guests:6,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:550.15,ffePct:0.04,util:85.83,ins:86.51,tax:354.26}},
+  { id:'A2', name:'A2', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, basePrice:518900, occ:0.8181, adr:419.72,
+    sqft:720, guests:6,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:645.38,ffePct:0.04,util:99.83,ins:91.06,tax:405.18}},
+  { id:'A3', name:'A3', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, basePrice:579900, occ:0.8181, adr:471.23,
+    sqft:780, guests:6,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:739.49,ffePct:0.04,util:112.39,ins:91.06,tax:457.34}},
+  { id:'A4', name:'A4', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, basePrice:601400, occ:0.8181, adr:476.54,
+    sqft:810, guests:6,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:682.04,ffePct:0.04,util:107.29,ins:91.06,tax:475.72}},
+  { id:'B1', name:'B1', type:{en:'2 Bed + Den',es:'2 Hab + Estudio'}, basePrice:688300, occ:0.8355, adr:550.52,
+    sqft:1089, guests:8,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:929.24,ffePct:0.04,util:142.48,ins:95.61,tax:550.02}},
+  { id:'B2', name:'B2', type:{en:'2 Bed Corner',es:'2 Hab Esquina'}, basePrice:646900, occ:0.8355, adr:515.89,
+    sqft:1050, guests:8,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:866.76,ffePct:0.04,util:135.42,ins:100.17,tax:514.62}},
+  { id:'C1', name:'C1', type:{en:'3 Bed Corner',es:'3 Hab Esquina'}, basePrice:764400, occ:0.8270, adr:615.14,
+    sqft:1185, guests:10,
+    exp:{otaPct:0.025,ccPct:0.0241,opexPct:0.40,marriottPct:0.10,hoa:1026.32,ffePct:0.04,util:155.05,ins:104.72,tax:615.09}}
+];
+
+// FF&E monthly fixed amounts per unit (for leaseback mode)
+const FFE_FIXED={S1:303,A1:368,A2:419,A3:470,A4:475,B1:563,B2:527,C1:621};
+
+let sel = UNITS[1];
+let lang = 'en';
+let finMode = 'finance';
+let programMode = 'rental';
+let taxBracket = 0.24;
+let rateMode = 'adr'; // 'adr' (default, uses ADR × occupancy) or 'revpar' (RevPAR entered directly)
+const DPM = 365/12;
+
+// ===== i18n =====
+const I = {
+  en:{heroTitle:'Rental Program Simulator',s1Title:'Unit Types & Prices',s1Sub:'Choose a unit to simulate the investment',s2Title:'Down Payment',s2Sub:'',s3Title:'Bank Financing',s3Sub:'How the closing balance will be paid',s4Title:'Fixed Property Costs',s4Sub:'Monthly owner expenses, regardless of occupancy',s5Title:'Revenue Projection — Rental Program',s5Sub:'Average rental rate, occupancy and net distribution to owner',s6Title:'Profitability & Returns',s6Sub:'The final investment result',s7Title:'Projection Assumptions',s7Sub:'Appreciation, income growth and analysis horizon',unitPrice:'Unit Price',unitPriceSub:'Adjust based on your negotiated price',totalDP:'% Total Down Payment',numInstallments:'Number of Installments',perInstallment:'per installment',totalDPLabel:'Total Paid During Construction',balanceClosing:'Balance at Closing',eachInstLabel:'Each Installment',payCash:'Pay cash at closing',financeClosing:'Finance at closing',pctFinanced:'% Financed',pctFinSub:'Of closing balance',annualInterest:'Annual Interest',annIntSub:'US banks finance foreigners',term:'Term',termSub:'Standard amortization',years:'years',monthlyPMT:'Monthly Payment — PMT',pmtSub:'Principal + interest to bank per month',monthlyInterest:'Monthly Interest',monthlyInterestSub:'Tax-deductible portion · monthly avg (year 1)',principalPortion:'Principal',totalPmt:'Total Payment — PMT',financedBal:'Financed Balance',finBalSub:'Amount entering bank financing',paymentMo:'payment/mo',monthlyFixed:'monthly fixed total',aveRentalRate:'Average Rental Rate per Day',aveRateSub:'Average daily rental rate at the resort — professionally managed',occupancy:'Occupancy',occRate:'Occupancy Rate',occSub:'Annual average — Orlando year-round demand',conservative:'Conservative',base:'Base',optimistic:'Optimistic',grossRevMo:'Gross rev/mo',revenueWaterfall:'Revenue Distribution — Rental Program · Split + Variable Costs',grossMonthly:'Gross Monthly Revenue',rateOccDays:'Rate × Occupancy × 30.4 days/month',marriottFee:'Marriott — 10%',marriottDesc:'Marriott platform, global distribution, brand standards',hotelOps:'Hotel Operations — 40%',hotelOpsDesc:'Front desk, housekeeping, maintenance, daily operations',ownerRev:'Owner Revenue — 50%',ownerRevDesc:'Your split before variable costs',ffeRes:'FF&E Reserve — 4%',ffeDesc:'Furniture, fixtures & equipment reserve',otaCard:'OTA / Card Fee',otaDesc:'Digital booking platforms + credit card processing',fixedCosts:'Fixed Property Costs',fixedDesc:'HOA + Utilities + Insurance + Property Tax',ownerNet:'Owner Net Monthly Income',netIncomeMo:'net income/mo',monthlyNOI:'Monthly Net Income',monthlyNOISub:'NOI · after all costs',cashFlowMo:'Cash Flow / Month',cashFlowSub:'Net flow after bank payment',annualReturn:'Annual Return on Equity',roeQual:'with financing',annualReturnSub:'IRR · internal rate of return',annualNOI:'Annual Net Income',annualNOISub:'NOI · after all costs',cashFlowYr:'Cash Flow / Year',cashFlowYrSub:'Net flow after bank payment',capRate:'Cap Rate',capRateQual:'without financing',capRateSub:'Annual NOI ÷ purchase price',irrAnnual:'Annual IRR',irrSub:'Annual return on invested equity',payback:'Payback',paybackSub:'Months until NOI covers capital',levCashReturn:'Leveraged Cash Return',levCashReturnSub:'Cash flow + principal paydown / yr',totalEquity:'Total Invested Capital',totalEquitySub:'Down payment + cash at closing',purchasePrice:'Purchase Price',purchasePriceSub:'All-cash · full unit price',noFinHead:'Cash Purchase',noFinSub:'All-cash · the property on its own',finHead:'With Financing',finSub:'Leveraged · your cash invested',horizon:'Horizon',appreciation:'Appreciation',incomeGrowth:'Income Growth',costInflation:'Cost Inflation',priceToday:'Price Today',estAppreciation:'Est. Appreciation',accIncome:'Accumulated Cash Flow',totalWealth:'Total Wealth',year:'Year',propValue:'Property Value',annIncome:'Annual Cash Flow',cumCash:'Cum. Cash Flow',equity:'Equity',totalReturn:'Total Return',disclaimer:'This simulator provides estimated projections based on the assumptions entered. Actual results may vary based on market conditions, occupancy rates, operating expenses, and other factors. This is not a guarantee of returns. Consult with your financial advisor before making investment decisions.',badgeDelivery:'Delivery Q3 2028',badgeUnits:'322 Residences',badgeManaged:'Marriott Managed',hoa:'HOA',hoaDesc:'Common area maintenance, pool, fitness, security, amenities',utilities:'Utilities',utilitiesDesc:'Electricity, water and gas estimate',insurance:'Insurance',insuranceDesc:'Property insurance — damage, fire, liability',propertyTax:'Property Tax',propertyTaxDesc:'Osceola County, Florida — annual tax ÷ 12',yieldOnGross:'yield on gross revenue',posFlow:'Positive flow: income > payment',finScenario:'Financed scenario',onEquity:'Cash flow + principal paydown',yrsRecover:'to recover invested capital',dpPlusCash:'Down payment + cash at closing',downloadPDF:'Download PDF',pdfGenerating:'Generating PDF\u2026',pdfReady:'PDF downloaded!',pdfFail:'Could not generate PDF',bonvoyDiscount:'Bonvoy Discount',discountLabel:'Discount',s8Title:'Tax Benefits',s8Sub:'Estimated tax deductions and savings from ownership',y1TaxSavings:'year 1 tax savings',taxBracketLbl:'Tax Bracket',taxBracketSub:'Select your federal marginal rate',deductionCol:'Deduction',year1Col:'Year 1 (with cost seg)',years2PlusCol:'Years 2+ (ongoing)',costSegRow:'Cost seg + bonus depreciation',costSegRowSub:'22–33% of basis reclassified, 100% first-year bonus (condo-hotel benchmark)',slDepRow:'Straight-line depreciation',slDepRowSub:'Nonresidential (39-yr) — transient use < 30 days',mortIntRow:'Mortgage interest',mortIntRowSub:'Interest on financed balance',propTaxRow:'Property taxes',propTaxRowSub:'Osceola County, Florida',opExpRow:'HOA / insurance / utilities',opExpRowSub:'Annual operating expenses',hotelFeesRow:'Hotel program fees',hotelFeesRowSub:'Brand + ops + FF&E + OTA/card (annual) (netted in Section 4)',totalDeductionsRow:'Total deductions',taxSavingsRow:'Tax savings',returnY1Card:'Year 1 Total Return',returnOngoingCard:'Years 2+ Ongoing Return',cashFlowRow:'Cash flow',appreciationRow:'Appreciation',principalRow:'Principal paydown',totalReturnRow:'Total return',roicRow:'Return on invested capital',taxDisclaimer:'Tax estimates based on 80/20 building-to-land ratio and current IRS rules including 100% bonus depreciation (OBBBA, July 2025). Cost segregation range reflects 22–33% of basis reclassified per IRS engineering standards. Florida has no state income tax. This is not tax advice — consult a qualified CPA before making investment decisions.',ongoingDeclining:'(declining)',tipCostSeg:'A cost segregation study breaks your unit into components: cabinets, appliances, flooring, lighting, furniture, countertops. These items wear out faster than the building, so the IRS lets you depreciate them over 5-7 years instead of 39. With 100% bonus depreciation (permanent under OBBBA 2025), you can deduct the full amount in year 1. The 22-33% range is based on 8,000+ engineering studies for condo-hotel units.',tipSlDep:'The remaining building value (after cost segregation) is depreciated evenly over 39 years. Because the Marriott rental program operates with average guest stays under 30 days, the IRS classifies this as nonresidential (transient) property — requiring 39-year depreciation instead of the 27.5 years used for long-term residential rentals.',tipMortInt:'The interest portion of your monthly mortgage payment is fully deductible against rental income. Unlike primary residences (capped at $750K loan), investment properties have no mortgage interest deduction limit. The deduction is largest in year 1 and gradually decreases as more of each payment goes toward principal.',tipPropTax:'Annual property taxes paid to Osceola County are fully deductible as a rental operating expense. Unlike personal residences (subject to the $10K-$40K SALT cap), investment property taxes have no deduction limit.',tipOpExp:'All costs of maintaining and operating your rental unit are tax-deductible: HOA fees cover common area maintenance, pool, fitness center, and security. Insurance covers property damage and liability. Utilities include electricity, water, and gas. These reduce your taxable rental income dollar for dollar.',tipHotelFees:'The Marriott Bonvoy rental program charges are deductible business expenses: Brand franchise fee (10%) covers global marketing and the Bonvoy booking platform. Hotel operations (40%) covers front desk, housekeeping, and daily management. FF&E reserve (4%) funds furniture replacement. OTA/card fees cover booking platforms and credit card processing. Note: these fees are already subtracted from your revenue in Section 4 above.',tipWfMarriott:"Marriott's platform and global distribution — Bonvoy booking channels, global marketing in 140+ countries, and brand standards. Calculated as a percentage of gross room revenue.",tipWfHotelOps:'Front desk, housekeeping, maintenance and day-to-day hotel operating costs — utilities, supplies and staffing allocated to your unit. Calculated as a percentage of gross room revenue.',tipWfFfe:'Furniture, Fixtures & Equipment reserve fund. Required by Marriott to cover periodic replacement of furniture, carpeting, appliances, and room finishes. Industry standard for branded hotels.',tipWfOta:'Online Travel Agency commissions (Booking.com, Expedia, etc.) and credit card processing fees on guest bookings. Calculated as a percentage of gross room revenue.',tipWfFixed:"Monthly costs the owner pays regardless of occupancy: HOA/condo fees, property tax, insurance, and utilities not covered by hotel operations. These are fixed — they don't change with revenue.",tipWfOwnerNet:'Your bottom line — what remains after all hotel operating costs and fixed property costs are deducted from gross room revenue. This is your monthly cash flow before debt service.',tipFixedHoa:'HOA / Condo Fee',tipFixedUtil:'Utilities',tipOtaCommission:'OTA Commission',tipOtaCC:'Credit Card Processing',tipTotal:'Total',strNoteTitle:'Short-term rental non-passive treatment (IRC §469)',strNote:'Because average guest stays are under 7 days, this property may qualify for non-passive treatment — allowing tax losses to offset W-2 wages and active business income. Material participation required (500+ hrs/year). The 39-year base depreciation also unlocks Section 179 expensing. Consult a qualified CPA.',rentalProgram:'Rental Program',leasebackProgram:'Leaseback Glow',lbDrawerSub:'(Guaranteed 10%)',lbGuaranteed:'10% Guaranteed Leaseback',lbAnnual:'Annual',lbQuarterly:'Quarterly',lbMonthlyEquiv:'Monthly equivalent',lbBasedOn:'Based on purchase price',lbGuaranteedIncome:'Guaranteed Monthly Income',lbGuaranteedDesc:'Purchase price × 10% ÷ 12',lbFfeRes:'FF&E Reserve',lbFfeDesc:'Furniture, fixtures & equipment reserve',lbOwnerNet:'Owner Net Monthly Income (Leaseback)',lbNetIncomeMo:'leaseback net/mo',lbNote:'Paid quarterly. Leaseback program runs for the first 2 years of ownership. After Year 2, the unit transitions to the Marriott Bonvoy Rental Program.',lbS5Title:'Revenue — Leaseback Glow Program',lbS5Sub:'Guaranteed 10% annual return on purchase price for 2 years',lbTag:'Leaseback',rentalTag:'Rental',lbOwnerCosts:'Owner Costs',lbHotelFeesNote:'Hotel program fees (brand, ops, OTA) are absorbed by the operator during leaseback'},
+  es:{heroTitle:'Simulador del Programa de Alquiler',s1Title:'Tipos de Unidad y Precios',s1Sub:'Elige una unidad para simular la inversión',s2Title:'Enganche',s2Sub:'',s3Title:'Financiamiento Bancario',s3Sub:'Cómo se pagará el saldo al cierre',s4Title:'Costos Fijos de Propiedad',s4Sub:'Gastos mensuales del propietario, sin importar la ocupación',s5Title:'Proyección de Ingresos — Programa Marriott',s5Sub:'Tarifa promedio de alquiler, ocupación y distribución neta al propietario',s6Title:'Rentabilidad y Retornos',s6Sub:'El resultado final de la inversión',s7Title:'Supuestos de Proyección',s7Sub:'Apreciación, crecimiento de ingresos y horizonte de análisis',unitPrice:'Precio de la Unidad',unitPriceSub:'Ajuste según su precio negociado',totalDP:'% Enganche Total',numInstallments:'Número de Cuotas',perInstallment:'por cuota',totalDPLabel:'Total Pagado en Construcción',balanceClosing:'Saldo al Cierre',eachInstLabel:'Cada Cuota',payCash:'Pagar en efectivo al cierre',financeClosing:'Financiar al cierre',pctFinanced:'% Financiado',pctFinSub:'Del saldo al cierre',annualInterest:'Interés Anual',annIntSub:'Bancos de EE.UU. financian extranjeros',term:'Plazo',termSub:'Amortización estándar',years:'años',monthlyPMT:'Pago Mensual — PMT',pmtSub:'Capital + interés al banco por mes',monthlyInterest:'Interés Mensual',monthlyInterestSub:'Porción deducible de impuestos · prom. mensual (año 1)',principalPortion:'Capital',totalPmt:'Pago Total — PMT',financedBal:'Saldo Financiado',finBalSub:'Monto entrando a financiamiento',paymentMo:'pago/mes',monthlyFixed:'total fijo mensual',aveRentalRate:'Tarifa Promedio de Alquiler por Día',aveRateSub:'Tarifa diaria promedio del resort — gestionado profesionalmente',occupancy:'Ocupación',occRate:'Tasa de Ocupación',occSub:'Promedio anual — Orlando demanda todo el año',conservative:'Conservador',base:'Base',optimistic:'Optimista',grossRevMo:'Ingreso bruto/mes',revenueWaterfall:'Distribución de Ingresos — Programa Marriott Bonvoy',grossMonthly:'Ingreso Mensual Bruto',rateOccDays:'Tarifa × Ocupación × 30.4 días/mes',marriottFee:'Marriott — 10%',marriottDesc:'Plataforma Marriott, distribución global, estándares de marca',hotelOps:'Operaciones del Hotel — 40%',hotelOpsDesc:'Recepción, limpieza, mantenimiento, operaciones diarias',ownerRev:'Ingreso del Propietario — 50%',ownerRevDesc:'Tu parte antes de costos variables',ffeRes:'Reserva FF&E — 4%',ffeDesc:'Reserva de mobiliario y equipamiento',otaCard:'Comisión OTA / Tarjeta',otaDesc:'Plataformas de reserva + procesamiento de tarjetas',fixedCosts:'Costos Fijos de Propiedad',fixedDesc:'HOA + Servicios + Seguro + Impuesto',ownerNet:'Ingreso Neto Mensual del Propietario',netIncomeMo:'ingreso neto/mes',monthlyNOI:'Ingreso Neto Mensual',monthlyNOISub:'NOI · después de todos los costos',cashFlowMo:'Flujo de Caja / Mes',cashFlowSub:'Flujo neto después del pago bancario',annualReturn:'Retorno Anual sobre Capital',roeQual:'con financiamiento',annualReturnSub:'TIR · tasa interna de retorno',annualNOI:'Ingreso Neto Anual',annualNOISub:'NOI · después de todos los costos',cashFlowYr:'Flujo de Caja / Año',cashFlowYrSub:'Flujo neto después del pago bancario',capRate:'Tasa de Capitalización',capRateQual:'sin financiamiento',capRateSub:'NOI anual ÷ precio de compra',irrAnnual:'TIR Anual',irrSub:'Retorno anual sobre capital invertido',payback:'Período de Recuperación',paybackSub:'Meses hasta que NOI cubra el capital',levCashReturn:'Retorno de Caja Apalancado',levCashReturnSub:'Flujo de caja + amortización de capital / año',totalEquity:'Capital Total Invertido',totalEquitySub:'Enganche + efectivo al cierre',purchasePrice:'Precio de Compra',purchasePriceSub:'Al contado · precio total',noFinHead:'Compra al Contado',noFinSub:'Al contado · la propiedad por sí sola',finHead:'Con Financiamiento',finSub:'Apalancado · capital invertido',horizon:'Horizonte',appreciation:'Apreciación',incomeGrowth:'Crecimiento de Ingresos',costInflation:'Inflación de Costos',priceToday:'Precio Hoy',estAppreciation:'Apreciación Est.',accIncome:'Flujo de Caja Acumulado',totalWealth:'Patrimonio Total',year:'Año',propValue:'Valor Propiedad',annIncome:'Flujo de Caja Anual',cumCash:'Flujo Acumulado',equity:'Patrimonio',totalReturn:'Retorno Total',disclaimer:'Este simulador proporciona proyecciones estimadas basadas en los supuestos ingresados. Los resultados pueden variar según condiciones del mercado, ocupación, gastos operativos y otros factores. No es garantía de retornos. Consulte con su asesor financiero.',badgeDelivery:'Entrega Q3 2028',badgeUnits:'322 Residencias',badgeManaged:'Gestionado por Marriott',hoa:'HOA',hoaDesc:'Mantenimiento de áreas comunes, piscina, gym, seguridad',utilities:'Servicios',utilitiesDesc:'Electricidad, agua y gas estimados',insurance:'Seguro',insuranceDesc:'Seguro de propiedad — daños, incendio, responsabilidad',propertyTax:'Impuesto Predial',propertyTaxDesc:'Condado de Osceola, Florida — impuesto anual ÷ 12',yieldOnGross:'rendimiento sobre ingreso bruto',posFlow:'Flujo positivo: ingreso > pago',finScenario:'Escenario financiado',onEquity:'Flujo de caja + amortización de capital',yrsRecover:'para recuperar capital invertido',dpPlusCash:'Enganche + efectivo al cierre',downloadPDF:'Descargar PDF',pdfGenerating:'Generando PDF\u2026',pdfReady:'PDF descargado!',pdfFail:'No se pudo generar el PDF',bonvoyDiscount:'Descuento Bonvoy',discountLabel:'Descuento',s8Title:'Beneficios Fiscales',s8Sub:'Deducciones fiscales estimadas y ahorros por ser propietario',y1TaxSavings:'ahorro fiscal año 1',taxBracketLbl:'Tramo Fiscal',taxBracketSub:'Seleccione su tasa marginal federal',deductionCol:'Deducción',year1Col:'Año 1 (con segregación)',years2PlusCol:'Años 2+ (continuo)',costSegRow:'Segregación de costos + depreciación acelerada',costSegRowSub:'22–33% de la base reclasificada, bono 100% primer año (referencia condo-hotel)',slDepRow:'Depreciación lineal',slDepRowSub:'No residencial (39 años) — uso transitorio < 30 días',mortIntRow:'Intereses hipotecarios',mortIntRowSub:'Intereses sobre saldo financiado',propTaxRow:'Impuestos a la propiedad',propTaxRowSub:'Condado de Osceola, Florida',opExpRow:'Gastos operativos',opExpRowSub:'HOA / seguro / servicios anuales',hotelFeesRow:'Tarifas del programa hotelero',hotelFeesRowSub:'Marca + operación + FF&E + OTA/tarjeta (anual) (neteado en Sección 4)',totalDeductionsRow:'Deducciones totales',taxSavingsRow:'Ahorro fiscal',returnY1Card:'Retorno Total Año 1',returnOngoingCard:'Retorno Continuo Años 2+',cashFlowRow:'Flujo de caja',appreciationRow:'Apreciación',principalRow:'Amortización de capital',totalReturnRow:'Retorno total',roicRow:'Retorno sobre capital invertido',taxDisclaimer:'Estimaciones fiscales basadas en ratio edificio/tierra 80/20 y normas vigentes del IRS incluyendo depreciación bono 100% (OBBBA, julio 2025). El rango de segregación de costos refleja 22–33% de la base reclasificada según estándares de ingeniería del IRS. Florida no tiene impuesto estatal sobre la renta. Esto no constituye asesoría fiscal — consulte a un CPA calificado antes de tomar decisiones de inversión.',ongoingDeclining:'(decreciente)',tipCostSeg:'Un estudio de segregación de costos descompone su unidad en componentes: gabinetes, electrodomésticos, pisos, iluminación, muebles. Estos se deprecian en 5-7 años en vez de 39. Con la depreciación bono del 100% (permanente bajo OBBBA 2025), puede deducir el monto total en el año 1. El rango 22-33% se basa en 8,000+ estudios de ingeniería para unidades condo-hotel.',tipSlDep:'El valor restante del edificio (después de la segregación) se deprecia uniformemente en 39 años. Debido a que el programa Marriott opera con estadías promedio menores a 30 días, el IRS clasifica esto como propiedad no residencial (transitoria) — requiriendo 39 años en vez de los 27.5 años para alquileres residenciales.',tipMortInt:'La porción de interés de su pago mensual es totalmente deducible contra ingresos de alquiler. A diferencia de residencias principales (limitadas a préstamos de $750K), las propiedades de inversión no tienen límite. La deducción es mayor en el año 1 y disminuye gradualmente.',tipPropTax:'Los impuestos anuales pagados al Condado de Osceola son totalmente deducibles como gasto operativo del alquiler. A diferencia de residencias personales (sujetas al límite SALT de $10K-$40K), los impuestos de propiedades de inversión no tienen límite de deducción.',tipOpExp:'Todos los costos de mantener y operar su unidad son deducibles: HOA cubre mantenimiento de áreas comunes, piscina, gimnasio y seguridad. El seguro cubre daños y responsabilidad. Los servicios incluyen electricidad, agua y gas.',tipHotelFees:'Los cargos del programa Marriott Bonvoy son gastos comerciales deducibles: Franquicia (10%) cubre marketing global y la plataforma Bonvoy. Operaciones (40%) cubre recepción, limpieza y gestión. Reserva FF&E (4%) financia reemplazo de muebles. OTA/tarjeta cubre plataformas de reserva y procesamiento de tarjetas. Nota: estas tarifas ya están restadas de sus ingresos en la Sección 4.',tipWfMarriott:'Plataforma Marriott y distribución global — canales de reserva Bonvoy, marketing global en 140+ países y estándares de marca. Se calcula como porcentaje de los ingresos brutos por habitación.',tipWfHotelOps:'Recepción, limpieza, mantenimiento y costos operativos diarios del hotel — servicios públicos, suministros y personal asignados a su unidad. Se calcula como porcentaje de los ingresos brutos.',tipWfFfe:'Fondo de reserva para Muebles, Accesorios y Equipamiento. Requerido por Marriott para cubrir el reemplazo periódico de muebles, alfombras, electrodomésticos y acabados. Estándar de la industria para hoteles de marca.',tipWfOta:'Comisiones de agencias de viajes en línea (Booking.com, Expedia, etc.) y tarifas de procesamiento de tarjetas de crédito en las reservas. Se calcula como porcentaje de los ingresos brutos.',tipWfFixed:'Costos mensuales que el propietario paga independientemente de la ocupación: HOA/cuotas de condominio, impuesto predial, seguro y servicios no cubiertos por operaciones del hotel. Son fijos — no cambian con los ingresos.',tipWfOwnerNet:'Su resultado final — lo que queda después de deducir todos los costos operativos del hotel y los costos fijos de propiedad de los ingresos brutos. Este es su flujo de caja mensual antes del servicio de deuda.',tipFixedHoa:'HOA / Cuota de Condominio',tipFixedUtil:'Servicios Públicos',tipOtaCommission:'Comisión OTA',tipOtaCC:'Procesamiento de Tarjeta',tipTotal:'Total',strNoteTitle:'Tratamiento no-pasivo de alquiler a corto plazo (IRC §469)',strNote:'Debido a que la estadía promedio es menor a 7 días, esta propiedad puede calificar para tratamiento no-pasivo — permitiendo que las pérdidas compensen ingresos W-2 y de negocios activos. Se requiere participación material (500+ horas/año). La depreciación base de 39 años también permite la deducción bajo Sección 179. Consulte un CPA calificado.',rentalProgram:'Programa de Alquiler',leasebackProgram:'Leaseback Glow',lbDrawerSub:'(Retorno Garantizado 10%)',lbGuaranteed:'10% Leaseback Garantizado',lbAnnual:'Anual',lbQuarterly:'Trimestral',lbMonthlyEquiv:'Equivalente mensual',lbBasedOn:'Basado en precio de compra',lbGuaranteedIncome:'Ingreso Mensual Garantizado',lbGuaranteedDesc:'Precio de compra × 10% ÷ 12',lbFfeRes:'Reserva FF&E',lbFfeDesc:'Reserva de mobiliario y equipamiento',lbOwnerNet:'Ingreso Neto Mensual del Propietario (Leaseback)',lbNetIncomeMo:'neto leaseback/mes',lbNote:'Pagado trimestralmente. El programa de leaseback cubre los primeros 2 años de propiedad. Después del Año 2, la unidad transiciona al Programa de Alquiler Marriott Bonvoy.',lbS5Title:'Ingresos — Programa de Leaseback Glow',lbS5Sub:'Retorno anual garantizado del 10% sobre el precio de compra por 2 años',lbTag:'Leaseback',rentalTag:'Alquiler',lbOwnerCosts:'Costos del Propietario',lbHotelFeesNote:'Las tarifas del programa hotelero (marca, operaciones, OTA) son absorbidas por el operador durante el leaseback'}
+};
+function t(k){return I[lang][k]||k}
+// ===== PRINT COVER HELPERS =====
+function setTxt(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+function moSfx(){return lang==='es'?'/mes':'/mo';}
+const COVER_I18N={
+  en:{docTitle:'Investment Summary',docSub:'Orlando, Florida · Delivery Q3 2028',priceLabel:'Purchase Price',noiLabel:'Net Income / Month',capLabel:'Cap Rate',roeLabel:'Annual Return · Financed',preparedLabel:'Prepared for',dateLabel:'Date',disc:'Estimated projections based on the assumptions entered. Not a guarantee of returns. Consult your financial advisor before making investment decisions.',pfMid:'322 Residences · Marriott Bonvoy Managed',guests:'guests'},
+  es:{docTitle:'Resumen de Inversión',docSub:'Orlando, Florida · Entrega Q3 2028',priceLabel:'Precio de Compra',noiLabel:'Ingreso Neto / Mes',capLabel:'Tasa de Capitalización',roeLabel:'Retorno Anual · Financiado',preparedLabel:'Preparado para',dateLabel:'Fecha',disc:'Proyecciones estimadas según los supuestos ingresados. No es garantía de retornos. Consulte con su asesor financiero antes de invertir.',pfMid:'322 Residencias · Gestionado por Marriott Bonvoy',guests:'huéspedes'}};
+function applyCoverI18n(){
+  var c=COVER_I18N[lang]||COVER_I18N.en;
+  setTxt('pcDocTitle',c.docTitle);setTxt('pcDocSub',c.docSub);setTxt('pcPriceLabel',c.priceLabel);
+  setTxt('pcNoiLabel',c.noiLabel);setTxt('pcCapLabel',c.capLabel);
+  setTxt('pcPreparedLabel',c.preparedLabel);setTxt('pcDateLabel',c.dateLabel);setTxt('pcDisc',c.disc);setTxt('pfMid',c.pfMid);
+  // pcWealthLabel and pcRoeLabel are set in recalc() (year-aware + finMode-aware)
+  try{ setTxt('pcDate', new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'})); }catch(e){}
+}
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===l.toUpperCase()));
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(I[lang][k])el.textContent=I[lang][k]});
+  renderUnits();recalc();
+}
+function setFinMode(m){
+  finMode=m;
+  document.getElementById('btnCash').classList.toggle('active',m==='cash');
+  document.getElementById('btnFinance').classList.toggle('active',m==='finance');
+  document.getElementById('finInputs').style.display=m==='finance'?'block':'none';
+  recalc();
+}
+
+// Toggle between ADR input mode (user enters ADR, occupancy slider visible, gross = ADR × occ × 30.4)
+// and RevPAR input mode (user enters RevPAR directly, occupancy hidden, gross = RevPAR × 30.4).
+// When switching, existing scenario values are converted by the current occupancy so the implied
+// gross stays consistent across modes.
+function setRateMode(m){
+  if(m===rateMode) return;
+  const occ = +document.getElementById('occSlider').value/100;
+  const prev = rateMode;
+  rateMode = m;
+  // Button + aria state
+  const adrBtn = document.getElementById('btnADR');
+  const rpBtn = document.getElementById('btnRevPAR');
+  adrBtn.classList.toggle('active', m==='adr');
+  rpBtn.classList.toggle('active', m==='revpar');
+  adrBtn.setAttribute('aria-selected', m==='adr' ? 'true' : 'false');
+  rpBtn.setAttribute('aria-selected', m==='revpar' ? 'true' : 'false');
+  // Hide the occupancy slider in RevPAR mode (RevPAR already bakes it in)
+  document.getElementById('occGroup').style.display = m==='revpar' ? 'none' : '';
+  // Swap scenario card input labels (ADR ↔ RevPAR)
+  document.querySelectorAll('.rate-label').forEach(el => { el.textContent = m==='adr' ? 'ADR' : 'RevPAR'; });
+  // Swap derived sub-display labels (the opposite of the input label)
+  document.querySelectorAll('.derived-label').forEach(el => { el.textContent = m==='adr' ? 'RevPAR' : 'ADR'; });
+  // Convert each scenario's stored value so implied gross is preserved.
+  // Pretty integer goes into .value for display; full-precision value goes into data-raw so the
+  // math doesn't lose accuracy across mode flips (lossless round-trip).
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('sc'+i+'Rate');
+    const cur = +(el.getAttribute('data-raw') || el.value);
+    let next = cur;
+    if(prev==='adr' && m==='revpar')       next = cur * occ;          // ADR → RevPAR
+    else if(prev==='revpar' && m==='adr')  next = occ>0 ? cur/occ : cur; // RevPAR → ADR
+    el.value = Math.round(next);
+    el.setAttribute('data-raw', String(next));
+  });
+  // Sync hidden adrInput with the active scenario, preserving precision
+  const activeIdx = [1,2,3].find(i => document.getElementById('scCard'+i).classList.contains('active')) || 2;
+  const active = document.getElementById('sc'+activeIdx+'Rate');
+  const adrEl = document.getElementById('adrInput');
+  adrEl.value = active.value;
+  const activeRaw = active.getAttribute('data-raw');
+  if(activeRaw) adrEl.setAttribute('data-raw', activeRaw);
+  else adrEl.removeAttribute('data-raw');
+  recalcScenarios();
+  recalc();
+}
+function toggleProgramDrawer(){
+  document.getElementById('programDrawer').classList.toggle('open');
+}
+function setProgramMode(m){
+  programMode=m;
+  document.getElementById('btnRental').className='drawer-opt'+(m==='rental'?' active-rental':'');
+  document.getElementById('btnLeaseback').className='drawer-opt'+(m==='leaseback'?' active-lb':'');
+  document.getElementById('lbHeaderBadge').classList.toggle('visible',m==='leaseback');
+  // Close drawer after selection
+  document.getElementById('programDrawer').classList.remove('open');
+  recalc();
+}
+function toggleTaxSection(){
+  const sec=document.getElementById('taxSection');
+  const arrow=document.getElementById('toggleTaxArrow');
+  const btn=document.getElementById('toggleTaxBtn');
+  if(sec.style.maxHeight==='0px'||sec.style.maxHeight===''){
+    sec.style.maxHeight=sec.scrollHeight+'px';
+    sec.style.opacity='1';
+    arrow.style.transform='rotate(180deg)';
+    btn.style.background='var(--black)';
+    btn.style.color='white';
+    btn.style.borderColor='var(--black)';
+  } else {
+    sec.style.maxHeight='0px';
+    sec.style.opacity='0';
+    arrow.style.transform='rotate(0deg)';
+    btn.style.background='var(--cream)';
+    btn.style.color='var(--black)';
+    btn.style.borderColor='var(--g200)';
+  }
+}
+function setTaxBracket(r){
+  taxBracket=r;
+  document.querySelectorAll('.tax-bracket-btn').forEach(b=>b.classList.toggle('active',Math.abs(parseFloat(b.dataset.rate)-r)<1e-9));
+  recalc();
+}
+
+const fmt=n=>'$'+Math.round(n).toLocaleString('en-US');
+const fmtK=n=>n>=1e6?'$'+(n/1e6).toFixed(2)+'M':'$'+Math.round(n).toLocaleString('en-US');
+const displayArea=sqft=>lang==='es'?Math.round(sqft/10.7639).toLocaleString('en-US')+' m²':sqft.toLocaleString('en-US')+' ft²';
+
+function renderUnits(){
+  const g=document.getElementById('unitGrid');g.innerHTML='';
+  UNITS.forEach(u=>{
+    const c=document.createElement('div');
+    c.className='unit-card'+(u.id===sel.id?' selected':'');
+    c.onclick=()=>{sel=u;renderUnits();syncInputs();recalcScenarios();
+      // Re-apply the active scenario so the highlighted card and the waterfall stay in sync
+      const a=document.querySelector('.scenario-card.active');
+      applyScenario(a?+a.id.replace('scCard',''):2)};
+    c.innerHTML=`<div class="uc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="uc-type">${u.type[lang]}</div>
+      <div class="uc-id">${u.id}</div>
+      <div class="uc-sqft">${displayArea(u.sqft)}</div>`;
+    g.appendChild(c);
+  });
+}
+
+function syncInputs(){
+  // Reset discount when switching units
+  const discPct = parseFloat(document.getElementById('discountPct').value) || 0;
+  const basePrice = discPct > 0 ? Math.round(sel.basePrice * (1 - discPct/100)) : Math.round(sel.basePrice);
+  document.getElementById('priceInput').value = basePrice;
+  // Rate field holds ADR in ADR mode, RevPAR (= ADR × occ) in RevPAR mode.
+  const baseRate = rateMode==='revpar' ? sel.adr*sel.occ : sel.adr;
+  const adrEl = document.getElementById('adrInput');
+  adrEl.value = Math.round(baseRate);
+  adrEl.removeAttribute('data-raw');
+  // Reset occupancy slider to unit's default occupancy.
+  const occPct=Math.round(sel.occ*100);
+  document.getElementById('occSlider').value=occPct;
+  document.getElementById('occVal').textContent=occPct+'%';
+  // Update discount display
+  if(discPct > 0){
+    document.getElementById('discountResult').textContent = '−' + fmt(sel.basePrice - basePrice);
+  } else {
+    document.getElementById('discountResult').textContent = '';
+  }
+  // Update scenario defaults (in the active rate mode); clear stale data-raw from any prior unit.
+  [1,2,3].forEach((i, idx)=>{
+    const mult = [1, 1.07, 1.14][idx];
+    const el = document.getElementById('sc'+i+'Rate');
+    el.value = Math.round(baseRate*mult);
+    el.removeAttribute('data-raw');
+  });
+}
+
+function onOccChange(){
+  const v = +document.getElementById('occSlider').value;
+  document.getElementById('occVal').textContent = v+'%';
+  // Occupancy is its own independent lever — moving it should NOT change ADR or the
+  // displayed RevPAR. The only thing it affects is Gross Revenue (= ADR × occ × 30.4167),
+  // which flows through recalc() to the section-4 NOI summary, the waterfall, and the
+  // per-card "Gross rev/mo" via recalcScenarios().
+  recalcScenarios();
+  recalc();
+}
+
+function recalcScenarios(){
+  const occ = +document.getElementById('occSlider').value/100;
+  const refOcc = sel.occ; // unit's default occupancy — stable reference for the RevPAR display
+  [1,2,3].forEach(i=>{
+    const el = document.getElementById('sc'+i+'Rate');
+    // Prefer data-raw (full precision) over .value (rounded integer for display).
+    const v = +(el.getAttribute('data-raw') || el.value);
+    // Gross revenue uses the LIVE occupancy slider — sliding occupancy moves gross.
+    //   ADR mode:    gross = ADR × occ × 30.4167
+    //   RevPAR mode: gross = RevPAR × 30.4167  (occupancy hidden, already baked in)
+    const grossRevPar = rateMode==='revpar' ? v : v*occ;
+    // The derived sub-display (RevPAR in ADR mode, ADR in RevPAR mode) is INDEPENDENT of
+    // the slider — it uses the unit's default occupancy. So moving occupancy doesn't
+    // shift the displayed RevPAR; only typing a new ADR or picking a new unit does.
+    const derived = rateMode==='revpar' ? (refOcc>0 ? v/refOcc : 0) : v*refOcc;
+    document.getElementById('sc'+i+'RevPar').textContent = fmt(derived);
+    document.getElementById('sc'+i+'Rev').textContent   = fmt(grossRevPar*DPM);
+  });
+}
+
+function applyScenario(n){
+  [1,2,3].forEach(i=>document.getElementById('scCard'+i).classList.toggle('active',i===n));
+  const src=document.getElementById('sc'+n+'Rate');
+  const adrEl=document.getElementById('adrInput');
+  adrEl.value=src.value;
+  // Carry the full-precision data-raw across so math is lossless through a scenario click.
+  const raw=src.getAttribute('data-raw');
+  if(raw) adrEl.setAttribute('data-raw', raw);
+  else adrEl.removeAttribute('data-raw');
+  recalc();
+}
+
+function recalc(){
+  const u=sel, e=u.exp;
+  const price=+document.getElementById('priceInput').value;
+  const adrEl=document.getElementById('adrInput');
+  // Prefer data-raw (full precision preserved across mode flips) over .value (rounded display).
+  const adr=+(adrEl.getAttribute('data-raw') || adrEl.value);
+  const occ=+document.getElementById('occSlider').value/100;
+  document.getElementById('occVal').textContent=Math.round(occ*100)+'%';
+  // In ADR mode, adrInput holds ADR → RevPAR = ADR × occupancy.
+  // In RevPAR mode, adrInput holds RevPAR directly (occupancy already baked in).
+  const revPAR = rateMode==='revpar' ? adr : adr*occ;
+  const dpPct=+document.getElementById('downPayment').value/100;
+  const finPct=1; // financing always covers 100% of the closing balance
+  const ir=+document.getElementById('interestRate').value/100;
+  const termYrs=+document.getElementById('loanTerm').value;
+  const hzYrs=+document.getElementById('horizon').value;
+  const appRate=+document.getElementById('appreciation').value/100;
+  const incGr=+document.getElementById('incGrowth').value/100;
+  const costInf=+document.getElementById('costInflation').value/100;
+
+  // Price / DP
+  const dpTotal=price*dpPct;
+  const balance=price-dpTotal;
+  document.getElementById('dpVal').textContent=Math.round(dpPct*100)+'%';
+  document.getElementById('totalDPAmt').textContent=fmt(dpTotal);
+  document.getElementById('balanceAmt').textContent=fmt(balance);
+  document.getElementById('installmentAmt').textContent=fmt(dpTotal);
+
+  // Financing
+  let loanAmt=0,monthlyPMT=0,monthlyInterest=0,monthlyPrincipal=0;
+  let y1Interest=0,y1Principal=0,y2Interest=0,y2Principal=0;
+  if(finMode==='finance'){
+    loanAmt=balance*finPct;
+    const mr=ir/12,np=termYrs*12;
+    monthlyPMT=mr>0?loanAmt*(mr*Math.pow(1+mr,np))/(Math.pow(1+mr,np)-1):loanAmt/np;
+    // Amortize 24 months → year-1 and year-2 interest/principal totals.
+    let rem=loanAmt;for(let m=0;m<24;m++){const ip=rem*mr;const pp=monthlyPMT-ip;if(m<12){y1Interest+=ip;y1Principal+=pp}else{y2Interest+=ip;y2Principal+=pp}rem-=pp;}
+    // Card shows the year-1 MONTHLY AVERAGE so monthly×12 reconciles with the annual figures
+    // (interest in tax section, principal in Leveraged Cash Return / ROE).
+    monthlyInterest=y1Interest/12;
+    monthlyPrincipal=y1Principal/12;
+  }
+  document.getElementById('interestDisplay').textContent=fmt(monthlyInterest);
+  document.getElementById('principalDisplay').textContent=fmt(monthlyPrincipal);
+  document.getElementById('pmtDisplay').textContent=fmt(monthlyPMT);
+  document.getElementById('finBalDisplay').textContent=fmt(loanAmt);
+  document.getElementById('pmtSummary').textContent=finMode==='finance'?fmt(monthlyPMT)+moSfx():'—';
+
+  // ===== REVENUE — shared calculations =====
+  const gross=revPAR*DPM;
+  const marriott=gross*e.marriottPct;
+  const opex=gross*e.opexPct;
+  const ownerRev=gross-marriott-opex;
+  const ffe=gross*e.ffePct;
+  const otaCC=gross*(e.otaPct+e.ccPct);
+  const fixedCosts=e.hoa+e.util+e.ins+e.tax;
+  const cashInvested=finMode==='finance'?dpTotal+(balance-loanAmt):price;
+  const fmtRange=(a,b)=>fmt(a)+' – '+fmt(b);
+  const fmtPctRange=(a,b)=>a.toFixed(1)+'% – '+b.toFixed(1)+'%';
+  const lightRow=(lbl,val)=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:var(--g500)">${lbl}</span><span style="color:var(--black);font-weight:600;font-variant-numeric:tabular-nums">${val}</span></div>`;
+  const darkRow=(lbl,val)=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:rgba(255,255,255,0.6)">${lbl}</span><span style="color:white;font-weight:600;font-variant-numeric:tabular-nums">${val}</span></div>`;
+
+  // Leaseback-specific values
+  const lbGrossAnn=price*0.10;
+  const lbGrossMo=lbGrossAnn/12;
+  const lbFfe=FFE_FIXED[u.id]||0;
+  const lbOwnerCosts=fixedCosts+lbFfe;
+  const lbNoi=lbGrossMo-lbOwnerCosts;
+
+  // Rental-specific values
+  const rentalNoi=ownerRev-ffe-otaCC-fixedCosts;
+
+  // Choose active NOI based on mode
+  const noi=programMode==='leaseback'?lbNoi:rentalNoi;
+  const cashFlow=noi-monthlyPMT;
+  const annNOI=noi*12, annCF=cashFlow*12;
+
+  // Rental program annual NOI (needed for projection years 3+ in leaseback)
+  const rentalAnnNOI=rentalNoi*12;
+
+  // Section 4 toggle visibility
+  document.querySelector('[data-i18n="s5Title"]').textContent=programMode==='leaseback'?t('lbS5Title'):t('s5Title');
+  document.querySelector('[data-i18n="s5Sub"]').textContent=programMode==='leaseback'?t('lbS5Sub'):t('s5Sub');
+  document.getElementById('noiSummary').textContent=fmt(noi)+moSfx();
+  document.querySelector('[data-i18n="netIncomeMo"]').textContent=programMode==='leaseback'?t('lbNetIncomeMo'):t('netIncomeMo');
+
+  // ===== SECTION 5 — WATERFALL =====
+  if(programMode==='leaseback'){
+    // Hide scenario cards + occupancy slider, show leaseback card + waterfall
+    document.querySelectorAll('.scenario-grid').forEach(el=>el.style.display='none');
+    document.getElementById('occGroup').style.display='none';
+    const lbQuarterly=lbGrossAnn/4;
+    let s5HTML=`<div style="background:linear-gradient(135deg,rgba(255,168,74,0.12),rgba(255,217,160,0.08));border:2px solid var(--amber);border-radius:14px;padding:22px;text-align:center;margin-bottom:20px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--amber)">${t('lbGuaranteed')}</div>
+      <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap">
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('lbAnnual')}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${fmt(lbGrossAnn)}</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('lbQuarterly')}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${fmt(lbQuarterly)}</div></div>
+        <div><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('lbMonthlyEquiv')}</div><div style="font-size:22px;font-weight:700;margin-top:2px">${fmt(lbGrossMo)}</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--g400);margin-top:10px">${t('lbBasedOn')}: ${fmt(price)}</div>
+    </div>`;
+    // Waterfall
+    const lbWfData=[
+      {l:t('lbGuaranteedIncome'),d:t('lbGuaranteedDesc'),v:lbGrossMo,pos:true},
+      {l:'(-) '+t('propertyTax'),d:t('propertyTaxDesc'),v:-e.tax},
+      {l:'(-) '+t('hoa'),d:t('hoaDesc'),v:-e.hoa},
+      {l:'(-) '+t('insurance'),d:t('insuranceDesc'),v:-e.ins},
+      {l:'(-) '+t('lbFfeRes'),d:t('lbFfeDesc'),v:-lbFfe},
+      {l:'(-) '+t('utilities'),d:t('utilitiesDesc'),v:-e.util},
+    ];
+    s5HTML+='<div style="padding-top:16px;border-top:1px solid var(--g100)"><div style="font-size:11px;color:var(--g400);letter-spacing:1px;text-transform:uppercase;font-weight:500;margin-bottom:12px">'+t('lbOwnerCosts')+'</div>';
+    s5HTML+=lbWfData.map(r=>`<div class="waterfall-row"><div class="wf-label${r.pos?' income':''}" style="${r.pos?'font-weight:600':''}"><div>${r.l}</div><div style="font-size:10px;color:var(--g300)">${r.d}</div></div><div class="wf-amount${r.v<0?' negative':''}">${r.v>=0?fmt(r.v):'('+fmt(Math.abs(r.v))+')'}</div></div>`).join('');
+    s5HTML+=`<div class="waterfall-net" style="background:linear-gradient(90deg,rgba(255,168,74,0.10),transparent)"><div class="wf-label" style="color:var(--amber)">= ${t('lbOwnerNet')}</div><div class="wf-amount" style="color:var(--amber);font-size:20px;font-weight:700">${fmt(lbNoi)}</div></div>`;
+    s5HTML+=`<div style="background:var(--g50);border-radius:8px;padding:12px 16px;margin-top:16px;font-size:11px;color:var(--g500);line-height:1.6">${t('lbNote')}</div>`;
+    s5HTML+=`<div style="margin-top:12px;font-size:11px;color:var(--g400);font-style:italic">${t('lbHotelFeesNote')}</div></div>`;
+    document.getElementById('waterfallBody').innerHTML=s5HTML;
+  } else {
+    // Rental Program — show scenario cards, occupancy slider, and normal waterfall
+    document.querySelectorAll('.scenario-grid').forEach(el=>el.style.display='');
+    document.getElementById('occGroup').style.display='';
+    // Dynamic breakdown tooltips — values update when unit / ADR / occupancy change
+    const tipRow=(a,b)=>`<div style="display:flex;justify-content:space-between;padding:3px 0;line-height:1.4;font-size:11px"><span>${a}</span><span style="font-variant-numeric:tabular-nums;font-weight:600;margin-left:12px">${b}</span></div>`;
+    const tipTotalRow=(a,b)=>`<div style="display:flex;justify-content:space-between;padding:5px 0 0;margin-top:3px;border-top:1px solid rgba(255,255,255,0.2);line-height:1.4;font-size:11px;font-weight:700"><span>${a}</span><span style="font-variant-numeric:tabular-nums;margin-left:12px">${b}</span></div>`;
+    const breakdownWrap=inner=>`<div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.18)">${inner}</div>`;
+    const pctFmt=p=>(+p.toFixed(2)).toString()+'%';
+    const tipFixedHTML=t('tipWfFixed')+breakdownWrap(
+      tipRow(t('tipFixedHoa'),fmt(e.hoa)+'/mo')+
+      tipRow(t('propertyTax'),fmt(e.tax)+'/mo')+
+      tipRow(t('insurance'),fmt(e.ins)+'/mo')+
+      tipRow(t('tipFixedUtil'),fmt(e.util)+'/mo')+
+      tipTotalRow(t('tipTotal'),fmt(fixedCosts)+'/mo'));
+    const otaAmt=gross*e.otaPct, ccAmt=gross*e.ccPct;
+    const tipOtaHTML=t('tipWfOta')+breakdownWrap(
+      tipRow(t('tipOtaCommission')+' ('+pctFmt(e.otaPct*100)+')',fmt(otaAmt)+'/mo')+
+      tipRow(t('tipOtaCC')+' ('+pctFmt(e.ccPct*100)+')',fmt(ccAmt)+'/mo')+
+      tipTotalRow(t('tipTotal')+' ('+pctFmt((e.otaPct+e.ccPct)*100)+')',fmt(otaCC)+'/mo'));
+
+    const wfData=[
+      {l:t('grossMonthly'),d:t('rateOccDays'),v:gross,pos:true},
+      {l:'(-) '+t('marriottFee'),d:t('marriottDesc'),v:-marriott,tip:t('tipWfMarriott')},
+      {l:'(-) '+t('hotelOps'),d:t('hotelOpsDesc'),v:-opex,tip:t('tipWfHotelOps')},
+      {l:'= '+t('ownerRev'),d:t('ownerRevDesc'),v:ownerRev,pos:true,bold:true},
+      {l:'(-) '+t('ffeRes'),d:t('ffeDesc'),v:-ffe,tip:t('tipWfFfe')},
+      {l:'(-) '+t('otaCard'),d:t('otaDesc'),v:-otaCC,tip:tipOtaHTML},
+      {l:'(-) '+t('fixedCosts'),d:t('fixedDesc'),v:-fixedCosts,tip:tipFixedHTML},
+    ];
+    const wfTitle=r=>r.tip?`<div class="tax-tip">${r.l}<span class="tip-i">i</span><div class="tip-box">${r.tip}</div></div>`:r.l;
+    let wfHTML=wfData.map(r=>`<div class="waterfall-row"><div class="wf-label${r.pos?' income':''}" style="${r.bold?'font-weight:600':''}"><div>${wfTitle(r)}</div><div style="font-size:10px;color:var(--g300)">${r.d}</div></div><div class="wf-amount${r.v<0?' negative':''}">${r.v>=0?fmt(r.v):'('+fmt(Math.abs(r.v))+')'}</div></div>`).join('');
+    wfHTML+=`<div class="waterfall-net"><div class="wf-label"><div class="tax-tip">= ${t('ownerNet')}<span class="tip-i">i</span><div class="tip-box">${t('tipWfOwnerNet')}</div></div><br><span style="font-size:10px;opacity:0.7">${(rentalNoi/gross*100).toFixed(1)}% ${t('yieldOnGross')}</span></div><div class="wf-amount">${fmt(rentalNoi)}</div></div>`;
+    document.getElementById('waterfallBody').innerHTML=wfHTML;
+  }
+
+  // ===== SECTION 6 — RESULTS =====
+  const capRate=annNOI/price;
+  const irrOnEquity=(annCF+y1Principal)/cashInvested; // cash flow + year-1 principal paydown (equity built)
+  const paybackMonths=cashFlow>0?Math.ceil(cashInvested/cashFlow):999;
+
+  document.getElementById('resultsGridNoFin').innerHTML=`
+    <div class="result-box"><div class="rb-label">${t('purchasePrice')}</div><div class="rb-value">${fmt(price)}</div><div class="rb-sub">${t('purchasePriceSub')}</div></div>
+    <div class="result-box"><div class="rb-label">${t('monthlyNOI')}</div><div class="rb-value">${fmt(noi)}</div><div class="rb-sub" style="color:var(--black)">${fmt(annNOI)} / ${lang==='es'?'año':'year'}</div></div>
+    <div class="result-box"><div class="rb-label">${t('capRate')}</div><div class="rb-value">${(capRate*100).toFixed(1)}%</div><div class="rb-sub">${t('capRateSub')}</div></div>`;
+  document.getElementById('resultsGridFin').innerHTML=`
+    <div class="result-box"><div class="rb-label">${t('totalEquity')}</div><div class="rb-value">${fmt(cashInvested)}</div><div class="rb-sub">${t('dpPlusCash')}</div></div>
+    <div class="result-box"><div class="rb-label">${t('levCashReturn')}</div><div class="rb-value">${fmt((annCF+y1Principal)/12)}</div><div class="rb-sub" style="color:var(--black)">${fmt(annCF+y1Principal)} / ${lang==='es'?'año':'year'}</div></div>
+    <div class="result-box dark"><div class="rb-label">${t('annualReturn')}</div><div class="rb-value">${(irrOnEquity*100).toFixed(1)}%</div><div class="rb-sub">${t('onEquity')}</div></div>`;
+
+  // ===== SECTION 7 — PROJECTION =====
+  document.getElementById('projResultLabel').textContent=(lang==='es'?'Resultado de Proyección — ':'Projection Result — ')+hzYrs+' '+(lang==='es'?'años':'years');
+
+  const baseFixedAnn=fixedCosts*12;
+  const lbOwnerCostsAnn=lbOwnerCosts*12;
+  let cumCF=0,remLoan=loanAmt;
+  const proj=[];
+  for(let yr=1;yr<=hzYrs;yr++){
+    const pv=price*Math.pow(1+appRate,yr);
+    let yrNOI;
+    let isLb=false;
+    if(programMode==='leaseback'&&yr<=2){
+      // Leaseback: flat 10% guaranteed, owner costs inflate
+      const yrLbOwnerCosts=lbOwnerCostsAnn*Math.pow(1+costInf,yr-1);
+      yrNOI=lbGrossAnn-yrLbOwnerCosts;
+      isLb=true;
+    } else {
+      // Rental program (or leaseback years 3+)
+      const rentalYr=programMode==='leaseback'?yr-2:yr;
+      const yrGrossIncome=rentalAnnNOI*Math.pow(1+incGr,rentalYr-1);
+      const yrInflatedFixedCosts=baseFixedAnn*(Math.pow(1+costInf,yr-1)-1);
+      yrNOI=yrGrossIncome-yrInflatedFixedCosts;
+    }
+    const yrMort=monthlyPMT*12;
+    const yrCF=yrNOI-yrMort;
+    cumCF+=yrCF;
+    if(finMode==='finance'&&remLoan>0){const mr=ir/12;for(let m=0;m<12;m++){const ip=remLoan*mr;remLoan=Math.max(0,remLoan-(monthlyPMT-ip))}}
+    const eq=pv-remLoan;
+    const tr=((eq+cumCF-cashInvested)/cashInvested*100);
+    proj.push({yr,pv,yrNOI:yrCF,cumCF,eq,tr,isLb});
+  }
+
+  const last=proj[proj.length-1]||{};
+  const estVal=price*Math.pow(1+appRate,hzYrs);
+  document.getElementById('projSummaryCards').innerHTML=`
+    <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('priceToday')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(price)}</div></div>
+    <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('estAppreciation')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(estVal)}</div><div style="font-size:10px;color:var(--olive)">+${fmt(estVal-price)}</div></div>
+    <div style="background:var(--g50);border-radius:10px;padding:14px;text-align:center"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--g400)">${t('accIncome')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(last.cumCF||0)}</div></div>
+    <div style="background:var(--header-bg);border-radius:10px;padding:14px;text-align:center;color:white"><div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--amber-light)">${t('totalWealth')}</div><div style="font-size:18px;font-weight:700;margin-top:4px">${fmt(estVal+(last.cumCF||0))}</div></div>`;
+
+  // ===== PRINT COVER — fed from the same live values (single source of truth) =====
+  setTxt('pcUnit',(lang==='es'?sel.type.es:sel.type.en)+' · '+sel.id);
+  setTxt('pcSqft',displayArea(sel.sqft)+'  ·  '+sel.guests+' '+((COVER_I18N[lang]||COVER_I18N.en).guests));
+  setTxt('pcPrice',fmt(price));
+  setTxt('priceInputPrint',fmt(price));
+  setTxt('pcProgram',programMode==='leaseback'?t('leasebackProgram'):t('rentalProgram'));
+  setTxt('pcNoi',fmt(noi)+moSfx());
+  setTxt('pcCap',(capRate*100).toFixed(1)+'%');
+  setTxt('pcRoe',(irrOnEquity*100).toFixed(1)+'%');
+  setTxt('pcWealth',fmt(estVal+(last.cumCF||0)));
+  applyCoverI18n();
+  // Year-aware wealth label + finMode-aware return label (set after applyCoverI18n so they win)
+  setTxt('pcWealthLabel', lang==='es' ? ('Patrimonio Total a '+hzYrs+' Años') : (hzYrs+'-Year Total Wealth'));
+  setTxt('pcRoeLabel', finMode==='finance'
+    ? (lang==='es'?'Retorno Anual · Financiado':'Annual Return · Financed')
+    : (lang==='es'?'Retorno Anual':'Annual Return'));
+
+  let th=`<thead><tr><th>${t('year')}</th>${programMode==='leaseback'?'<th></th>':''}
+    <th>${t('propValue')}</th><th>${t('annIncome')}</th><th>${t('cumCash')}</th><th>${t('equity')}</th><th>${t('totalReturn')}</th></tr></thead>`;
+  let tb='<tbody>'+proj.map(p=>{
+    const badge=programMode==='leaseback'?(p.isLb?`<span class="lb-badge">${t('lbTag')}</span>`:`<span class="lb-badge" style="background:rgba(90,90,55,0.1);color:var(--olive)">${t('rentalTag')}</span>`):'';
+    return `<tr${p.isLb?' style="background:rgba(255,168,74,0.04)"':''}>
+      <td>${p.yr}</td>${programMode==='leaseback'?'<td>'+badge+'</td>':''}
+      <td>${fmtK(p.pv)}</td><td>${fmt(p.yrNOI)}</td><td>${fmt(p.cumCF)}</td><td>${fmtK(p.eq)}</td>
+      <td style="color:${p.tr>=0?'var(--olive)':'var(--orange)'};font-weight:600">${p.tr.toFixed(1)}%</td></tr>`;
+  }).join('')+'</tbody>';
+  document.getElementById('projTable').innerHTML=th+tb;
+
+  // ===== TAX BENEFITS (Section 8) =====
+  const depreciableBasis=price*0.80;
+  const bonusLow=depreciableBasis*0.22;
+  const bonusHigh=depreciableBasis*0.33;
+  const slAfterLow=(depreciableBasis-bonusLow)/39;
+  const slAfterHigh=(depreciableBasis-bonusHigh)/39;
+  const y1DepScenLow=bonusLow+slAfterLow;
+  const y1DepScenHigh=bonusHigh+slAfterHigh;
+  const ongDepLow=slAfterHigh;
+  const ongDepHigh=slAfterLow;
+
+
+  // Property taxes, HOA / utilities / insurance, hotel fees, and (for leaseback) FF&E
+  // reserve are ALL already netted out of owner NOI in Section 4 — they reduce the
+  // taxable rental income at the source. Showing them again as separate tax deductions
+  // here would double-count, so the only operating-side deduction kept is mortgage
+  // interest (which is a financing cost, not an operating expense).
+  const commonY1 = y1Interest;
+  const commonOng = y2Interest;
+
+  const y1TotalLow=y1DepScenLow+commonY1;
+  const y1TotalHigh=y1DepScenHigh+commonY1;
+  const ongTotalLow=ongDepLow+commonOng;
+  const ongTotalHigh=ongDepHigh+commonOng;
+
+  const y1SavLow=y1TotalLow*taxBracket;
+  const y1SavHigh=y1TotalHigh*taxBracket;
+  const ongSavLow=ongTotalLow*taxBracket;
+  const ongSavHigh=ongTotalHigh*taxBracket;
+
+  document.getElementById('taxY1Summary').textContent=fmtRange(y1SavLow,y1SavHigh);
+
+  // Operating-cost rows (property tax, HOA/util/insurance, hotel fees, leaseback FF&E)
+  // are intentionally omitted — they're already deducted from rental income in Section 4
+  // and would double-count if shown here. Both modes share the same row set now.
+  const taxRows=[
+    {l:t('costSegRow'),d:t('costSegRowSub'),tip:t('tipCostSeg'),y1:fmtRange(bonusLow,bonusHigh),on:'—'},
+    {l:t('slDepRow'),d:t('slDepRowSub'),tip:t('tipSlDep'),y1:fmtRange(slAfterLow,slAfterHigh),on:fmtRange(ongDepLow,ongDepHigh)},
+    {l:t('mortIntRow'),d:t('mortIntRowSub'),tip:t('tipMortInt'),y1:fmt(y1Interest),on:'~'+fmt(y2Interest)+' '+t('ongoingDeclining')}
+  ];
+  let taxHTML=`<thead><tr><th>${t('deductionCol')}</th><th>${t('year1Col')}</th><th>${t('years2PlusCol')}</th></tr></thead><tbody>`;
+  taxHTML+=taxRows.map(r=>`<tr><td><div class="tax-tip" style="font-weight:500;color:var(--olive)">${r.l}<span class="tip-i">i</span><div class="tip-box">${r.tip}</div></div><div style="font-size:10px;color:var(--g400);font-weight:400;margin-top:2px">${r.d}</div></td><td style="color:var(--orange);font-weight:600">${r.y1}</td><td>${r.on}</td></tr>`).join('');
+  taxHTML+=`<tr style="border-top:2px solid var(--black)"><td style="font-weight:700;color:var(--black)">${t('totalDeductionsRow')}</td><td style="font-weight:700;color:var(--black)">${fmtRange(y1TotalLow,y1TotalHigh)}</td><td style="font-weight:700;color:var(--black)">${fmtRange(ongTotalLow,ongTotalHigh)}</td></tr>`;
+  taxHTML+=`<tr style="background:rgba(243,111,67,0.06)"><td style="font-weight:700;color:var(--orange)">${t('taxSavingsRow')} · ${(taxBracket*100).toFixed(0)}%</td><td style="font-weight:700;color:var(--orange)">${fmtRange(y1SavLow,y1SavHigh)}</td><td style="font-weight:700;color:var(--orange)">${fmtRange(ongSavLow,ongSavHigh)}</td></tr></tbody>`;
+  document.getElementById('taxTable')['inner'+'HTML']=taxHTML;
+
+  const appreciationY1=price*appRate;
+  const y1RetLow=annCF+y1SavLow+appreciationY1+y1Principal;
+  const y1RetHigh=annCF+y1SavHigh+appreciationY1+y1Principal;
+  // Year-2 cash flow — must reconcile with projection table year 2:
+  // NOI grows with income growth, fixed costs inflate one year, mortgage stays flat.
+  const annCFy2=programMode==='leaseback'
+    ? (lbGrossAnn - lbOwnerCostsAnn*(1+costInf) - monthlyPMT*12)
+    : (rentalAnnNOI*(1+incGr) - baseFixedAnn*costInf - monthlyPMT*12);
+  const appreciationY2=price*Math.pow(1+appRate,2)-price*(1+appRate);
+  const ongRetLow=annCFy2+ongSavLow+appreciationY2+y2Principal;
+  const ongRetHigh=annCFy2+ongSavHigh+appreciationY2+y2Principal;
+  const y1RoicLow=cashInvested>0?y1RetLow/cashInvested*100:0;
+  const y1RoicHigh=cashInvested>0?y1RetHigh/cashInvested*100:0;
+  const ongRoicLow=cashInvested>0?ongRetLow/cashInvested*100:0;
+  const ongRoicHigh=cashInvested>0?ongRetHigh/cashInvested*100:0;
+
+  document.getElementById('taxReturnCards')['inner'+'HTML']=`
+    <div class="result-box" style="text-align:left;padding:20px">
+      <div class="rb-label" style="margin-bottom:10px">${t('returnY1Card')}${programMode==='leaseback'?' <span class="lb-badge" style="font-size:8px">'+t('lbTag')+'</span>':''}</div>
+      ${lightRow(t('cashFlowRow'),fmt(annCF))}
+      ${lightRow(t('taxSavingsRow'),fmtRange(y1SavLow,y1SavHigh))}
+      ${lightRow(t('appreciationRow'),fmt(appreciationY1))}
+      ${lightRow(t('principalRow'),fmt(y1Principal))}
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0 4px;border-top:1px solid var(--g200);margin-top:6px;font-weight:700"><span>${t('totalReturnRow')}</span><span style="color:var(--orange);font-variant-numeric:tabular-nums">${fmtRange(y1RetLow,y1RetHigh)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span style="color:var(--g500)">${t('roicRow')}</span><span style="color:var(--orange);font-weight:700">${fmtPctRange(y1RoicLow,y1RoicHigh)}</span></div>
+    </div>
+    <div class="result-box dark" style="text-align:left;padding:20px">
+      <div class="rb-label" style="margin-bottom:10px">${t('returnOngoingCard')}${programMode==='leaseback'?' <span class="lb-badge lb-badge-dark" style="font-size:8px">'+t('lbTag')+'</span>':''}</div>
+      ${darkRow(t('cashFlowRow'),fmt(annCFy2))}
+      ${darkRow(t('taxSavingsRow'),fmtRange(ongSavLow,ongSavHigh))}
+      ${darkRow(t('appreciationRow'),fmt(appreciationY2))}
+      ${darkRow(t('principalRow'),fmt(y2Principal))}
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0 4px;border-top:1px solid rgba(255,255,255,0.2);margin-top:6px;font-weight:700;color:white"><span>${t('totalReturnRow')}</span><span style="color:var(--amber-light);font-variant-numeric:tabular-nums">${fmtRange(ongRetLow,ongRetHigh)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span style="color:rgba(255,255,255,0.6)">${t('roicRow')}</span><span style="color:var(--amber-light);font-weight:700">${fmtPctRange(ongRoicLow,ongRoicHigh)}</span></div>
+    </div>
+    <div style="grid-column:1/-1;background:rgba(128,128,0,0.07);border:1px solid rgba(128,128,0,0.25);border-radius:10px;padding:16px 18px;margin-top:6px">
+      <div style="font-size:12px;font-weight:700;color:var(--olive);margin-bottom:6px">\u26a0 ${t('strNoteTitle')}</div>
+      <div style="font-size:11px;line-height:1.55;color:var(--g600)">${t('strNote')}</div>
+    </div>`;
+
+  const taxSec=document.getElementById('taxSection');
+  if(taxSec && taxSec.style.opacity==='1'){
+    taxSec.style.maxHeight=taxSec.scrollHeight+'px';
+  }
+
+  recalcScenarios();
+}
+
+// ===== LOGIN GATE =====
+const ACCESS_CODE = 'ambar2026';
+function checkLogin(){
+  const pw = document.getElementById('loginPassword').value.trim();
+  if(pw.toLowerCase() === ACCESS_CODE){
+    document.getElementById('loginOverlay').style.display='none';
+    document.getElementById('shareFab').style.display='flex';
+    sessionStorage.setItem('ambar_auth','1');
+  } else {
+    document.getElementById('loginError').textContent = lang==='es'?'Código de acceso inválido.':'Invalid access code. Try again.';
+    document.getElementById('loginPassword').value='';
+    document.getElementById('loginPassword').focus();
+  }
+}
+// Auto-login if already authenticated this session
+if(sessionStorage.getItem('ambar_auth')==='1'){
+  document.getElementById('loginOverlay').style.display='none';
+  document.getElementById('shareFab').style.display='flex';
+}
+
+// ===== SHARE LINK =====
+function downloadPDF(){
+  showToast(t('pdfGenerating'));
+  // Refresh the print cover from current inputs, then use native print (perfect layout, no html2canvas)
+  try{ recalc(); }catch(e){}
+  setTxt('pcDate', new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'}));
+  applyCoverI18n();
+  // Set document title temporarily for the PDF filename
+  var origTitle = document.title;
+  document.title = 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10);
+  window.print();
+  document.title = origTitle;
+  showToast(t('pdfReady'));
+}
+
+// ===== BONVOY DISCOUNT =====
+function toggleDiscount(){
+  const toggle = document.getElementById('discountToggle');
+  const panel = document.getElementById('discountPanel');
+  toggle.classList.toggle('open');
+  panel.classList.toggle('open');
+}
+
+function applyDiscount(){
+  const pct = parseFloat(document.getElementById('discountPct').value) || 0;
+  const base = sel.basePrice;
+  const discounted = Math.round(base * (1 - pct/100));
+  document.getElementById('priceInput').value = discounted;
+  const resultEl = document.getElementById('discountResult');
+  if(pct > 0){
+    resultEl.textContent = '\u2212' + fmt(base - discounted);
+  } else {
+    resultEl.textContent = '';
+  }
+  recalc();
+}
+
+function showToast(msg){
+  const toast = document.getElementById('shareToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2500);
+}
+
+// ===== LOAD FROM URL PARAMS =====
+function loadFromURL(){
+  const p = new URLSearchParams(window.location.search);
+  // Auto-select leaseback mode if URL param present
+  if(p.get('lb')==='1'||p.get('mode')==='leaseback'){
+    setProgramMode('leaseback');
+  }
+  if(!p.has('unit')&&!p.get('lb')&&!p.get('mode')) return;
+  // Select unit
+  const unitId = p.get('unit');
+  const found = UNITS.find(u=>u.id===unitId);
+  if(found) sel = found;
+  // Set language
+  if(p.has('lang')) setLang(p.get('lang'));
+  // Set inputs
+  if(p.has('price')) document.getElementById('priceInput').value = p.get('price');
+  if(p.has('dp')) document.getElementById('downPayment').value = p.get('dp');
+  if(p.has('fm')) setFinMode(p.get('fm'));
+  if(p.has('rm')) setRateMode(p.get('rm'));
+  if(p.has('ir')) document.getElementById('interestRate').value = p.get('ir');
+  if(p.has('lt')) document.getElementById('loanTerm').value = p.get('lt');
+  if(p.has('adr')) document.getElementById('adrInput').value = p.get('adr');
+  if(p.has('occ')){
+    const v=p.get('occ');
+    document.getElementById('occSlider').value=v;
+    document.getElementById('occVal').textContent=Math.round(+v)+'%';
+  }
+  if(p.has('hz')) document.getElementById('horizon').value = p.get('hz');
+  if(p.has('ap')) document.getElementById('appreciation').value = p.get('ap');
+  if(p.has('ig')) document.getElementById('incGrowth').value = p.get('ig');
+  if(p.has('ci')) document.getElementById('costInflation').value = p.get('ci');
+  // Scenario cards
+  if(p.has('s1r')) document.getElementById('sc1Rate').value = p.get('s1r');
+  if(p.has('s2r')) document.getElementById('sc2Rate').value = p.get('s2r');
+  if(p.has('s3r')) document.getElementById('sc3Rate').value = p.get('s3r');
+  renderUnits();
+  recalc();
+}
+
+// INIT
+renderUnits();syncInputs();recalcScenarios();applyScenario(2);loadFromURL();
+</script>
+</body>
+</html>
