@@ -203,7 +203,7 @@ footer a{color:var(--amber);text-decoration:none}
 .discount-toggle.open{background:rgba(255,168,74,0.15)}
 .discount-toggle.open svg{stroke:var(--amber)}
 .discount-panel{max-height:0;overflow:hidden;transition:max-height 0.3s ease;margin-top:0}
-.discount-panel.open{max-height:80px;margin-top:10px}
+.discount-panel.open{max-height:150px;margin-top:10px}
 .discount-inner{display:flex;align-items:center;gap:8px;background:rgba(255,168,74,0.08);border:1px solid rgba(255,168,74,0.2);border-radius:10px;padding:10px 16px}
 .discount-inner label{font-size:11px;color:var(--g500);font-weight:500;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap}
 .discount-inner input{width:70px;padding:6px 10px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-weight:600;text-align:center;font-family:'Inter',sans-serif;color:var(--black);background:white}
@@ -492,6 +492,10 @@ footer a{color:var(--amber);text-decoration:none}
           <input type="number" id="discountPct" value="0" min="0" max="50" step="0.5" onchange="applyDiscount()" oninput="applyDiscount()">
           <span style="font-size:14px;font-weight:600;color:var(--g400)">%</span>
           <div class="discount-result" id="discountResult"></div>
+        </div>
+        <div class="discount-inner" style="margin-top:8px;">
+          <label id="preparedForLabel">Prepared for</label>
+          <input type="text" id="preparedFor" placeholder="Client name" maxlength="60" style="flex:1;min-width:160px;border:1px solid var(--g200);border-radius:8px;padding:7px 12px;font-size:13px;background:var(--white);color:var(--black);" oninput="if(typeof buildPrintDoc==='function'){try{buildPrintDoc()}catch(e){}}">
         </div>
       </div>
     </div>
@@ -857,6 +861,8 @@ function applyCoverI18n(){
   setTxt('pcDocTitle',c.docTitle);setTxt('pcDocSub',c.docSub);setTxt('pcPriceLabel',c.priceLabel);
   setTxt('pcNoiLabel',c.noiLabel);setTxt('pcCapLabel',c.capLabel);
   setTxt('pcPreparedLabel',c.preparedLabel);setTxt('pcDateLabel',c.dateLabel);setTxt('pcDisc',c.disc);setTxt('pfMid',c.pfMid);
+  setTxt('preparedForLabel',c.preparedLabel);
+  var _pf=document.getElementById('preparedFor');if(_pf)_pf.placeholder=(lang==='es'?'Nombre del cliente':'Client name');
   // pcWealthLabel and pcRoeLabel are set in recalc() (year-aware + finMode-aware)
   try{ setTxt('pcDate', new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'})); }catch(e){}
 }
@@ -1376,6 +1382,8 @@ function recalc(){
   }
 
   recalcScenarios();
+  // Keep the print document current so images are loaded before any print
+  if(typeof buildPrintDoc==='function'){try{buildPrintDoc();}catch(e){}}
 }
 
 // ===== LOGIN GATE =====
@@ -1405,6 +1413,7 @@ function downloadPDF(){
   try{ recalc(); }catch(e){}
   setTxt('pcDate', new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'}));
   applyCoverI18n();
+  try{ buildPrintDoc(); }catch(e){}
   // Set document title temporarily for the PDF filename
   var origTitle = document.title;
   document.title = 'AMBAR-Investment-' + sel.id + '-' + new Date().toISOString().slice(0,10);
@@ -1483,6 +1492,393 @@ function loadFromURL(){
 
 // INIT
 renderUnits();syncInputs();recalcScenarios();applyScenario(2);loadFromURL();
+</script>
+
+<!-- ===== NEW PRINT DOCUMENT (2-page investor summary, built at print time) ===== -->
+<div id="printDoc"></div>
+<style id="ppStyles">
+/* Hidden on screen */
+#printDoc{display:none;}
+@media print{
+  /* Show ONLY the new print document */
+  @page{size:letter;margin:0;}
+  body > *:not(#printDoc){display:none !important;}
+  #printCover,#printFooter{display:none !important;}
+  #printDoc{display:block !important;}
+  html,body{background:#fff !important;margin:0 !important;padding:0 !important;}
+
+  #printDoc{
+    font-family:'Inter',-apple-system,sans-serif;color:#16130F;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    font-feature-settings:"tnum" 1;
+    --pp-card:#FAF8F2;--pp-card-deep:#F5F1E8;--pp-border:#E9E3D6;--pp-border-soft:#F0EBE0;
+    --pp-gray:#8C877B;--pp-gray-dark:#5F5A4F;
+    --pp-coral:#EE6342;--pp-coral-bg:#FDF1EC;--pp-coral-border:#F5A98F;--pp-gold:#C9A44C;
+    --pp-serif:'Times New Roman',Georgia,serif;
+  }
+  #printDoc *{margin:0;padding:0;box-sizing:border-box;}
+  #printDoc .pp-page{width:8.5in;height:11in;background:#fff;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:.4in .5in;}
+  #printDoc .pp-page.first{break-after:page;page-break-after:always;}
+  #printDoc .pp-label{font-size:6.8pt;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--pp-gray);}
+  #printDoc .pp-mast{background:#0E0C09;border-radius:12px;color:#fff;padding:20px 26px;display:flex;justify-content:space-between;align-items:center;}
+  #printDoc .pp-logo{height:.42in;width:auto;display:block;}
+  #printDoc .pp-mast.slim .pp-logo{height:.3in;}
+  #printDoc .pp-wordmark{font-family:var(--pp-serif);font-size:20pt;letter-spacing:.24em;line-height:1;font-weight:400;}
+  #printDoc .pp-wordmark small{display:block;font-family:'Inter',sans-serif;font-size:5.6pt;letter-spacing:.3em;color:rgba(255,255,255,.55);margin-top:5px;font-weight:600;text-transform:uppercase;}
+  #printDoc .pp-mast-right{text-align:right;}
+  #printDoc .pp-doc-title{font-family:var(--pp-serif);font-style:italic;font-size:15pt;color:var(--pp-gold);line-height:1.1;font-weight:400;}
+  #printDoc .pp-doc-sub{font-size:6.6pt;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:6px;font-weight:500;}
+  #printDoc .pp-mast.slim{padding:14px 22px;border-radius:10px;}
+  #printDoc .pp-mast.slim .pp-wordmark{font-size:13pt;}
+  #printDoc .pp-mast.slim .pp-wordmark small{font-size:5pt;margin-top:3px;}
+  #printDoc .pp-mast.slim .pp-doc-title{font-size:11.5pt;}
+  #printDoc .pp-hero{display:flex;justify-content:space-between;align-items:flex-end;padding:22px 4px 20px;}
+  #printDoc .pp-unit-name{font-size:12pt;letter-spacing:.18em;font-weight:700;text-transform:uppercase;}
+  #printDoc .pp-unit-meta{font-size:9pt;color:var(--pp-gray-dark);margin-top:6px;}
+  #printDoc .pp-hero-right{text-align:right;}
+  #printDoc .pp-price{font-size:31pt;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--pp-coral);}
+  #printDoc .pp-hero-right .pp-label{margin-top:8px;display:block;}
+  #printDoc .pp-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  #printDoc .pp-kpi{background:var(--pp-card);border:1px solid var(--pp-border);border-radius:12px;padding:16px 18px;text-align:center;}
+  #printDoc .pp-kpi .pp-num{font-size:17pt;font-weight:700;margin-bottom:7px;letter-spacing:-.01em;}
+  #printDoc .pp-kpi .pp-num small{font-size:10pt;font-weight:600;}
+  #printDoc .pp-kpi .pp-num.coral{color:var(--pp-coral);}
+  #printDoc .pp-kpi.dark{background:#0E0C09;border-color:#0E0C09;}
+  #printDoc .pp-kpi.dark .pp-num{color:var(--pp-gold);}
+  #printDoc .pp-kpi.dark .pp-label{color:rgba(255,255,255,.55);}
+  #printDoc .pp-sect{display:flex;align-items:center;gap:10px;margin:20px 2px 3px;}
+  #printDoc .pp-sect .pp-no{width:17px;height:17px;border-radius:50%;background:#0E0C09;color:#fff;font-size:7.5pt;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  #printDoc .pp-sect h2{font-family:var(--pp-serif);font-style:italic;font-weight:400;font-size:13pt;letter-spacing:.01em;}
+  #printDoc .pp-sect-sub{font-size:8pt;color:var(--pp-gray);margin:0 2px 12px 27px;}
+  #printDoc .pp-scenarios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  #printDoc .pp-scen{background:#fff;border:1px solid var(--pp-border);border-radius:12px;padding:14px 16px;text-align:center;}
+  #printDoc .pp-scen .pp-tier{font-size:7pt;letter-spacing:.2em;font-weight:700;text-transform:uppercase;color:var(--pp-gray);margin-bottom:10px;}
+  #printDoc .pp-scen .pp-row{display:flex;justify-content:space-between;align-items:baseline;font-size:8.4pt;color:var(--pp-gray-dark);padding:4.5px 0;}
+  #printDoc .pp-scen .pp-row+.pp-row{border-top:1px solid var(--pp-border-soft);}
+  #printDoc .pp-scen .pp-row b{color:#16130F;font-weight:700;font-size:9.5pt;}
+  #printDoc .pp-scen .pp-row.big b{font-size:12.5pt;}
+  #printDoc .pp-scen.base{background:var(--pp-coral-bg);border:1.5px solid var(--pp-coral-border);}
+  #printDoc .pp-scen.base .pp-tier{color:var(--pp-coral);}
+  #printDoc .pp-sel{display:inline-block;font-size:5.8pt;letter-spacing:.14em;font-weight:800;color:#fff;background:var(--pp-coral);border-radius:999px;padding:2px 8px;margin-left:5px;vertical-align:1px;}
+  #printDoc .pp-occ{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:0 4px;font-size:8pt;color:var(--pp-gray);}
+  #printDoc .pp-occ b{color:var(--pp-coral);font-size:11pt;font-weight:700;}
+  #printDoc .pp-lineup{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;}
+  #printDoc .pp-lu{border:1px solid var(--pp-border);background:#fff;text-align:center;padding:10px 2px 9px;border-radius:9px;}
+  #printDoc .pp-lu .pp-type{font-size:5.8pt;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+  #printDoc .pp-lu .pp-code{font-size:7pt;color:var(--pp-gray);margin-top:3px;font-weight:600;}
+  #printDoc .pp-lu .pp-sqft{font-size:6.6pt;color:var(--pp-gray);margin-top:2px;}
+  #printDoc .pp-lu.active{background:#0E0C09;border-color:#0E0C09;position:relative;}
+  #printDoc .pp-lu.active .pp-type{color:var(--pp-gold);}
+  #printDoc #printDoc .pp-lu.active .pp-code,#printDoc .pp-lu.active .pp-sqft{color:rgba(255,255,255,.6);}
+  #printDoc .pp-lu.active::after{content:"\2713";position:absolute;top:-6px;right:-5px;width:14px;height:14px;background:var(--pp-gold);color:#0E0C09;border-radius:50%;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  #printDoc .pp-foot{margin-top:auto;}
+  #printDoc .pp-brandline{display:flex;justify-content:space-between;font-size:6.4pt;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-top:9px;border-top:1px solid var(--pp-border);padding-top:9px;color:#16130F;}
+  #printDoc .pp-brandline .mid,#printDoc .pp-brandline .pageno{color:var(--pp-gray);font-weight:600;}
+  #printDoc .pp-ledger{background:#fff;border:1px solid var(--pp-border);border-radius:12px;padding:4px 20px;margin-top:10px;}
+  #printDoc .pp-led-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;gap:20px;}
+  #printDoc .pp-led-row+.pp-led-row{border-top:1px solid var(--pp-border-soft);}
+  #printDoc .pp-led-name{font-size:9.5pt;font-weight:600;}
+  #printDoc .pp-led-name small{display:block;font-size:7.4pt;color:var(--pp-gray);font-weight:400;margin-top:2.5px;}
+  #printDoc .pp-led-amt{font-size:10.5pt;font-weight:700;white-space:nowrap;}
+  #printDoc .pp-led-amt.neg{color:var(--pp-gray-dark);}
+  #printDoc .pp-led-row.split{background:var(--pp-card);margin:0 -20px;padding:10px 20px;}
+  #printDoc .pp-costs-box{background:var(--pp-card);border:1px solid var(--pp-border-soft);border-radius:8px;padding:8px 14px;margin:2px 0 10px;width:4.3in;}
+  #printDoc .pp-cost-row{display:flex;justify-content:space-between;font-size:8pt;color:var(--pp-gray-dark);padding:3.5px 0;}
+  #printDoc .pp-cost-row+.pp-cost-row{border-top:1px solid var(--pp-border-soft);}
+  #printDoc .pp-cost-row b{color:#16130F;font-weight:600;}
+  #printDoc .pp-cost-row.sum{border-top:1px solid var(--pp-border);}
+  #printDoc .pp-cost-row.sum span,#printDoc .pp-cost-row.sum b{font-weight:700;color:#16130F;}
+  #printDoc .pp-led-row.net{background:linear-gradient(90deg,var(--pp-coral-bg),#fff);margin:0 -20px;padding:13px 20px;border-top:1px solid var(--pp-border);border-radius:0 0 12px 12px;}
+  #printDoc .pp-led-row.net .pp-led-name{color:var(--pp-coral);font-size:11pt;font-weight:700;}
+  #printDoc .pp-led-row.net .pp-led-amt{color:var(--pp-coral);font-size:16pt;font-weight:800;}
+  #printDoc .pp-returns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px;}
+  #printDoc .pp-ret{background:var(--pp-card);border:1px solid var(--pp-border);border-radius:12px;padding:18px 16px;text-align:center;}
+  #printDoc .pp-ret .pp-label{display:block;margin-bottom:9px;}
+  #printDoc .pp-ret .pp-num{font-size:16.5pt;font-weight:800;letter-spacing:-.01em;}
+  #printDoc .pp-ret .pp-sub{font-size:7.4pt;color:var(--pp-gray);margin-top:7px;}
+  #printDoc .pp-ret.dark{background:#0E0C09;border-color:#0E0C09;}
+  #printDoc .pp-ret.dark .pp-num{color:var(--pp-gold);}
+  #printDoc .pp-ret.dark .pp-label{color:var(--pp-gold);}
+  #printDoc .pp-ret.dark .pp-sub{color:rgba(255,255,255,.5);}
+  #printDoc .pp-note{background:var(--pp-card);border-left:3px solid var(--pp-gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:7.2pt;line-height:1.6;color:var(--pp-gray-dark);margin-top:16px;}
+  #printDoc .pp-fingrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  #printDoc .pp-fingrid.cols3{grid-template-columns:repeat(3,1fr);}
+  #printDoc .pp-fingrid .pp-kpi{padding:12px 12px;}
+  #printDoc .pp-fingrid .pp-kpi .pp-num{font-size:13pt;}
+  #printDoc .pp-fingrid .pp-kpi .pp-subnum{font-size:6.8pt;color:var(--pp-gray);margin-top:5px;}
+  #printDoc .pp-group{margin:14px 2px 8px;font-size:6.8pt;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--pp-gray-dark);}
+  #printDoc .pp-group b{color:var(--pp-gray);}
+  #printDoc .pp-ret{padding:13px 14px;}
+  #printDoc .pp-ret .pp-num{font-size:15pt;}
+  #printDoc .pp-ret .pp-label{margin-bottom:7px;}
+  #printDoc .pp-ret .pp-sub{margin-top:5px;}
+  #printDoc .pp-group{margin:10px 2px 7px;}
+  #printDoc .pp-fingrid .pp-kpi{padding:10px 10px;}
+  #printDoc .pp-fingrid .pp-kpi .pp-num{font-size:12.5pt;margin-bottom:5px;}
+  #printDoc .pp-note{margin-top:10px;}
+  #printDoc .pp-sect{margin:15px 2px 3px;}
+  #printDoc .pp-fingrid .pp-kpi{padding:9px 10px;}
+  #printDoc .pp-group{margin:8px 2px 6px;}
+  #printDoc .pp-mast.slim{padding:12px 20px;}
+  #printDoc .pp-note{line-height:1.45;font-size:6.6pt;}
+  #printDoc .pp-tablewrap{background:#fff;border:1px solid var(--pp-border);border-radius:12px;overflow:hidden;margin-top:10px;}
+  #printDoc .pp-ptable{width:100%;border-collapse:collapse;font-size:8pt;}
+  #printDoc .pp-ptable th{font-size:6.4pt;letter-spacing:.14em;text-transform:uppercase;color:var(--pp-gray);font-weight:600;text-align:right;padding:7px 12px;border-bottom:1px solid var(--pp-border);background:var(--pp-card);}
+  #printDoc .pp-ptable th:first-child{text-align:left;}
+  #printDoc .pp-ptable td{padding:5.5px 12px;text-align:right;border-bottom:1px solid var(--pp-border-soft);font-variant-numeric:tabular-nums;}
+  #printDoc .pp-ptable td:first-child{text-align:left;font-weight:600;}
+  #printDoc .pp-ptable tr:last-child td{border-bottom:none;}
+  #printDoc .pp-panel2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
+  #printDoc .pp-bigcard{background:var(--pp-card);border:1px solid var(--pp-border);border-radius:12px;padding:16px 18px;}
+  #printDoc .pp-bigcard.dark{background:#0E0C09;border-color:#0E0C09;}
+  #printDoc .pp-bigcard .bc-label,#printDoc .pp-lev .bc-label{font-size:7pt;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--pp-gray-dark);}
+  #printDoc .pp-bigcard.dark .bc-label{color:var(--pp-gold);}
+  #printDoc .pp-bigcard .bc-sub,#printDoc .pp-lev .bc-sub{font-size:6.8pt;color:var(--pp-gray);margin-top:3px;}
+  #printDoc .pp-bigcard.dark .bc-sub{color:rgba(255,255,255,.45);}
+  #printDoc .pp-bigcard .bc-num{font-size:21pt;font-weight:800;letter-spacing:-.01em;margin-top:8px;color:#16130F;}
+  #printDoc .pp-bigcard.dark .bc-num{color:#fff;}
+  #printDoc .pp-bigcard .bc-row{display:flex;gap:28px;margin-top:11px;padding-top:9px;border-top:1px solid var(--pp-border-soft);}
+  #printDoc .pp-bigcard.dark .bc-row{border-top-color:rgba(255,255,255,.14);}
+  #printDoc .pp-bigcard .bc-mini .bcm-l{font-size:6.4pt;letter-spacing:.1em;text-transform:uppercase;color:var(--pp-gray);font-weight:600;}
+  #printDoc .pp-bigcard.dark .bc-mini .bcm-l{color:rgba(255,255,255,.45);}
+  #printDoc .pp-bigcard .bc-mini .bcm-v{font-size:10.5pt;font-weight:700;margin-top:2.5px;color:#16130F;}
+  #printDoc .pp-bigcard.dark .bc-mini .bcm-v{color:#fff;}
+  #printDoc .pp-lev{background:var(--pp-card);border:1px solid var(--pp-border);border-radius:12px;padding:13px 18px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;}
+  #printDoc .pp-lev .pp-num{font-size:15pt;font-weight:800;color:var(--pp-coral);}
+  #printDoc .pp-prep{font-size:8pt;color:rgba(255,255,255,.7);margin-top:8px;}
+  #printDoc .pp-prep b{color:var(--pp-gold);font-weight:600;letter-spacing:.02em;}
+}
+</style>
+<script>
+// ===== BUILD THE PRINT DOCUMENT FROM LIVE SIMULATOR STATE =====
+function buildPrintDoc(){
+  try{
+    const u=sel,e=u.exp;
+    const price=+document.getElementById('priceInput').value;
+    const adrEl=document.getElementById('adrInput');
+    const adr=+(adrEl.getAttribute('data-raw')||adrEl.value);
+    const occ=+document.getElementById('occSlider').value/100;
+    const revPAR=rateMode==='revpar'?adr:adr*occ;
+    const gross=revPAR*DPM;
+    const marriott=gross*e.marriottPct, opex=gross*e.opexPct;
+    const ownerRev=gross-marriott-opex;
+    const ffe=gross*e.ffePct, otaCC=gross*(e.otaPct+e.ccPct);
+    const fixedCosts=e.hoa+e.util+e.ins+e.tax;
+    const rentalNoi=ownerRev-ffe-otaCC-fixedCosts;
+    // Leaseback values
+    const lbGrossAnn=price*0.10, lbGrossMo=lbGrossAnn/12;
+    const lbFfe=FFE_FIXED[u.id]||0;
+    const lbNoi=lbGrossMo-(fixedCosts+lbFfe);
+    const isLB=programMode==='leaseback';
+    const noi=isLB?lbNoi:rentalNoi, annNOI=noi*12, capRate=annNOI/price;
+    // Financing — same math as recalc()
+    const isFin=finMode==='finance';
+    const dpPct=+document.getElementById('downPayment').value/100;
+    const ir=+document.getElementById('interestRate').value/100;
+    const termYrs=+document.getElementById('loanTerm').value;
+    const dpTotal=price*dpPct, balance=price-dpTotal;
+    let loanAmt=0,monthlyPMT=0,y1Principal=0,y1Interest=0;
+    if(isFin){
+      loanAmt=balance;
+      const mr=ir/12,np=termYrs*12;
+      monthlyPMT=mr>0?loanAmt*(mr*Math.pow(1+mr,np))/(Math.pow(1+mr,np)-1):loanAmt/np;
+      let rem=loanAmt;for(let m=0;m<12;m++){const ip=rem*mr;const pp=monthlyPMT-ip;y1Interest+=ip;y1Principal+=pp;rem-=pp;}
+    }
+    const monthlyInterest=y1Interest/12, monthlyPrincipal=y1Principal/12;
+    const cashFlow=noi-monthlyPMT, annCF=cashFlow*12;
+    const cashInvested=isFin?dpTotal+(balance-loanAmt):price;
+    const irrOnEquity=cashInvested>0?(annCF+y1Principal)/cashInvested:0;
+    const roeLbl=isFin?(lang==='es'?'Retorno Anual · Financiado':'Annual Return · Financed'):(lang==='es'?'Retorno Anual':'Annual Return');
+    // Projection assumptions + results (results read from the live projection cards)
+    const hzYrs=+document.getElementById('horizon').value;
+    const appPct=+document.getElementById('appreciation').value;
+    const incPct=+document.getElementById('incGrowth').value;
+    const infPct=+document.getElementById('costInflation').value;
+    const estVal=price*Math.pow(1+appPct/100,hzYrs);
+    const projCards=document.querySelectorAll('#projSummaryCards > div');
+    const cardVal=i=>{const c=projCards[i];return c?(c.querySelector('div:nth-child(2)')||{}).textContent||'':'';};
+    const accCF=cardVal(2)||fmt(0);
+    const wealth=cardVal(3)||fmt(estVal);
+    const projLbl=(lang==='es'?'Resultado de Proyección — ':'Projection Result — ')+hzYrs+' '+(lang==='es'?'años':'years');
+    const perYr=lang==='es'?'/año':'/yr';
+    const projTbl=(document.getElementById('projTable')||{}).innerHTML||'';
+    const C=(COVER_I18N[lang]||COVER_I18N.en);
+    const prepName=((document.getElementById('preparedFor')||{}).value||'').trim();
+    const yr=lang==='es'?'año':'year';
+    const rateLbl=rateMode==='revpar'?'RevPAR':'ADR', derivedLbl=rateMode==='revpar'?'ADR':'RevPAR';
+    const mastheadSub=lang==='es'?'Orlando, Florida · Entrega Q3 2028':'Orlando, Florida · Delivery Q3 2028';
+    const esc=s=>String(s).replace(/</g,'&lt;');
+
+    // Selected unit only — no other unit types on the printed version
+    const lineup=`<div class="pp-lu active" style="padding:12px 18px 11px;"><div class="pp-type">${esc(lang==='es'?u.type.es:u.type.en)}</div><div class="pp-code">${u.id}</div><div class="pp-sqft">${displayArea(u.sqft)} · ${u.guests} ${esc(C.guests)}</div></div>`;
+
+    // Scenario cards (rental mode) — read live values so edits carry over
+    let scenHTML='',occHTML='';
+    if(!isLB){
+      const names=[t('conservative'),t('base'),t('optimistic')];
+      const netLbl=(s=>s.charAt(0).toUpperCase()+s.slice(1))(t('netIncomeMo'));
+      scenHTML='<div class="pp-scenarios">'+[1,2,3].map(i=>{
+        const active=document.getElementById('scCard'+i).classList.contains('active');
+        const el=document.getElementById('sc'+i+'Rate');
+        const rate=el.value;
+        const vRaw=+(el.getAttribute('data-raw')||el.value);
+        const derived=document.getElementById('sc'+i+'RevPar').textContent;
+        const rev=document.getElementById('sc'+i+'Rev').textContent;
+        // Outcome per scenario — same math as the waterfall
+        const grossI=(rateMode==='revpar'?vRaw:vRaw*occ)*DPM;
+        const netI=grossI*(1-e.marriottPct-e.opexPct-e.ffePct-e.otaPct-e.ccPct)-fixedCosts;
+        const capI=price>0?netI*12/price:0;
+        return `<div class="pp-scen${active?' base':''}"><div class="pp-tier">${esc(names[i-1])}${active?'<span class="pp-sel">'+(lang==='es'?'Seleccionado':'Selected')+'</span>':''}</div>
+          <div class="pp-row"><span>${rateLbl}</span><b>$${esc(rate)}</b></div>
+          <div class="pp-row"><span>${derivedLbl}</span><b>${esc(derived)}</b></div>
+          <div class="pp-row"><span>${esc(t('grossRevMo'))}</span><b>${esc(rev)}</b></div>
+          <div class="pp-row big"><span>${esc(netLbl)}</span><b style="color:var(--pp-coral);">${fmt(netI)}</b></div>
+          <div class="pp-row"><span>${esc(t('capRate'))}</span><b>${(capI*100).toFixed(1)}%</b></div></div>`;
+      }).join('')+'</div>';
+      if(rateMode!=='revpar'){
+        occHTML=`<div class="pp-occ"><span>${esc(t('occupancy'))} — ${esc(t('occSub'))}</span><b>${Math.round(occ*100)}%</b></div>`;
+      }
+    }else{
+      const lbQ=lbGrossAnn/4;
+      scenHTML=`<div class="pp-scenarios">
+        <div class="pp-scen base"><div class="pp-tier">${esc(t('lbAnnual'))}</div><div class="pp-row big"><span>${esc(t('lbGuaranteed'))}</span><b>${fmt(lbGrossAnn)}</b></div></div>
+        <div class="pp-scen"><div class="pp-tier">${esc(t('lbQuarterly'))}</div><div class="pp-row big"><span>&nbsp;</span><b>${fmt(lbQ)}</b></div></div>
+        <div class="pp-scen"><div class="pp-tier">${esc(t('lbMonthlyEquiv'))}</div><div class="pp-row big"><span>&nbsp;</span><b>${fmt(lbGrossMo)}</b></div></div></div>`;
+    }
+
+    // Ledger rows
+    const row=(name,desc,amt,cls,extra)=>`<div class="pp-led-row${cls||''}"${extra?' style="align-items:flex-start;"':''}><div class="pp-led-name"${extra?' style="flex:1;"':''}>${name}${desc?`<small>${desc}</small>`:''}${extra||''}</div><div class="pp-led-amt${amt<0?' neg':''}"${extra?' style="padding-top:2px;"':''}>${amt>=0?fmt(amt):'('+fmt(Math.abs(amt))+')'}</div></div>`;
+    const costsBox=`<div class="pp-costs-box">
+      <div class="pp-cost-row"><span>${esc(t('tipFixedHoa'))}</span><b>${fmt(e.hoa)}${moSfx()}</b></div>
+      <div class="pp-cost-row"><span>${esc(t('propertyTax'))}</span><b>${fmt(e.tax)}${moSfx()}</b></div>
+      <div class="pp-cost-row"><span>${esc(t('insurance'))}</span><b>${fmt(e.ins)}${moSfx()}</b></div>
+      <div class="pp-cost-row"><span>${esc(t('tipFixedUtil'))}</span><b>${fmt(e.util)}${moSfx()}</b></div>
+      <div class="pp-cost-row sum"><span>${esc(t('tipTotal'))}</span><b>${fmt(fixedCosts)}${moSfx()}</b></div></div>`;
+    let ledger;
+    if(!isLB){
+      ledger=row(esc(t('grossMonthly')),esc(t('rateOccDays')),gross)
+        +row('(−) '+esc(t('marriottFee')),esc(t('marriottDesc')),-marriott)
+        +row('(−) '+esc(t('hotelOps')),esc(t('hotelOpsDesc')),-opex)
+        +row('= '+esc(t('ownerRev')),'',ownerRev,' split')
+        +row('(−) '+esc(t('ffeRes')),esc(t('ffeDesc')),-ffe)
+        +row('(−) '+esc(t('otaCard')),esc(t('otaDesc')),-otaCC)
+        +row('(−) '+esc(t('fixedCosts')),esc(t('fixedDesc')),-fixedCosts,'',costsBox)
+        +row('= '+esc(t('ownerNet')),'',rentalNoi,' net');
+    }else{
+      ledger=row(esc(t('lbGuaranteedIncome')),esc(t('lbGuaranteedDesc')),lbGrossMo)
+        +row('(−) '+esc(t('lbFfeRes')),esc(t('lbFfeDesc')),-lbFfe)
+        +row('(−) '+esc(t('fixedCosts')),esc(t('fixedDesc')),-fixedCosts,'',costsBox)
+        +row('= '+esc(t('lbOwnerNet')),'',lbNoi,' net');
+    }
+
+    const brandline=(n)=>`<div class="pp-foot"><div class="pp-brandline"><span>AMBAR Residences Orlando</span><span class="mid">${esc(C.pfMid)}</span><span class="mid">AMBARorlando.com</span><span class="pageno">${n} / 4</span></div></div>`;
+    const mast=(slim,title)=>`<div class="pp-mast${slim?' slim':''}"><div class="pp-brand"><img class="pp-logo" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="pp-wordmark" style="display:none;">AMBAR<small>${slim?'Residences · Orlando':'Residences · Orlando &nbsp;|&nbsp; Apartments by Marriott Bonvoy'}</small></div></div><div class="pp-mast-right"><div class="pp-doc-title">${title}</div>${slim?'':`<div class="pp-doc-sub">${mastheadSub}</div>`}${(!slim&&prepName)?`<div class="pp-prep">${esc(C.preparedLabel)} <b>${esc(prepName)}</b></div>`:''}</div></div>`;
+
+    const unitTitle=esc((lang==='es'?u.type.es:u.type.en))+' · '+u.id;
+    const wfTitle=isLB?esc(t('lbS5Title')):esc(t('revenueWaterfall'));
+
+    document.getElementById('printDoc').innerHTML=`
+    <section class="pp-page first">
+      ${mast(false,esc(t('heroTitle')))}
+      <div class="pp-hero">
+        <div><div class="pp-unit-name">${unitTitle}</div><div class="pp-unit-meta">${displayArea(u.sqft)} · ${u.guests} ${esc(C.guests)}</div></div>
+        <div class="pp-hero-right"><div class="pp-price">${fmt(price)}</div><span class="pp-label">${esc(C.priceLabel)}</span></div>
+      </div>
+      <div class="pp-kpis">
+        <div class="pp-kpi"><div class="pp-num coral">${fmt(noi)}<small>${moSfx()}</small></div><span class="pp-label">${esc(C.noiLabel)}</span></div>
+        <div class="pp-kpi"><div class="pp-num">${isFin?fmt(cashFlow):fmt(annNOI)}${isFin?`<small>${moSfx()}</small>`:''}</div><span class="pp-label">${isFin?esc(t('cashFlowMo')):esc(C.annLabel)}</span></div>
+        <div class="pp-kpi dark"><div class="pp-num">${isFin?(irrOnEquity*100).toFixed(1)+'%':(capRate*100).toFixed(1)+'%'}</div><span class="pp-label">${isFin?esc(roeLbl):esc(C.capLabel)}</span></div>
+      </div>
+      <div class="pp-sect"><span class="pp-no">1</span><h2>${esc(t('s1Title'))}</h2></div>
+      <div class="pp-sect-sub">${esc(C.pfMid.split('·')[0].trim())} · ${unitTitle}</div>
+      <div class="pp-lineup" style="grid-template-columns:1.6in;">${lineup}</div>
+      <div class="pp-sect"><span class="pp-no">2</span><h2>${isLB?esc(t('lbS5Title')):esc(t('s5Title'))}</h2></div>
+      <div class="pp-sect-sub">${isLB?esc(t('lbS5Sub')):esc(t('s5Sub'))}</div>
+      ${scenHTML}${occHTML}
+      ${brandline(1)}
+    </section>
+    <section class="pp-page first">
+      ${mast(true,unitTitle)}
+      <div class="pp-sect" style="margin-top:22px;"><span class="pp-no">2</span><h2>${wfTitle}</h2></div>
+      <div class="pp-ledger">${ledger}</div>
+      <div class="pp-sect" style="margin-top:14px;"><span class="pp-no">3</span><h2>${esc(t('s2Title'))}</h2></div>
+      <div class="pp-fingrid cols3" style="margin-top:10px;">
+        <div class="pp-kpi"><div class="pp-num">${Math.round(dpPct*100)}%</div><span class="pp-label">${esc(t('totalDP'))}</span></div>
+        <div class="pp-kpi"><div class="pp-num">${fmt(dpTotal)}</div><span class="pp-label">${esc(t('totalDPLabel'))}</span></div>
+        <div class="pp-kpi"><div class="pp-num">${fmt(balance)}</div><span class="pp-label">${esc(t('balanceClosing'))}</span></div>
+      </div>
+      ${brandline(2)}
+    </section>
+    <section class="pp-page first">
+      ${mast(true,unitTitle)}
+      <div class="pp-sect" style="margin-top:22px;"><span class="pp-no">4</span><h2>${esc(t('s3Title'))}</h2></div>
+      <div class="pp-sect-sub">${esc(t('s3Sub'))}</div>
+      ${isFin?`<div class="pp-panel2">
+        <div class="pp-bigcard dark">
+          <div class="bc-label">${esc(t('monthlyInterest'))}</div>
+          <div class="bc-sub">${esc(t('monthlyInterestSub'))}</div>
+          <div class="bc-num">${fmt(monthlyInterest)}</div>
+          <div class="bc-row">
+            <div class="bc-mini"><div class="bcm-l">${esc(t('principalPortion'))}</div><div class="bcm-v">${fmt(monthlyPrincipal)}</div></div>
+            <div class="bc-mini"><div class="bcm-l">${esc(t('totalPmt'))}</div><div class="bcm-v">${fmt(monthlyPMT)}</div></div>
+          </div>
+        </div>
+        <div class="pp-bigcard">
+          <div class="bc-label">${esc(t('financedBal'))}</div>
+          <div class="bc-sub">${esc(t('finBalSub'))}</div>
+          <div class="bc-num">${fmt(loanAmt)}</div>
+          <div class="bc-row">
+            <div class="bc-mini"><div class="bcm-l">${esc(t('annualInterest'))}</div><div class="bcm-v">${(ir*100).toFixed(2)}%</div><div class="bc-sub">${esc(t('annIntSub'))}</div></div>
+            <div class="bc-mini"><div class="bcm-l">${esc(t('term'))}</div><div class="bcm-v">${termYrs} ${esc(t('years'))}</div><div class="bc-sub">${esc(t('termSub'))}</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="pp-lev">
+        <div><div class="bc-label">${esc(t('levCashReturn'))}</div><div class="bc-sub">${esc(t('levCashReturnSub'))}</div></div>
+        <div style="text-align:right;"><div class="pp-num">${fmt((annCF+y1Principal)/12)}${moSfx()}</div><div class="bc-sub">${fmt(annCF+y1Principal)} / ${yr}</div></div>
+      </div>`:`<div class="pp-fingrid cols3">
+        <div class="pp-kpi"><div class="pp-num">${fmt(balance)}</div><span class="pp-label">${esc(t('payCash'))}</span></div>
+      </div>`}
+      <div class="pp-sect" style="margin-top:18px;"><span class="pp-no">5</span><h2>${esc(t('s6Title'))}</h2></div>
+      <div class="pp-group">${esc(t('noFinHead'))} · <b>${esc(t('noFinSub'))}</b></div>
+      <div class="pp-returns" style="margin-top:0;">
+        <div class="pp-ret"><span class="pp-label">${esc(t('purchasePrice'))}</span><div class="pp-num">${fmt(price)}</div><div class="pp-sub">${esc(t('purchasePriceSub'))}</div></div>
+        <div class="pp-ret"><span class="pp-label">${esc(t('monthlyNOI'))}</span><div class="pp-num" style="color:var(--pp-coral);">${fmt(noi)}</div><div class="pp-sub">${fmt(annNOI)} / ${yr}</div></div>
+        <div class="pp-ret dark"><span class="pp-label">${esc(t('capRate'))}</span><div class="pp-num">${(capRate*100).toFixed(1)}%</div><div class="pp-sub">${esc(t('capRateSub'))}</div></div>
+      </div>
+      ${isFin?`<div class="pp-group">${esc(t('finHead'))} · <b>${esc(t('finSub'))}</b></div>
+      <div class="pp-returns" style="margin-top:0;">
+        <div class="pp-ret"><span class="pp-label">${esc(t('totalEquity'))}</span><div class="pp-num">${fmt(cashInvested)}</div><div class="pp-sub">${esc(t('dpPlusCash'))}</div></div>
+        <div class="pp-ret"><span class="pp-label">${esc(t('levCashReturn'))}</span><div class="pp-num" style="color:var(--pp-coral);">${fmt((annCF+y1Principal)/12)}</div><div class="pp-sub">${fmt(annCF+y1Principal)} / ${yr}</div></div>
+        <div class="pp-ret dark"><span class="pp-label">${esc(roeLbl)}</span><div class="pp-num">${(irrOnEquity*100).toFixed(1)}%</div><div class="pp-sub">${esc(t('onEquity'))}</div></div>
+      </div>`:''}
+      ${brandline(3)}
+    </section>
+    <section class="pp-page">
+      ${mast(true,unitTitle)}
+      <div class="pp-sect" style="margin-top:22px;"><span class="pp-no">6</span><h2>${esc(t('s7Title'))}</h2></div>
+      <div class="pp-fingrid" style="margin-top:10px;">
+        <div class="pp-kpi"><div class="pp-num">${hzYrs} ${esc(t('years'))}</div><span class="pp-label">${esc(t('horizon'))}</span></div>
+        <div class="pp-kpi"><div class="pp-num">${appPct}%${perYr}</div><span class="pp-label">${esc(t('appreciation'))}</span></div>
+        <div class="pp-kpi"><div class="pp-num">${incPct}%${perYr}</div><span class="pp-label">${esc(t('incomeGrowth'))}</span></div>
+        <div class="pp-kpi"><div class="pp-num">${infPct}%${perYr}</div><span class="pp-label">${esc(t('costInflation'))}</span></div>
+      </div>
+      <div class="pp-group">${esc(projLbl)}</div>
+      <div class="pp-fingrid" style="margin-top:0;">
+        <div class="pp-kpi"><div class="pp-num">${fmt(price)}</div><span class="pp-label">${esc(t('priceToday'))}</span></div>
+        <div class="pp-kpi"><div class="pp-num">${fmt(estVal)}</div><span class="pp-label">${esc(t('estAppreciation'))}</span><div class="pp-subnum">+${fmt(estVal-price)}</div></div>
+        <div class="pp-kpi"><div class="pp-num">${esc(accCF)}</div><span class="pp-label">${esc(t('accIncome'))}</span></div>
+        <div class="pp-kpi dark"><div class="pp-num">${esc(wealth)}</div><span class="pp-label">${esc(t('totalWealth'))}</span></div>
+      </div>
+      <div class="pp-tablewrap"><table class="pp-ptable">${projTbl}</table></div>
+      <div class="pp-note">${esc(t('disclaimer'))}</div>
+      ${brandline(4)}
+    </section>`;
+  }catch(err){ console.error('buildPrintDoc failed',err); }
+}
+window.addEventListener('beforeprint',buildPrintDoc);
+// Build immediately so the logo image is fetched and decoded well before printing
+buildPrintDoc();
 </script>
 </body>
 </html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMBAR Residences Orlando — Leaseback Program</title>
+<!-- Source of truth: "Leaseback English.xlsx" (per-unit income/cost model) + "Leaseback Glow Program.pdf" (program terms). PDF uses native window.print() with @media print CSS, same pattern as /3. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #F36F43;
+  --amber: #FFA84A;
+  --amber-light: #FFD9A0;
+  --olive: #5A5A37;
+  --cream: #F5F0E8;
+  --cream-dark: #EDE6D8;
+  --black: #1E1B16;
+  --white: #FFFFFF;
+  --g50: #FAF9F6;
+  --g100: #F0EDE6;
+  --g200: #E0DBD0;
+  --g300: #C8C2B4;
+  --g400: #9E9686;
+  --g500: #6B6459;
+  --g600: #4A453C;
+  --header-bg: #000000;
+  --card-radius: 16px;
+  --card-shadow: 0 1px 3px rgba(30,27,22,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--black);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ===== header ===== */
+header{background:var(--header-bg);padding:18px 24px;position:relative}
+.header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:center;position:relative}
+.logo-img{height:44px}
+.lang-toggle{position:absolute;left:0;display:flex;gap:4px;background:rgba(255,255,255,0.08);border-radius:999px;padding:3px}
+.lang-btn{border:none;background:transparent;color:rgba(255,255,255,0.55);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer}
+.lang-btn.active{background:var(--amber);color:var(--black)}
+.sub-header{background:var(--header-bg);padding:6px 24px 26px;text-align:center}
+.sub-header h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:30px;color:var(--amber-light);line-height:1.2}
+.sub-header .badges{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.badge{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,0.55);border:1px solid rgba(255,255,255,0.18);border-radius:999px;padding:4px 12px}
+
+.main{max-width:960px;margin:24px auto 80px;padding:0 24px}
+
+/* ===== sections ===== */
+.section{background:var(--white);border-radius:var(--card-radius);box-shadow:var(--card-shadow);margin-bottom:20px;overflow:hidden}
+.section-header{display:flex;align-items:flex-start;gap:14px;padding:24px 28px 16px;border-bottom:1px solid var(--g100)}
+.section-num{width:32px;height:32px;border-radius:50%;background:var(--olive);color:white;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;font-style:italic}
+.section-subtitle{font-size:12px;color:var(--g400);margin-top:2px}
+.section-body{padding:20px 28px 26px}
+
+/* unit grid */
+.unit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:700px){.unit-grid{grid-template-columns:repeat(2,1fr)}}
+.unit-card{border:2px solid var(--g200);border-radius:12px;padding:14px 8px;cursor:pointer;transition:all .25s;position:relative;text-align:center;background:var(--white)}
+.unit-card:hover{border-color:var(--amber)}
+.unit-card.selected{border-color:var(--amber);background:linear-gradient(135deg,#1a1a1a,#000);color:#fff}
+.uc-type{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700}
+.unit-card.selected .uc-type{color:var(--amber)}
+.uc-id{font-size:12px;color:var(--g400);margin-top:3px;font-weight:600}
+.uc-price{font-size:12px;font-weight:700;margin-top:5px}
+.unit-card.selected .uc-id{color:rgba(255,255,255,0.6)}
+.uc-check{display:none;position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:var(--amber);color:var(--black);font-size:11px;font-weight:800;align-items:center;justify-content:center}
+.unit-card.selected .uc-check{display:flex}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.field-row.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:700px){.field-row,.field-row.three{grid-template-columns:1fr}}
+.field label{font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600;color:var(--g500);display:block;margin-bottom:6px}
+.field .hint{font-size:11px;color:var(--g400);margin:-4px 0 6px}
+.field input[type=text],.field input[type=number]{width:100%;border:1px solid var(--g200);border-radius:10px;padding:11px 14px;font-size:15px;font-family:'Inter',sans-serif;font-weight:600;color:var(--black);background:var(--g50)}
+.field input:focus{outline:none;border-color:var(--amber)}
+
+/* program explainer */
+.program-note{background:rgba(255,168,74,0.10);border:1px solid rgba(255,168,74,0.30);border-radius:10px;padding:16px 20px;font-size:13px;color:var(--g600);line-height:1.7}
+.program-note b{color:var(--black)}
+.program-bullets{margin:8px 0 0 18px;font-size:13px;color:var(--g600);line-height:1.7}
+.program-bullets li{margin-bottom:5px}
+
+/* ledger rows (screen) */
+.q-row{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--g100);font-size:14px}
+.q-row .ql{color:var(--g600)}
+.q-row .ql small{display:block;font-size:11px;color:var(--g400)}
+.q-row .qv{font-weight:700;font-variant-numeric:tabular-nums}
+.q-row.neg .ql,.q-row.neg .qv{color:var(--orange)}
+.q-row.total{border-bottom:none;border-top:2px solid var(--black);margin-top:4px;padding-top:14px}
+.q-row.total .ql{font-weight:700;font-size:15px;color:var(--black)}
+.q-row.total .qv{font-size:26px;font-weight:800;color:var(--orange)}
+.yield-note{background:rgba(255,168,74,0.10);border:1px solid rgba(255,168,74,0.30);border-radius:10px;padding:12px 16px;font-size:12.5px;color:var(--g600);margin-top:16px}
+.validity{font-size:11px;color:var(--g400);margin-top:14px;line-height:1.6}
+
+/* deposit table (screen) */
+.dep-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--g100);font-size:14px}
+.dep-row .dl{color:var(--g600)}
+.dep-row .dl small{color:var(--g400);font-size:12px;margin-left:6px}
+.dep-row .dv{font-weight:700;font-variant-numeric:tabular-nums}
+.dep-row.total{border-bottom:none;border-top:2px solid var(--black);margin-top:4px;padding-top:12px}
+.dep-row.total .dl{font-weight:700;color:var(--black)}
+.dep-row.total .dv{font-size:18px;font-weight:800;color:var(--orange)}
+
+/* fab + toast + login */
+.share-fab{position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:8px;background:var(--black);color:#fff;border:none;border-radius:999px;padding:14px 22px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:50}
+.share-fab svg{width:16px;height:16px;stroke:var(--amber);fill:none;stroke-width:2}
+.share-toast{position:fixed;bottom:84px;right:24px;background:var(--black);color:#fff;font-size:12px;padding:10px 16px;border-radius:8px;opacity:0;transition:opacity .3s;z-index:50;pointer-events:none}
+.share-toast.show{opacity:1}
+.login-overlay{position:fixed;inset:0;background:rgba(20,18,14,0.96);z-index:100;display:flex;align-items:center;justify-content:center}
+.login-box{background:var(--white);border-radius:16px;padding:36px;width:min(360px,90vw);text-align:center}
+.login-box img{height:40px;margin-bottom:18px;filter:invert(1)}
+.login-box h2{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;margin-bottom:16px}
+.login-box input{width:100%;border:1px solid var(--g200);border-radius:10px;padding:12px 14px;font-size:15px;text-align:center;font-family:'Inter',sans-serif}
+.login-box button{width:100%;margin-top:12px;background:var(--black);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.login-err{font-size:12px;color:var(--orange);margin-top:10px;min-height:16px}
+footer{background:var(--header-bg);color:rgba(255,255,255,0.5);text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:22px}
+
+/* ================= PRINT DOCUMENT ================= */
+#printDoc{display:none;}
+@media print{
+  @page{size:letter;margin:0;}
+  body > *:not(#printDoc){display:none !important;}
+  #printDoc{display:block !important;}
+  html,body{background:#fff !important;margin:0 !important;padding:0 !important;}
+
+  #printDoc{
+    font-family:'Inter',-apple-system,sans-serif;color:#16130F;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    font-feature-settings:"tnum" 1;
+    --pp-card:#FAF8F2;--pp-card-deep:#F5F1E8;--pp-border:#E9E3D6;--pp-border-soft:#F0EBE0;
+    --pp-gray:#8C877B;--pp-gray-dark:#5F5A4F;
+    --pp-coral:#EE6342;--pp-coral-bg:#FDF1EC;--pp-coral-border:#F5A98F;--pp-gold:#C9A44C;
+    --pp-serif:'Times New Roman',Georgia,serif;
+  }
+  #printDoc *{margin:0;padding:0;box-sizing:border-box;}
+  #printDoc .pp-page{width:8.5in;height:11in;background:#fff;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:.3in .5in;}
+  #printDoc .pp-page+.pp-page{page-break-before:always;}
+  #printDoc .pp-label{font-size:6.8pt;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--pp-gray);}
+  #printDoc .pp-mast{background:#0E0C09;border-radius:12px;color:#fff;padding:10px 22px;display:flex;justify-content:space-between;align-items:center;}
+  #printDoc .pp-logo{height:.4in;width:auto;display:block;}
+  #printDoc .pp-wordmark{font-family:var(--pp-serif);font-size:20pt;letter-spacing:.24em;line-height:1;font-weight:400;}
+  #printDoc .pp-wordmark small{display:block;font-family:'Inter',sans-serif;font-size:5.6pt;letter-spacing:.3em;color:rgba(255,255,255,.55);margin-top:5px;font-weight:600;text-transform:uppercase;}
+  #printDoc .pp-mast-right{text-align:right;}
+  #printDoc .pp-doc-title{font-family:var(--pp-serif);font-style:italic;font-size:14pt;color:var(--pp-gold);line-height:1.1;font-weight:400;}
+  #printDoc .pp-doc-sub{font-size:6.6pt;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:5px;font-weight:500;}
+  #printDoc .pp-prep{font-size:8pt;color:rgba(255,255,255,.7);margin-top:6px;}
+  #printDoc .pp-prep b{color:var(--pp-gold);font-weight:600;letter-spacing:.02em;}
+  #printDoc .pp-hero{display:flex;justify-content:space-between;align-items:flex-end;padding:14px 4px 12px;}
+  #printDoc .pp-unit-name{font-size:11.5pt;letter-spacing:.18em;font-weight:700;text-transform:uppercase;}
+  #printDoc .pp-unit-meta{font-size:8.5pt;color:var(--pp-gray-dark);margin-top:5px;}
+  #printDoc .pp-hero-right{text-align:right;}
+  #printDoc .pp-price{font-size:24pt;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--pp-coral);}
+  #printDoc .pp-hero-right .pp-label{margin-top:6px;display:block;}
+  #printDoc .pp-kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  #printDoc .pp-kpi{background:var(--pp-card);border:1px solid var(--pp-border);border-radius:12px;padding:7px 10px;text-align:center;}
+  #printDoc .pp-kpi .pp-num{font-size:12.5pt;font-weight:700;margin-bottom:4px;letter-spacing:-.01em;}
+  #printDoc .pp-kpi.dark{background:#0E0C09;border-color:#0E0C09;}
+  #printDoc .pp-kpi.dark .pp-num{color:var(--pp-gold);}
+  #printDoc .pp-kpi.dark .pp-label{color:rgba(255,255,255,.55);}
+  #printDoc .pp-sect{display:flex;align-items:center;gap:9px;margin:16px 2px 3px;}
+  #printDoc .pp-sect .pp-no{width:15px;height:15px;border-radius:50%;background:#0E0C09;color:#fff;font-size:7pt;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  #printDoc .pp-sect h2{font-family:var(--pp-serif);font-style:italic;font-weight:400;font-size:13pt;letter-spacing:.01em;}
+  #printDoc .pp-note{background:var(--pp-card);border-left:3px solid var(--pp-gold);border-radius:0 8px 8px 0;padding:14px 20px;font-size:8.8pt;line-height:1.7;color:var(--pp-gray-dark);margin-top:8px;}
+  #printDoc .pp-note b{color:#16130F;}
+  #printDoc .pp-ledger{background:#fff;border:1px solid var(--pp-border);border-radius:12px;padding:3px 20px;margin-top:5px;}
+  #printDoc .pp-led-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;gap:20px;}
+  #printDoc .pp-led-row+.pp-led-row{border-top:1px solid var(--pp-border-soft);}
+  #printDoc .pp-led-name{font-size:9pt;font-weight:600;}
+  #printDoc .pp-led-name small{display:inline;font-size:7.2pt;color:var(--pp-gray);font-weight:400;margin-left:6px;}
+  #printDoc .pp-led-amt{font-size:9.5pt;font-weight:700;white-space:nowrap;}
+  #printDoc .pp-led-amt.neg{color:var(--pp-gray-dark);}
+  #printDoc .pp-led-row.net{background:linear-gradient(90deg,var(--pp-coral-bg),#fff);margin:0 -20px;padding:10px 20px;border-top:1px solid var(--pp-border);border-radius:0 0 12px 12px;}
+  #printDoc .pp-led-row.net .pp-led-name{color:var(--pp-coral);font-size:9.5pt;font-weight:700;}
+  #printDoc .pp-led-row.net .pp-led-amt{color:var(--pp-coral);font-size:14pt;font-weight:800;}
+  #printDoc .pp-dep{background:#fff;border:1px solid var(--pp-border);border-radius:12px;padding:3px 20px;margin-top:5px;}
+  #printDoc .pp-dep-row{display:flex;justify-content:space-between;align-items:center;padding:4.5px 0;gap:20px;}
+  #printDoc .pp-dep-row+.pp-dep-row{border-top:1px solid var(--pp-border-soft);}
+  #printDoc .pp-dep-name{font-size:8.5pt;font-weight:500;color:var(--pp-gray-dark);}
+  #printDoc .pp-dep-name b{color:#16130F;font-weight:700;margin-right:6px;}
+  #printDoc .pp-dep-amt{font-size:9pt;font-weight:700;}
+  #printDoc .pp-dep-row.total .pp-dep-name{font-weight:700;color:#16130F;}
+  #printDoc .pp-dep-row.total .pp-dep-amt{color:var(--pp-coral);font-size:10.5pt;font-weight:800;}
+  #printDoc .pp-legal{font-size:5.6pt;line-height:1.5;color:var(--pp-gray);margin-top:12px;padding:0 2px;}
+  #printDoc .pp-legal p{margin-bottom:3px;}
+  #printDoc .pp-foot{margin-top:auto;}
+  #printDoc .pp-brandline{display:flex;justify-content:space-between;font-size:6.4pt;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-top:7px;border-top:1px solid var(--pp-border);padding-top:7px;color:#16130F;}
+  #printDoc .pp-brandline .mid,#printDoc .pp-brandline .pageno{color:var(--pp-gray);font-weight:600;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <img src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR">
+    <h2 id="loginTitle">Leaseback Program — Agent Access</h2>
+    <input type="password" id="loginPassword" placeholder="Access code" onkeydown="if(event.key==='Enter')checkLogin()">
+    <button onclick="checkLogin()">Enter</button>
+    <div class="login-err" id="loginError"></div>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <img class="logo-img" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando">
+  </div>
+</header>
+<div class="sub-header">
+  <h1 id="pageTitle">The 10% Leaseback Program</h1>
+  <div class="badges">
+    <span class="badge" id="bYears">First 2 Years</span>
+    <span class="badge" id="bGuarantee">10% Guaranteed Per Year</span>
+    <span class="badge" id="bQuarterly">Paid Quarterly</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 1. UNIT & CLIENT -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title" id="s1Title">Unit &amp; Client</div>
+        <div class="section-subtitle" id="s1Sub">Choose the unit and who this document is prepared for</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="unit-grid" id="unitGrid"></div>
+      <div class="field-row">
+        <div class="field">
+          <label id="lblPrice">Unit Purchase Price</label>
+          <div class="hint" id="hintPrice">The guaranteed income is calculated as 10% of this price per year</div>
+          <input type="number" id="priceInput" value="449900" step="1000" oninput="recalc()">
+        </div>
+        <div class="field">
+          <label id="lblPrepared">Prepared for</label>
+          <div class="hint" id="hintPrepared">Client name as it will appear on the document</div>
+          <input type="text" id="preparedFor" placeholder="Client name" maxlength="60" oninput="recalc()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label id="lblUnitNo">Unit Number</label>
+          <input type="text" id="unitNo" maxlength="12" placeholder="e.g. 1204" oninput="recalc()">
+        </div>
+        <div class="field">
+          <label id="lblDocDate">Date</label>
+          <input type="text" id="docDate" maxlength="30" oninput="recalc()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. HOW IT WORKS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-title" id="s2Title">How the Program Works</div>
+        <div class="section-subtitle" id="s2Sub">A secure, predictable, fully hands-off first two years</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="program-note" id="programNote"></div>
+    </div>
+  </div>
+
+  <!-- 3. INCOME & COSTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title" id="s3Title">Annual Income &amp; Owner Costs</div>
+        <div class="section-subtitle" id="s3Sub">Guaranteed income less the owner's estimated annual expenses</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div id="ledgerRows"></div>
+      <div class="yield-note" id="yieldNote"></div>
+      <div class="validity" id="legalShort"></div>
+    </div>
+  </div>
+
+</div>
+
+<button class="share-fab" id="shareFab" onclick="downloadPDF()" style="display:none">
+  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span id="fabLabel">Download PDF</span>
+</button>
+<div class="share-toast" id="shareToast"></div>
+
+<footer>AMBAR Residences Orlando · 322 Residences · Marriott Bonvoy Managed · AMBARorlando.com</footer>
+
+<!-- PRINT DOCUMENT -->
+<div id="printDoc"></div>
+
+<script>
+// ===== DATA — from "Leaseback English.xlsx" (one sheet per unit type).
+// price = sheet's Unit Purchase Price (default; agent can override).
+// Monthly owner-cost estimates are fixed per unit type in the source workbook:
+// taxes, hoa, electricity, insurance, ffe (FF&E Reserve Fund).
+const UNITS = [
+  { id:'S1', type:{en:'Studio',es:'Estudio'},            price:367900, taxes:287, hoa:439,  elec:70,  ins:82,  ffe:303 },
+  { id:'A1', type:{en:'1 Bedroom',es:'1 Habitación'},    price:449900, taxes:354, hoa:550,  elec:86,  ins:87,  ffe:368 },
+  { id:'A2', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:551900, taxes:345, hoa:645,  elec:100, ins:91,  ffe:419 },
+  { id:'A3', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:663525, taxes:457, hoa:739,  elec:112, ins:91,  ffe:470 },
+  { id:'A4', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:612900, taxes:404, hoa:682,  elec:107, ins:91,  ffe:475 },
+  { id:'B1', type:{en:'2 Bed + Den',es:'2 Hab + Estudio'}, price:650000, taxes:550, hoa:926,  elec:142, ins:96,  ffe:563 },
+  { id:'B2', type:{en:'2 Bed Corner',es:'2 Hab Esquina'},  price:631900, taxes:515, hoa:867,  elec:135, ins:100, ffe:547 },
+  { id:'C1', type:{en:'3 Bed Corner',es:'3 Hab Esquina'},  price:754415, taxes:512, hoa:1026, elec:155, ins:105, ffe:621 }
+];
+// Deposit schedule — same for all units in the source workbook (total 30%).
+const DEPOSITS = [
+  { pct:5,  key:'depSigning' },
+  { pct:10, key:'dep30' },
+  { pct:5,  key:'dep120' },
+  { pct:10, key:'depGround' }
+];
+let sel = UNITS[1];
+let lang = 'en';
+const fmt=n=>'$'+Math.round(n).toLocaleString('en-US');
+
+// ===== I18N =====
+const I={
+ en:{pageTitle:'The 10% Leaseback Program',
+  bYears:'First 2 Years',bGuarantee:'10% Guaranteed Per Year',bQuarterly:'Paid Quarterly',
+  s1Title:'Unit & Client',s1Sub:'Choose the unit and who this document is prepared for',
+  lblPrice:'Unit Purchase Price',hintPrice:'The guaranteed income is calculated as 10% of this price per year',
+  lblPrepared:'Prepared for',hintPrepared:'Client name as it will appear on the document',
+  lblUnitNo:'Unit Number',lblDocDate:'Date',
+  s2Title:'How the Program Works',s2Sub:'A secure, predictable, fully hands-off first two years',
+  programNote:(pct)=>`Lease your residence back for the first two (2) years, transforming your purchase into a secure, predictable, and fully hands-off investment. Owners receive a guaranteed 10% return per year, based on the unit's gross purchase price — paid regardless of occupancy, seasonality, or market performance.
+  <ul class="program-bullets">
+    <li>Owners remain responsible only for property taxes, HOA assessments, required insurance, the FF&amp;E Reserve, and electricity.</li>
+    <li>Quarterly payments provide simple, reliable cash flow.</li>
+    <li>Participation requires signing the Rental Management Agreement.</li>
+  </ul>`,
+  s3Title:'Annual Income & Owner Costs',s3Sub:"Guaranteed income less the owner's estimated annual expenses",
+  grossIncome:'Guaranteed Gross Rental Income',grossSub:'10% of purchase price per year — Years 1 & 2',
+  taxes:'Property Taxes',hoa:'Monthly HOA',elec:'Electricity',ins:'Insurance',ffe:'FF&E Reserve Fund',
+  estSub:'estimated',perMo:'/mo',netIncome:'Net Income to Owner',netSub:'per year, estimated',
+  yieldNote:(net,pct,two)=>`Estimated net income of <b>${net} per year</b> (${pct}% net of the purchase price) for each of the first two years — a projected two-year total of <b>${two}</b>, fully hands-off.`,
+  s4Title:'Deposit Schedule',s4Sub:'Payment plan from contract to ground breaking',
+  depSigning:'Deposit at signing',dep30:'30 days from signing the contract',dep120:'120 days from signing the contract',depGround:'Ground breaking',
+  depTotal:'Total Deposit',
+  docTitle:'Leaseback Program',docSub:'Orlando, Florida',dateLbl:'Date',preparedLbl:'Prepared for',
+  kGross:'Guaranteed Income / Yr',kCosts:'Est. Owner Costs / Yr',kNet:'Est. Net Income / Yr',
+  ppHowTitle:'How the Program Works',ppLedgerTitle:'Annual Income & Owner Costs',ppDepTitle:'Deposit Schedule',
+  unit:'Unit',totalPrice:'Purchase Price',
+  legalShort:'Estimates based on the AMBAR Leaseback program model. Subject to the terms of the Leaseback Agreement and Rental Management Agreement.',
+  legalFull:[
+   'The Guaranteed Gross Income referenced herein is subject solely to the terms and conditions set forth in the applicable Leaseback Agreement. Any owner-level expenses shown after the Guaranteed Gross Income, including but not limited to real estate taxes, insurance, utilities (including electricity), operating costs, and FF&E reserve contributions, are projected estimates only. Actual expenses may vary materially based on market conditions, operational factors, governmental assessments, utility rates, insurance costs, and other variables beyond the control of the Developer or Coury Hospitality. Neither the Developer nor Coury Hospitality makes any representation or warranty, express or implied, as to the accuracy or achievability of such projected expenses, and assumes no responsibility or liability for any variance between estimated and actual costs. All prospective owners are encouraged to conduct their own independent analysis and consult with their financial, legal, and tax advisors prior to making any investment decision.',
+   'ORAL REPRESENTATIONS CANNOT BE RELIED UPON AS CORRECTLY STATING THE REPRESENTATIONS OF THE DEVELOPER. FOR CORRECT REPRESENTATIONS, MAKE REFERENCE TO THIS BROCHURE AND TO THE DOCUMENTS REQUIRED BY SECTION 718.503, FLORIDA STATUTES, TO BE FURNISHED BY A DEVELOPER TO A BUYER OR LESSEE.',
+   'Ambar Residences Orlando, Apartments by Marriott Bonvoy are not owned, developed, or sold by Marriott International, Inc. or its affiliates ("Marriott"). Archies Investments LLC uses the Apartments by Marriott Bonvoy trademarks and trade names under a license from Marriott, which has not confirmed the accuracy of any of the statements or representations made herein. If this license is terminated or expires without renewal, the residential project will no longer be associated with or have any right to use the Apartments by Marriott Bonvoy brand, trade names or trademarks.',
+   'THE USE OF THE TERM "RESIDENCE" SHALL NOT IMPLY THAT THE UNITS LOCATED WITHIN AMBAR RESORT ARE INTENDED FOR RESIDENTIAL USE. PURSUANT TO OSCEOLA COUNTY CODE OF ORDINANCES, CHAPTER 24-42, THE UNITS LOCATED WITHIN AMBAR RESORT CAN ONLY BE USED FOR TEMPORARY AND TRANSIENT USE, WITH ANY USE OF OCCUPANCY BEING LIMITED TO NO MORE THAN THIRTY (30) DAYS IN A TWELVE-MONTH PERIOD.'
+  ],
+  loginTitle:'Leaseback Program — Agent Access',loginErr:'Invalid access code. Try again.',
+  pdfGenerating:'Generating PDF…',pdfReady:'PDF downloaded!',fab:'Download PDF',
+  pfMid:'322 Residences · Marriott Bonvoy Managed'},
+ es:{pageTitle:'Programa Leaseback del 10%',
+  bYears:'Primeros 2 Años',bGuarantee:'10% Garantizado Por Año',bQuarterly:'Pagos Trimestrales',
+  s1Title:'Unidad y Cliente',s1Sub:'Elige la unidad y para quién se prepara este documento',
+  lblPrice:'Precio de Compra de la Unidad',hintPrice:'El ingreso garantizado se calcula como el 10% de este precio por año',
+  lblPrepared:'Preparado para',hintPrepared:'Nombre del cliente tal como aparecerá en el documento',
+  lblUnitNo:'Número de Unidad',lblDocDate:'Fecha',
+  s2Title:'Cómo Funciona el Programa',s2Sub:'Dos primeros años seguros, predecibles y sin preocupaciones',
+  programNote:(pct)=>`Arriende su residencia de vuelta durante los primeros dos (2) años, transformando su compra en una inversión segura, predecible y totalmente libre de gestión. Los propietarios reciben un retorno garantizado del 10% anual, basado en el precio bruto de compra de la unidad — pagado independientemente de la ocupación, la estacionalidad o el desempeño del mercado.
+  <ul class="program-bullets">
+    <li>Los propietarios solo son responsables de los impuestos, las cuotas de HOA, el seguro requerido, la Reserva FF&amp;E y la electricidad.</li>
+    <li>Los pagos trimestrales brindan un flujo de caja simple y confiable.</li>
+    <li>La participación requiere la firma del Contrato de Administración de Rentas.</li>
+  </ul>`,
+  s3Title:'Ingreso Anual y Costos del Propietario',s3Sub:'Ingreso garantizado menos los gastos anuales estimados del propietario',
+  grossIncome:'Ingreso Bruto Garantizado de Renta',grossSub:'10% del precio de compra por año — Años 1 y 2',
+  taxes:'Impuestos a la Propiedad',hoa:'HOA Mensual',elec:'Electricidad',ins:'Seguro',ffe:'Fondo de Reserva FF&E',
+  estSub:'estimado',perMo:'/mes',netIncome:'Ingreso Neto al Propietario',netSub:'por año, estimado',
+  yieldNote:(net,pct,two)=>`Ingreso neto estimado de <b>${net} por año</b> (${pct}% neto del precio de compra) durante cada uno de los primeros dos años — un total proyectado de <b>${two}</b> en dos años, totalmente libre de gestión.`,
+  s4Title:'Plan de Depósitos',s4Sub:'Plan de pagos desde el contrato hasta el inicio de obra',
+  depSigning:'Depósito a la firma',dep30:'30 días después de la firma del contrato',dep120:'120 días después de la firma del contrato',depGround:'Inicio de obra',
+  depTotal:'Depósito Total',
+  docTitle:'Programa Leaseback',docSub:'Orlando, Florida',dateLbl:'Fecha',preparedLbl:'Preparado para',
+  kGross:'Ingreso Garantizado / Año',kCosts:'Costos Est. / Año',kNet:'Ingreso Neto Est. / Año',
+  ppHowTitle:'Cómo Funciona el Programa',ppLedgerTitle:'Ingreso Anual y Costos del Propietario',ppDepTitle:'Plan de Depósitos',
+  unit:'Unidad',totalPrice:'Precio de Compra',
+  legalShort:'Estimaciones basadas en el modelo del programa Leaseback de AMBAR. Sujeto a los términos del Contrato de Leaseback y del Contrato de Administración de Rentas.',
+  legalFull:[
+   'El Ingreso Bruto Garantizado aquí mencionado está sujeto únicamente a los términos y condiciones establecidos en el Contrato de Leaseback aplicable. Los gastos a nivel de propietario mostrados después del Ingreso Bruto Garantizado, incluyendo entre otros impuestos inmobiliarios, seguros, servicios públicos (incluida la electricidad), costos operativos y contribuciones a la reserva FF&E, son únicamente estimaciones proyectadas. Los gastos reales pueden variar materialmente según condiciones de mercado, factores operativos, tasaciones gubernamentales, tarifas de servicios, costos de seguros y otras variables fuera del control del Desarrollador o de Coury Hospitality. Ni el Desarrollador ni Coury Hospitality hacen representación o garantía alguna, expresa o implícita, sobre la exactitud o viabilidad de dichos gastos proyectados, y no asumen responsabilidad alguna por variaciones entre los costos estimados y reales. Se recomienda a todos los posibles propietarios realizar su propio análisis independiente y consultar con sus asesores financieros, legales y fiscales antes de tomar cualquier decisión de inversión.',
+   'LAS REPRESENTACIONES ORALES NO PUEDEN CONSIDERARSE COMO DECLARACIONES CORRECTAS DE LAS REPRESENTACIONES DEL DESARROLLADOR. PARA REPRESENTACIONES CORRECTAS, HAGA REFERENCIA A ESTE FOLLETO Y A LOS DOCUMENTOS REQUERIDOS POR LA SECCIÓN 718.503 DE LOS ESTATUTOS DE FLORIDA, QUE EL DESARROLLADOR DEBE ENTREGAR A UN COMPRADOR O ARRENDATARIO.',
+   'Ambar Residences Orlando, Apartments by Marriott Bonvoy no son propiedad de, ni son desarrolladas o vendidas por Marriott International, Inc. ni sus afiliadas ("Marriott"). Archies Investments LLC utiliza las marcas y nombres comerciales Apartments by Marriott Bonvoy bajo licencia de Marriott, la cual no ha confirmado la exactitud de ninguna de las declaraciones o representaciones aquí contenidas. Si esta licencia termina o expira sin renovación, el proyecto residencial dejará de estar asociado con la marca Apartments by Marriott Bonvoy y no tendrá derecho a usar sus marcas o nombres comerciales.',
+   'EL USO DEL TÉRMINO "RESIDENCIA" NO IMPLICA QUE LAS UNIDADES UBICADAS DENTRO DE AMBAR RESORT ESTÉN DESTINADAS A USO RESIDENCIAL. CONFORME AL CÓDIGO DE ORDENANZAS DEL CONDADO DE OSCEOLA, CAPÍTULO 24-42, LAS UNIDADES UBICADAS DENTRO DE AMBAR RESORT SOLO PUEDEN USARSE PARA USO TEMPORAL Y TRANSITORIO, CON CUALQUIER USO U OCUPACIÓN LIMITADO A NO MÁS DE TREINTA (30) DÍAS EN UN PERÍODO DE DOCE MESES.'
+  ],
+  loginTitle:'Programa Leaseback — Acceso de Agentes',loginErr:'Código de acceso inválido.',
+  pdfGenerating:'Generando PDF…',pdfReady:'¡PDF descargado!',fab:'Descargar PDF',
+  pfMid:'322 Residencias · Gestionado por Marriott Bonvoy'}
+};
+function t(k){return I[lang][k]}
+function setTxt(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===l.toUpperCase()));
+  ['pageTitle','bYears','bGuarantee','bQuarterly','s1Title','s1Sub','lblPrice','hintPrice','lblPrepared','hintPrepared',
+   'lblUnitNo','lblDocDate','s2Title','s2Sub','s3Title','s3Sub','s4Title','s4Sub','loginTitle'].forEach(k=>setTxt(k,t(k)));
+  setTxt('fabLabel',t('fab'));
+  var pf=document.getElementById('preparedFor');if(pf)pf.placeholder=(lang==='es'?'Nombre del cliente':'Client name');
+  setDefaultDate();
+  renderUnits();recalc();
+}
+
+// ===== UNITS =====
+function renderUnits(){
+  const g=document.getElementById('unitGrid');
+  g.innerHTML='';
+  UNITS.forEach(u=>{
+    const c=document.createElement('div');
+    c.className='unit-card'+(u.id===sel.id?' selected':'');
+    c.innerHTML=`<div class="uc-check">✓</div><div class="uc-type">${lang==='es'?u.type.es:u.type.en}</div><div class="uc-id">${u.id}</div><div class="uc-price">${fmt(u.price)}</div>`;
+    c.onclick=()=>{sel=u;document.getElementById('priceInput').value=u.price;renderUnits();recalc();};
+    g.appendChild(c);
+  });
+}
+function setDefaultDate(){
+  document.getElementById('docDate').value=new Date().toLocaleDateString(lang==='es'?'es-ES':'en-US',{year:'numeric',month:'long',day:'numeric'});
+}
+
+// ===== CALC =====
+// Model (from the workbook): gross = 10% × price per year; owner costs are fixed
+// monthly estimates per unit type; net = gross − costs; mortgage column is 0 (cash).
+function leaseState(){
+  const price=Math.round(+document.getElementById('priceInput').value||0);
+  const u=sel;
+  const grossY=price*0.10;
+  const costs=[
+    {key:'taxes',mo:u.taxes},{key:'hoa',mo:u.hoa},{key:'elec',mo:u.elec},
+    {key:'ins',mo:u.ins},{key:'ffe',mo:u.ffe}
+  ];
+  const costYTotal=costs.reduce((s,c)=>s+c.mo*12,0);
+  const netY=grossY-costYTotal;
+  return {price,grossY,costs,costYTotal,netY,netPct:price>0?netY/price*100:0};
+}
+function recalc(){
+  const q=leaseState();
+  // ledger (screen)
+  let rows=`<div class="q-row"><span class="ql">${t('grossIncome')}<small>${t('grossSub')}</small></span><span class="qv">${fmt(q.grossY)}</span></div>`;
+  q.costs.forEach(c=>{
+    rows+=`<div class="q-row neg"><span class="ql">(−) ${t(c.key)}<small>${fmt(c.mo)}${t('perMo')}</small></span><span class="qv">−${fmt(c.mo*12)}</span></div>`;
+  });
+  rows+=`<div class="q-row total"><span class="ql">${t('netIncome')}<small>${t('netSub')}</small></span><span class="qv">${fmt(q.netY)}</span></div>`;
+  document.getElementById('ledgerRows').innerHTML=rows;
+  document.getElementById('yieldNote').innerHTML=t('yieldNote')(fmt(q.netY),q.netPct.toFixed(1),fmt(q.netY*2));
+  // program note
+  document.getElementById('programNote').innerHTML=t('programNote')();
+  document.getElementById('legalShort').textContent=t('legalShort');
+  if(typeof buildPrintDoc==='function'){try{buildPrintDoc();}catch(e){}}
+}
+
+// ===== PRINT DOCUMENT =====
+function buildPrintDoc(){
+  try{
+    const q=leaseState();
+    const u=sel;
+    const esc=s=>String(s).replace(/</g,'&lt;');
+    const prepName=((document.getElementById('preparedFor')||{}).value||'').trim();
+    const unitNo=((document.getElementById('unitNo')||{}).value||'').trim();
+    const docDate=((document.getElementById('docDate')||{}).value||'').trim();
+    const unitTitle=esc(lang==='es'?u.type.es:u.type.en)+' · '+u.id;
+
+    let ledger=`<div class="pp-led-row"><div class="pp-led-name">${esc(t('grossIncome'))}<small>${esc(t('grossSub'))}</small></div><div class="pp-led-amt">${fmt(q.grossY)}</div></div>`;
+    q.costs.forEach(c=>{
+      ledger+=`<div class="pp-led-row"><div class="pp-led-name">(−) ${esc(t(c.key))}<small>${fmt(c.mo)}${esc(t('perMo'))}</small></div><div class="pp-led-amt neg">(${fmt(c.mo*12)})</div></div>`;
+    });
+    ledger+=`<div class="pp-led-row net"><div class="pp-led-name">= ${esc(t('netIncome'))}<small style="color:inherit">${esc(t('netSub'))}</small></div><div class="pp-led-amt">${fmt(q.netY)}</div></div>`;
+
+    const legal=t('legalFull').map(p=>`<p>${esc(p)}</p>`).join('');
+
+    document.getElementById('printDoc').innerHTML=`
+    <section class="pp-page">
+      <div class="pp-mast">
+        <div class="pp-brand"><img class="pp-logo" src="https://www.ambarorlando.com/assets/images/logo-white-en.svg" alt="AMBAR Residences Orlando" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><div class="pp-wordmark" style="display:none;">AMBAR<small>Residences · Orlando &nbsp;|&nbsp; Apartments by Marriott Bonvoy</small></div></div>
+        <div class="pp-mast-right">
+          <div class="pp-doc-title">${esc(t('docTitle'))}</div>
+          <div class="pp-doc-sub">${esc(t('dateLbl'))}: ${esc(docDate)}</div>
+          ${prepName?`<div class="pp-prep">${esc(t('preparedLbl'))} <b>${esc(prepName)}</b></div>`:''}
+        </div>
+      </div>
+      <div class="pp-hero">
+        <div><div class="pp-unit-name">${unitTitle}${unitNo?' · '+esc(t('unit'))+' '+esc(unitNo):''}</div></div>
+        <div class="pp-hero-right"><div class="pp-price">${fmt(q.price)}</div><span class="pp-label">${esc(t('totalPrice'))}</span></div>
+      </div>
+      <div class="pp-kpis">
+        <div class="pp-kpi"><div class="pp-num">${fmt(q.grossY)}</div><span class="pp-label">${esc(t('kGross'))}</span></div>
+        <div class="pp-kpi dark"><div class="pp-num">${fmt(q.netY)}</div><span class="pp-label">${esc(t('kNet'))}</span></div>
+      </div>
+      <div class="pp-sect"><h2>${esc(t('ppHowTitle'))}</h2></div>
+      <div class="pp-note">${t('programNote')()}</div>
+      <div class="pp-sect"><h2>${esc(t('ppLedgerTitle'))}</h2></div>
+      <div class="pp-ledger">${ledger}</div>
+      <div class="pp-legal">${legal}</div>
+      <div class="pp-foot">
+        <div class="pp-brandline"><span>AMBAR Residences Orlando</span><span class="mid">${esc(t('pfMid'))}</span><span class="mid">AMBARorlando.com</span><span class="pageno">1 / 1</span></div>
+      </div>
+    </section>`;
+  }catch(err){ console.error('buildPrintDoc failed',err); }
+}
+window.addEventListener('beforeprint',buildPrintDoc);
+
+// ===== PDF =====
+function showToast(msg){
+  const el=document.getElementById('shareToast');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+function downloadPDF(){
+  showToast(t('pdfGenerating'));
+  try{recalc();}catch(e){}
+  try{buildPrintDoc();}catch(e){}
+  var origTitle=document.title;
+  document.title='AMBAR-Leaseback-'+sel.id+'-'+new Date().toISOString().slice(0,10);
+  window.print();
+  document.title=origTitle;
+  showToast(t('pdfReady'));
+}
+
+// ===== LOGIN =====
+const ACCESS_CODE='ambar2026';
+function checkLogin(){
+  const pw=document.getElementById('loginPassword').value.trim();
+  if(pw.toLowerCase()===ACCESS_CODE){
+    document.getElementById('loginOverlay').style.display='none';
+    document.getElementById('shareFab').style.display='flex';
+    sessionStorage.setItem('ambar_auth','1');
+  }else{
+    document.getElementById('loginError').textContent=t('loginErr');
+    document.getElementById('loginPassword').value='';
+    document.getElementById('loginPassword').focus();
+  }
+}
+if(sessionStorage.getItem('ambar_auth')==='1'){
+  document.getElementById('loginOverlay').style.display='none';
+  document.getElementById('shareFab').style.display='flex';
+}
+
+// INIT
+setDefaultDate();renderUnits();recalc();
+</script>
+</body>
+</html>
