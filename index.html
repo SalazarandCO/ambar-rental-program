@@ -409,9 +409,9 @@ footer a{color:var(--amber);text-decoration:none}
     <div class="pc-program" id="pcProgram">Rental Program</div>
   </div>
   <div class="pc-kpis">
-    <div class="pc-kpi"><div class="pc-kpi-val" id="pcNoi">$2,962/mo</div><div class="pc-kpi-label" id="pcNoiLabel">Net Income / Month</div></div>
-    <div class="pc-kpi"><div class="pc-kpi-val" id="pcAnn">$35,544</div><div class="pc-kpi-label" id="pcAnnLabel">Annual Net Income</div></div>
-    <div class="pc-kpi dark"><div class="pc-kpi-val" id="pcCap">7.7%</div><div class="pc-kpi-label" id="pcCapLabel">Cap Rate</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcNoi">$3,013/mo</div><div class="pc-kpi-label" id="pcNoiLabel">Net Income / Month</div></div>
+    <div class="pc-kpi"><div class="pc-kpi-val" id="pcAnn">$36,156</div><div class="pc-kpi-label" id="pcAnnLabel">Annual Net Income</div></div>
+    <div class="pc-kpi dark"><div class="pc-kpi-val" id="pcCap">7.9%</div><div class="pc-kpi-label" id="pcCapLabel">Cap Rate</div></div>
   </div>
   </div>
   <div class="pc-meta">
@@ -522,7 +522,7 @@ footer a{color:var(--amber);text-decoration:none}
         <button class="rate-btn" id="btnRevPAR" onclick="setRateMode('revpar')" role="tab" aria-selected="false">RevPAR</button>
       </div>
       <div class="section-summary">
-        <div class="section-summary-value" id="noiSummary">$2,701/mo</div>
+        <div class="section-summary-value" id="noiSummary">$3,013/mo</div>
         <div class="section-summary-label" data-i18n="netIncomeMo">net income/mo</div>
       </div>
     </div>
@@ -546,15 +546,15 @@ footer a{color:var(--amber);text-decoration:none}
       <div class="scenario-card" id="scCard1" onclick="applyScenario(1)">
         <div class="sc-tag" data-i18n="conservative">Conservative</div>
         <div class="sc-fields">
-          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc1Rate" value="383" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc1Rate" value="383" onchange="onScenarioRateChange(1)" onclick="event.stopPropagation()"></div>
         </div>
-        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc1RevPar">$302</strong></div>
-        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$9,202</strong></div>
+        <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc1RevPar">$303</strong></div>
+        <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc1Rev">$9,203</strong></div>
       </div>
       <div class="scenario-card active" id="scCard2" onclick="applyScenario(2)">
         <div class="sc-tag" data-i18n="base">Base</div>
         <div class="sc-fields">
-          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc2Rate" value="409" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc2Rate" value="409" onchange="onScenarioRateChange(2)" onclick="event.stopPropagation()"></div>
         </div>
         <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc2RevPar">$323</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc2Rev">$9,828</strong></div>
@@ -562,7 +562,7 @@ footer a{color:var(--amber);text-decoration:none}
       <div class="scenario-card" id="scCard3" onclick="applyScenario(3)">
         <div class="sc-tag" data-i18n="optimistic">Optimistic</div>
         <div class="sc-fields">
-          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc3Rate" value="436" onchange="this.removeAttribute('data-raw');recalcScenarios()" onclick="event.stopPropagation()"></div>
+          <div class="sc-field"><label class="rate-label">ADR</label><input type="number" id="sc3Rate" value="436" onchange="onScenarioRateChange(3)" onclick="event.stopPropagation()"></div>
         </div>
         <div class="sc-revpar"><span class="derived-label">RevPAR</span> <strong id="sc3RevPar">$344</strong></div>
         <div class="sc-result"><span data-i18n="grossRevMo">Gross rev/mo</span><br><strong id="sc3Rev">$10,477</strong></div>
@@ -754,44 +754,54 @@ function syncInputs(){
   const discPct = parseFloat(document.getElementById('discountPct').value) || 0;
   const basePrice = discPct > 0 ? Math.round(sel.basePrice * (1 - discPct/100)) : Math.round(sel.basePrice);
   document.getElementById('priceInput').value = basePrice;
-  // Rate field holds ADR in ADR mode, RevPAR (= ADR × occ) in RevPAR mode.
-  const baseRate = rateMode==='revpar' ? sel.adr*sel.occ : sel.adr;
-  const adrEl = document.getElementById('adrInput');
-  adrEl.value = Math.round(baseRate);
-  adrEl.removeAttribute('data-raw');
   // Reset occupancy slider to unit's default occupancy.
   const occPct=Math.round(sel.occ*100);
   document.getElementById('occSlider').value=occPct;
   document.getElementById('occVal').textContent=occPct+'%';
+  const occ=+document.getElementById('occSlider').value/100;
   // Update discount display
   if(discPct > 0){
     document.getElementById('discountResult').textContent = '−' + fmt(sel.basePrice - basePrice);
   } else {
     document.getElementById('discountResult').textContent = '';
   }
-  // Update scenario defaults (in the active rate mode); clear stale data-raw from any prior unit.
+  // Scenario defaults are always defined on ADR: stored ADR × 100% / 107% / 114%, rounded to
+  // the dollar. In RevPAR mode the field shows that ADR × the default occupancy (full precision
+  // kept in data-raw), so a unit gives the same gross and net whichever rate mode is active
+  // when it is picked. Stale data-raw from any prior unit is cleared.
   [1,2,3].forEach((i, idx)=>{
-    const mult = [1, 1.07, 1.14][idx];
+    const adrVal = Math.round(sel.adr*[1, 1.07, 1.14][idx]);
     const el = document.getElementById('sc'+i+'Rate');
-    el.value = Math.round(baseRate*mult);
-    el.removeAttribute('data-raw');
+    if(rateMode==='revpar'){
+      const rp = adrVal*occ;
+      el.value = Math.round(rp);
+      el.setAttribute('data-raw', String(rp));
+    } else {
+      el.value = adrVal;
+      el.removeAttribute('data-raw');
+    }
   });
+  // Hidden rate field starts on the first scenario; callers then apply the selected scenario.
+  const first = document.getElementById('sc1Rate');
+  const adrEl = document.getElementById('adrInput');
+  adrEl.value = first.value;
+  const firstRaw = first.getAttribute('data-raw');
+  if(firstRaw) adrEl.setAttribute('data-raw', firstRaw);
+  else adrEl.removeAttribute('data-raw');
 }
 
 function onOccChange(){
   const v = +document.getElementById('occSlider').value;
   document.getElementById('occVal').textContent = v+'%';
-  // Occupancy is its own independent lever — moving it should NOT change ADR or the
-  // displayed RevPAR. The only thing it affects is Gross Revenue (= ADR × occ × 30.4167),
-  // which flows through recalc() to the section-4 NOI summary, the waterfall, and the
-  // per-card "Gross rev/mo" via recalcScenarios().
+  // Occupancy is its own lever — moving it does NOT change ADR. It moves RevPAR
+  // (= ADR × occ) and Gross Revenue (= ADR × occ × 30.4167), which flow through recalc()
+  // to the NOI summary, the waterfall, and each card via recalcScenarios().
   recalcScenarios();
   recalc();
 }
 
 function recalcScenarios(){
   const occ = +document.getElementById('occSlider').value/100;
-  const refOcc = sel.occ; // unit's default occupancy — stable reference for the RevPAR display
   [1,2,3].forEach(i=>{
     const el = document.getElementById('sc'+i+'Rate');
     // Prefer data-raw (full precision) over .value (rounded integer for display).
@@ -800,13 +810,21 @@ function recalcScenarios(){
     //   ADR mode:    gross = ADR × occ × 30.4167
     //   RevPAR mode: gross = RevPAR × 30.4167  (occupancy hidden, already baked in)
     const grossRevPar = rateMode==='revpar' ? v : v*occ;
-    // The derived sub-display (RevPAR in ADR mode, ADR in RevPAR mode) is INDEPENDENT of
-    // the slider — it uses the unit's default occupancy. So moving occupancy doesn't
-    // shift the displayed RevPAR; only typing a new ADR or picking a new unit does.
-    const derived = rateMode==='revpar' ? (refOcc>0 ? v/refOcc : 0) : v*refOcc;
+    // The derived sub-display uses the same occupancy as the gross figure beside it:
+    //   ADR mode:    RevPAR = ADR × occupancy   (so RevPAR × 30.4167 = gross rev/mo)
+    //   RevPAR mode: ADR    = RevPAR ÷ occupancy
+    const derived = rateMode==='revpar' ? (occ>0 ? v/occ : 0) : v*occ;
     document.getElementById('sc'+i+'RevPar').textContent = fmt(derived);
     document.getElementById('sc'+i+'Rev').textContent   = fmt(grossRevPar*DPM);
   });
+}
+
+// A rate typed into a scenario card: refresh that card and, when it is the selected card,
+// carry the new rate through to the waterfall, net income and cap rate as well.
+function onScenarioRateChange(n){
+  document.getElementById('sc'+n+'Rate').removeAttribute('data-raw');
+  recalcScenarios();
+  if(document.getElementById('scCard'+n).classList.contains('active')) applyScenario(n);
 }
 
 function applyScenario(n){
@@ -899,7 +917,7 @@ function recalc(){
   } else {
     // Rental Program — show scenario cards, occupancy slider, and normal waterfall
     document.querySelectorAll('.scenario-grid').forEach(el=>el.style.display='');
-    document.getElementById('occGroup').style.display='';
+    document.getElementById('occGroup').style.display=rateMode==='revpar'?'none':'';
     // Dynamic breakdown tooltips — values update when unit / ADR / occupancy change
     const tipRow=(a,b)=>`<div style="display:flex;justify-content:space-between;padding:3px 0;line-height:1.4;font-size:11px"><span>${a}</span><span style="font-variant-numeric:tabular-nums;font-weight:600;margin-left:12px">${b}</span></div>`;
     const tipTotalRow=(a,b)=>`<div style="display:flex;justify-content:space-between;padding:5px 0 0;margin-top:3px;border-top:1px solid rgba(255,255,255,0.2);line-height:1.4;font-size:11px;font-weight:700"><span>${a}</span><span style="font-variant-numeric:tabular-nums;margin-left:12px">${b}</span></div>`;
@@ -1029,32 +1047,46 @@ function showToast(msg){
 // ===== LOAD FROM URL PARAMS =====
 function loadFromURL(){
   const p = new URLSearchParams(window.location.search);
+  if(!['unit','lb','mode','lang','price','rm','adr','occ','s1r','s2r','s3r'].some(k=>p.has(k))) return;
+  // Only plain positive numbers are accepted; anything else is ignored.
+  const num = k => { const v = p.get(k); return (v!==null && /^\d+(\.\d+)?$/.test(v) && +v>0) ? +v : null; };
   // Auto-select leaseback mode if URL param present
   if(p.get('lb')==='1'||p.get('mode')==='leaseback'){
     setProgramMode('leaseback');
   }
-  if(!p.has('unit')&&!p.get('lb')&&!p.get('mode')) return;
-  // Select unit
-  const unitId = p.get('unit');
-  const found = UNITS.find(u=>u.id===unitId);
+  // Select unit and language (unknown values are ignored)
+  const found = UNITS.find(u=>u.id===p.get('unit'));
   if(found) sel = found;
-  // Set language
-  if(p.has('lang')) setLang(p.get('lang'));
-  // Set inputs
-  if(p.has('price')) document.getElementById('priceInput').value = p.get('price');
-  if(p.has('rm')) setRateMode(p.get('rm'));
-  if(p.has('adr')) document.getElementById('adrInput').value = p.get('adr');
-  if(p.has('occ')){
-    const v=p.get('occ');
-    document.getElementById('occSlider').value=v;
-    document.getElementById('occVal').textContent=Math.round(+v)+'%';
-  }
-  // Scenario cards
-  if(p.has('s1r')) document.getElementById('sc1Rate').value = p.get('s1r');
-  if(p.has('s2r')) document.getElementById('sc2Rate').value = p.get('s2r');
-  if(p.has('s3r')) document.getElementById('sc3Rate').value = p.get('s3r');
+  if(p.get('lang')==='en'||p.get('lang')==='es') setLang(p.get('lang'));
+  // Start from the selected unit's own defaults (price, rates, occupancy) ...
   renderUnits();
-  recalc();
+  syncInputs();
+  // ... then apply any explicit overrides from the link.
+  const price = num('price');
+  if(price!==null) document.getElementById('priceInput').value = price;
+  const occ = num('occ');
+  if(occ!==null){
+    const sl = document.getElementById('occSlider');
+    sl.value = occ;
+    document.getElementById('occVal').textContent = Math.round(+sl.value)+'%';
+  }
+  // Rate mode is switched after occupancy so RevPAR defaults are built on the occupancy in use.
+  if(p.get('rm')==='adr'||p.get('rm')==='revpar') setRateMode(p.get('rm'));
+  [1,2,3].forEach(i=>{
+    const v = num('s'+i+'r');
+    if(v!==null){ const el = document.getElementById('sc'+i+'Rate'); el.value = v; el.removeAttribute('data-raw'); }
+  });
+  // "adr" is the rate driving the results: select the scenario card that carries it,
+  // or write it into the selected card so the card and the waterfall always agree.
+  let n = [1,2,3].find(i=>document.getElementById('scCard'+i).classList.contains('active')) || 2;
+  const adr = num('adr');
+  if(adr!==null){
+    const match = [1,2,3].find(i=>+document.getElementById('sc'+i+'Rate').value===adr);
+    if(match) n = match;
+    else { const el = document.getElementById('sc'+n+'Rate'); el.value = adr; el.removeAttribute('data-raw'); }
+  }
+  recalcScenarios();
+  applyScenario(n);
 }
 
 // INIT
