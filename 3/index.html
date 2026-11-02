@@ -423,6 +423,7 @@ const I={
   bDelivery:'Entrega Q3 2028',bUnits:'322 Residencias',bManaged:'Gestionado por Marriott',
   pfMid:'322 Residencias · Gestionado por Marriott Bonvoy'}
 };
+const stripHoa=s=>String(s).replace(/\s*HOA dues are paid by the tenant \(hotel parcel owner\)\./g,'').replace(/\s*Las cuotas (de )?HOA las paga el arrendatario \(propietario de la parcela hotelera\)\./g,''); // printout omits the HOA-tenant line
 function t(k){return I[lang][k]}
 function setTxt(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 
@@ -583,7 +584,7 @@ function buildPrintDoc(){
           <div class="pp-kpi dark"><div class="pp-num">${fmt(lbNetY)}</div><span class="pp-label">${esc(t('lbKNet'))}</span></div>
         </div>
         <div class="pp-sect"><h2>${esc(t('lbHow'))}</h2></div>
-        <div class="pp-note">${t('lbNote')()}</div>
+        <div class="pp-note">${stripHoa(t('lbNote')())}</div>
         <div class="pp-sect"><h2>${esc(t('lbLedger'))}</h2></div>
         <div class="pp-ledger">${lbLedger}</div>
         <div class="pp-legal">${lbLegalHtml}</div>

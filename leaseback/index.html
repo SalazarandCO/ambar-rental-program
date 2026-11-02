@@ -659,6 +659,11 @@ function downloadPDF(){
 })();
 
 setLang(lang);
+// Printout omits the HOA-tenant line (still shown on screen).
+(function(){const sel='[data-i18n="s3Sub"],[data-i18n="b3"]';const saved=new Map();
+const strip=x=>x.replace(/\s*HOA (dues are|is) paid by the tenant \(hotel parcel owner\)\.?/g,'').replace(/\s*(Las cuotas HOA las paga|El HOA lo paga) el arrendatario \(propietario de la parcela hotelera\)\.?/g,'');
+addEventListener('beforeprint',()=>{document.querySelectorAll(sel).forEach(el=>{saved.set(el,el.textContent);el.textContent=strip(el.textContent);});});
+addEventListener('afterprint',()=>{saved.forEach((v,el)=>{el.textContent=v;});saved.clear();});})();
 </script>
 </body>
 

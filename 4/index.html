@@ -326,6 +326,7 @@ const DEPOSITS = [
 ];
 let sel = UNITS[1];
 let lang = 'en';
+const stripHoa=s=>String(s).replace(/\s*HOA dues are paid by the tenant \(hotel parcel owner\)\./g,'').replace(/\s*Las cuotas (de )?HOA las paga el arrendatario \(propietario de la parcela hotelera\)\./g,''); // printout omits the HOA-tenant line
 const fmt=n=>'$'+Math.round(n).toLocaleString('en-US');
 
 // ===== I18N =====
@@ -500,7 +501,7 @@ function buildPrintDoc(){
         <div class="pp-kpi dark"><div class="pp-num">${fmt(q.netY)}</div><span class="pp-label">${esc(t('kNet'))}</span></div>
       </div>
       <div class="pp-sect"><h2>${esc(t('ppHowTitle'))}</h2></div>
-      <div class="pp-note">${t('programNote')()}</div>
+      <div class="pp-note">${stripHoa(t('programNote')())}</div>
       <div class="pp-sect"><h2>${esc(t('ppLedgerTitle'))}</h2></div>
       <div class="pp-ledger">${ledger}</div>
       <div class="pp-legal">${legal}</div>
