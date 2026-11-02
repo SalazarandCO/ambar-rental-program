@@ -339,7 +339,7 @@ const I={
   s2Title:'How the Program Works',s2Sub:'A secure, predictable, fully hands-off first two years',
   programNote:(pct)=>`Lease your residence back for the first two (2) years, transforming your purchase into a secure, predictable, and fully hands-off investment. Owners receive a guaranteed 10% return per year, based on the unit's gross purchase price — paid regardless of occupancy, seasonality, or market performance.
   <ul class="program-bullets">
-    <li>Owners remain responsible only for property taxes, HOA assessments, required insurance, the FF&amp;E Reserve, and electricity.</li>
+    <li>Owners remain responsible only for property taxes, required insurance, the FF&amp;E Reserve, and electricity. HOA dues are paid by the tenant (hotel parcel owner).</li>
     <li>Quarterly payments provide simple, reliable cash flow.</li>
     <li>Participation requires signing the Rental Management Agreement.</li>
   </ul>`,
@@ -374,7 +374,7 @@ const I={
   s2Title:'Cómo Funciona el Programa',s2Sub:'Dos primeros años seguros, predecibles y sin preocupaciones',
   programNote:(pct)=>`Arriende su residencia de vuelta durante los primeros dos (2) años, transformando su compra en una inversión segura, predecible y totalmente libre de gestión. Los propietarios reciben un retorno garantizado del 10% anual, basado en el precio bruto de compra de la unidad — pagado independientemente de la ocupación, la estacionalidad o el desempeño del mercado.
   <ul class="program-bullets">
-    <li>Los propietarios solo son responsables de los impuestos, las cuotas de HOA, el seguro requerido, la Reserva FF&amp;E y la electricidad.</li>
+    <li>Los propietarios solo son responsables de los impuestos, el seguro requerido, la Reserva FF&amp;E y la electricidad. Las cuotas de HOA las paga el arrendatario (propietario de la parcela hotelera).</li>
     <li>Los pagos trimestrales brindan un flujo de caja simple y confiable.</li>
     <li>La participación requiere la firma del Contrato de Administración de Rentas.</li>
   </ul>`,
@@ -439,7 +439,7 @@ function leaseState(){
   const u=sel;
   const grossY=price*0.10;
   const costs=[
-    {key:'taxes',mo:u.taxes},{key:'hoa',mo:u.hoa},{key:'elec',mo:u.elec},
+    {key:'taxes',mo:u.taxes},{key:'elec',mo:u.elec}, // HOA paid by tenant (hotel parcel owner)
     {key:'ins',mo:u.ins},{key:'ffe',mo:u.ffe}
   ];
   const costYTotal=costs.reduce((s,c)=>s+c.mo*12,0);
