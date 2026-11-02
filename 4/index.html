@@ -238,7 +238,7 @@ footer{background:var(--header-bg);color:rgba(255,255,255,0.5);text-align:center
         <div class="field">
           <label id="lblPrice">Unit Purchase Price</label>
           <div class="hint" id="hintPrice">The guaranteed income is calculated as 10% of this price per year</div>
-          <input type="number" id="priceInput" value="449900" step="1000" oninput="recalc()">
+          <input type="number" id="priceInput" value="459344" step="1000" oninput="recalc()">
         </div>
         <div class="field">
           <label id="lblPrepared">Prepared for</label>
@@ -308,14 +308,14 @@ footer{background:var(--header-bg);color:rgba(255,255,255,0.5);text-align:center
 // Monthly owner-cost estimates are fixed per unit type in the source workbook:
 // taxes, hoa, electricity, insurance, ffe (FF&E Reserve Fund).
 const UNITS = [
-  { id:'S1', type:{en:'Studio',es:'Estudio'},            price:367900, taxes:287, hoa:403,  elec:70,  ins:82,  ffe:303 },
-  { id:'A1', type:{en:'1 Bedroom',es:'1 Habitación'},    price:449900, taxes:354, hoa:499,  elec:86,  ins:87,  ffe:368 },
-  { id:'A2', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:551900, taxes:345, hoa:580,  elec:100, ins:91,  ffe:419 },
-  { id:'A3', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:663525, taxes:457, hoa:655,  elec:112, ins:91,  ffe:470 },
-  { id:'A4', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:612900, taxes:404, hoa:625,  elec:107, ins:91,  ffe:475 },
-  { id:'B1', type:{en:'2 Bed + Den',es:'2 Hab + Estudio'}, price:650000, taxes:550, hoa:826,  elec:142, ins:96,  ffe:563 },
-  { id:'B2', type:{en:'2 Bed Corner',es:'2 Hab Esquina'},  price:631900, taxes:515, hoa:798,  elec:135, ins:100, ffe:547 },
-  { id:'C1', type:{en:'3 Bed Corner',es:'3 Hab Esquina'},  price:754415, taxes:512, hoa:901, elec:155, ins:105, ffe:621 }
+  { id:'S1', type:{en:'Studio',es:'Estudio'},            price:380614, taxes:286.95, hoa:402.93, elec:69.74, ins:81.95, ffe:303 },
+  { id:'A1', type:{en:'1 Bedroom',es:'1 Habitación'},    price:459344, taxes:354.26, hoa:498.73, elec:85.83, ins:86.51, ffe:368 },
+  { id:'A2', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:518900, taxes:405.18, hoa:580.07, elec:99.83, ins:91.06, ffe:419 },
+  { id:'A3', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:579900, taxes:457.34, hoa:654.58, elec:112.39, ins:91.06, ffe:470 },
+  { id:'A4', type:{en:'1 Bed + Den',es:'1 Hab + Estudio'}, price:601400, taxes:475.72, hoa:624.93, elec:107.29, ins:91.06, ffe:475 },
+  { id:'B1', type:{en:'2 Bed + Den',es:'2 Hab + Estudio'}, price:688300, taxes:550.02, hoa:826.39, elec:142.48, ins:95.61, ffe:563 },
+  { id:'B2', type:{en:'2 Bed Corner',es:'2 Hab Esquina'},  price:646900, taxes:514.62, hoa:798.26, elec:135.42, ins:100.17, ffe:527 },
+  { id:'C1', type:{en:'3 Bed Corner',es:'3 Hab Esquina'},  price:764400, taxes:615.09, hoa:900.9, elec:155.05, ins:104.72, ffe:621 }
 ];
 // Deposit schedule — same for all units in the source workbook (total 30%).
 const DEPOSITS = [
